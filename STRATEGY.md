@@ -1,0 +1,205 @@
+# MES POC-Cluster Order Flow Strategy: Spec (draft)
+
+Status: draft. Items marked **TBD** still need a decision.
+
+## Market and platform
+
+- **Instrument traded:** MES (Micro E-mini S&P 500), **10 contracts per trade**.
+  - Tick size 0.25. Each contract is worth $1.25 per tick or $5 per point, so 10 contracts are $50 per point, the same as 1 ES.
+  - MNQ may come later.
+- **TBD:** compute levels and volume profiles from ES instead of MES. ES is the main market and MES follows it, so the ES profile may show the big players better. Absorption alerts stay on MES to match the Bookmap settings.
+- **Platforms:** Bookmap for reading order flow, NinjaTrader for execution.
+- **Data feed:** none active yet. Rithmic is planned for live trading.
+- **Live trading:** a NinjaScript strategy running in NinjaTrader 8, using the Rithmic feed for trades and the order book.
+- **Research and backtesting:** Python, using historical CME tick data.
+
+## Core idea
+
+Price tends to stall where a lot of volume traded before and to move quickly through prices where little traded.
+When price reaches a strong high-volume level, the order flow there decides whether to trade:
+
+- **Absorption** (heavy aggressive orders that fail to push price through): the level holds, so trade the reversal.
+- **No absorption** (price cuts through on heavy volume): the level breaks. No trade for now (see Later ideas).
+
+## 1. Levels
+
+### 1a. Daily POC clusters (main level source)
+
+- Find the point of control (POC, the price with the most volume) for each of the last **N = 20** sessions.
+- Group POCs that sit within **W ticks** of each other. The default W is **TBD**.
+- 2 or more POCs in a group make a **level**; 3 or more make a **strong level**.
+- **Session:** the full Globex session, 18:00–17:00 ET (23 hours). The Sunday 18:00 open counts as the start of Monday's session.
+
+### 1b. Supply and demand zones
+
+- Past areas of heavy volume where price then reversed or continued sharply.
+- Exact definition: **TBD** (volume threshold, how big a move counts as a reversal).
+
+### 1c. Long-term volume profile
+
+- Combined volume by price over a longer window. Test **1, 3 and 6 months** and keep whichever best predicts fast moves.
+- **Low-volume areas:** price is expected to move through these quickly.
+- The long-term POC and value area (the range holding about 70% of the volume) serve as extra levels and targets.
+
+### 1d. Resting-order lines (TBD)
+
+- In example 1, the reaction happened at a heatmap line of heavy resting orders (5540). After that day's gap down, the previous days' POCs were likely far above.
+- **TBD:** whether lines of large resting orders should count as levels.
+
+### Level strength
+
+A level ranks higher when the sources agree. Examples: a POC cluster that overlaps a supply or demand zone, or a cluster that sits next to a long-term low-volume area.
+
+## 2. Entries: absorption at the level
+
+The bot copies the read currently done by eye in Bookmap. That read uses volume bubbles, the Absorption Indicator add-on, delta and the bid/ask orders on the book.
+
+### Signals to measure
+
+- **Absorption alerts** (rebuilds the Bookmap Absorption Indicator add-on):
+  - Current add-on setting: mark the chart when **100 or more contracts trade within 0.01 seconds** (on MES).
+  - Purple markers mean seller absorption; green markers mean buyer absorption. **TBD:** whether purple means aggressive buying that sellers absorbed, or aggressive selling. The historical data can settle this.
+  - The add-on only flags the burst of volume. The bot adds the absorption check itself: after the burst, price does not trade more than **X ticks** past that price within **Y seconds**.
+- **Volume bubbles:** unusually large traded volume at one price in a short time. Size cutoff: **TBD** (start from Bookmap's settings).
+- **Delta and CVD:** delta is aggressive buy volume minus aggressive sell volume. CVD (cumulative volume delta) is the running total of delta through the session. The bot compares the CVD highs (or lows) at the first test of a level and at the retest.
+- **Volume at the level on each test:** how much traded at and near the level the first time price reached it, compared with the retest.
+- **Order book:** the size of resting bids and asks at and near the level, and whether they refill after being hit.
+
+### Setup (example: short after price rises into a level)
+
+1. Price rises into a level from section 1.
+2. Absorption alerts appear at the level, for example sellers absorbing.
+3. Price may hang around the level and produce more alerts on both sides. Keep a running count, with sizes, of buyer and seller absorption at the level.
+   - Working assumption: mostly seller absorption points down, and mostly buyer absorption points up.
+   - **TBD:** confirm this assumption, and decide how lopsided the balance must be.
+4. Confirm with big volume bubbles at the level, the delta, and the resting orders on the book.
+5. **Entry.** There are two versions, to be compared in the backtest:
+   - **Early entry (what the user does by hand):** short at the level once seller absorption shows up, before any retest. In example 1, that's 5536–5538.
+   - **Retest entry:** wait for price to pull away and come back to the level. Short when the retest is weaker than the first test and price turns down:
+     - Less volume trades at the level than on the first test, which means traders aren't interested in that price any more.
+     - CVD makes a lower high than at the first test.
+   - After an early entry, a weak retest confirms the trade. It could also be a point to add to the position (see Later ideas).
+6. **Target:** price returns to where the market wants to trade, meaning the nearest high-volume area below, such as the session POC. Section 3 has the full exit plan.
+
+Mirror the steps for a long after price falls into a level.
+
+- **TBD:** how far price must pull away for a retest to count, how much lower the retest volume must be, and the exact retest entry trigger (for example, price trading a few ticks below the retest high).
+- All thresholds will be set from the add-on settings, example trades and the backtest.
+
+### Example trades (test cases)
+
+**Example 1 (short): MES Jun25, 3 Apr 2025, about 09:30–09:47 ET.** The values are read from a Bookmap screenshot, so they are approximate.
+
+- Price rallies from about 5507 at 09:30 to about 5540 by 09:33.
+- The heatmap shows heavy resting orders at 5540 and 5550 before price gets there.
+- Seller absorption markers appear around 09:33–09:35: **118** at about 5540, **212** at about 5535.75 and **109** at about 5532.75.
+- Price chops between about 5525 and 5540.
+- **Retest around 09:40:** price pushes back to about 5538 and fails. Less volume trades at the level than on the first test, and CVD makes a lower high. This is the short signal.
+- Price falls to about 5515 by 09:47.
+- **User's trade:** short at 5536–5538 (early entry), stop at 5543, close 90% at 5515, runner targets at 5505 then 5500, and the runner's stop moved to 5530 after the first target. Risk is about 6 points against about 22 points to the first target (about 3.7 to 1).
+- With 10 MES, the trade risks about $300. The 9 contracts closed at the first target make about $990, before commissions.
+- April 3, 2025 was a very high-volume day (the tariff selloff), so normal settings apply.
+- **Test:** rebuilding the indicator over this window must reproduce these three markers.
+
+**Wanted:** an example trade from a quiet, low-volume day.
+
+## 3. Exits
+
+These rules follow how the user manages trades by hand. Example 1 prices are in brackets. The point distances are for a normal-volume day; see "Adjusting for the day's volume" below.
+
+1. **Initial stop:** 3 points beyond the level being traded [5540 + 3 = 5543].
+2. **First target:** close about **90%** of the position where the move into the level started [5515, where the rally began].
+3. **Runner:** the last contract targets the next low beyond that (high, for a long), such as the session's earlier low [5505].
+4. **After the first target:** move the runner's stop to lock in 5 points of profit plus 1 point of buffer, which is 6 points from entry [5536 − 6 = 5530].
+
+- **Contract split with 10 MES:** 9 contracts close at the first target, and 1 contract runs to the next target.
+  - The backtest will compare this with an 8 / 1 / 1 split, where a second runner targets the level after that [5500]. The data decides.
+- **Backtest costs:** assume a tick or two of slippage on entries and stops, plus commissions.
+
+### Adjusting for the day's volume
+
+Low-volume days produce smaller moves, so the bot takes less risk on them.
+
+- **Measure:** relative volume, meaning today's volume so far divided by the average volume up to the same time of day over the last 20 sessions. Comparing at the same time of day keeps the quiet overnight hours from looking like a low-volume day.
+- **Normal day** (relative volume around 1 or higher; exact cutoff **TBD**): use the normal settings above.
+- **Low-volume day** (below the cutoff): keep the same number of contracts, but move the stop and targets closer.
+  - Starting rule: multiply every distance by a factor. That covers the stop buffer, the first target, the runner targets and the locked-in profit. Starting guess: **0.6**.
+  - The backtest will compare a fixed factor with one that shrinks further as relative volume drops.
+- The backtest will test the cutoff and the factor.
+
+## 4. Risk limits
+
+- **Contracts per trade:** 10 MES on every trade. On quiet days the stop and targets move closer instead of the size changing.
+- **Loss per trade (normal day):** the stop sits 3 points past the level, and entries so far have been 2–4 points inside the level. A full loss is therefore 5–7 points, which is **$250–$350** on 10 MES. Slippage and commissions add roughly $10–$40.
+- **Trades per day:** **1**, win or loss. This is an adjustable setting, to be raised once results show whether the strategy works. With one trade a day, the most the bot should lose in a day is one full loss: about $260–$390 including costs.
+- **Fast markets:** during news or sharp moves, a stop can fill well past its price. A single loss can then be bigger than these numbers.
+- **Maximum entry distance (TBD):** skip the trade if price is already too far from the level, for example more than 4 points away, so the risk never goes past about 7 points.
+- **Daily loss limit:** a backup dollar limit for when more than one trade a day is allowed. Proposed: $800, about two full losses.
+- **Protective orders:** send the stop and the first target as soon as the entry fills, so the trade stays protected if the bot or the computer goes down. Check that the stop is held by the broker or the exchange, not only by NinjaTrader on the computer.
+- **End of day:** close any open trade at **16:50 ET**, 10 minutes before the 17:00 ET session close. No new entries after **16:30 ET**. On holiday early-close days, the same rules apply relative to the early close.
+- **Major news:** no new entries from **15 minutes before to 30 minutes after** a major release. Close an open trade **5 minutes before** the release, because stops can slip badly when the numbers come out.
+  - Default events: CPI, the jobs report (nonfarm payrolls) and Fed rate decisions. On Fed days, the block lasts until the press conference ends.
+  - The bot reads release dates and times from a calendar file built from the official schedules (BLS and the Federal Reserve). The backtest skips the same windows.
+
+## 5. Bot settings
+
+Every number below is an adjustable setting. The defaults come from this spec.
+
+| Setting | Default | Notes |
+|---|---|---|
+| Instrument | MES | MNQ may come later |
+| Contracts per trade | 10 | |
+| Max trades per day | 1 | Win or loss. Raise once results are in. |
+| Daily loss limit | $800 | Only matters when more than 1 trade a day is allowed |
+| Session | 18:00–17:00 ET | Full Globex session |
+| No new entries after | 16:30 ET | |
+| Close open trade at | 16:50 ET | 10 minutes before the session close |
+| News events | CPI, jobs report, Fed decisions | |
+| News blackout for entries | 15 min before to 30 min after | Fed days: until the press conference ends |
+| Close open trade before news | 5 min before the release | |
+| POC lookback | 20 sessions | |
+| POC cluster width | TBD | |
+| POCs needed for a level | 2 (3 = strong) | |
+| Long-term profile window | 3 months | Backtest compares 1, 3 and 6 months |
+| Absorption burst | 100 contracts in 0.01 s | Matches the Bookmap add-on |
+| Absorption hold check | TBD | Price stays within X ticks for Y seconds |
+| Entry mode | Early | Alternative: retest entry. Backtest compares. |
+| Max entry distance from level | 4 points | |
+| Stop buffer past the level | 3 points | |
+| First target | Start of the move into the level | Closes 9 of 10 contracts |
+| Runner | 1 contract to the next target | Alternative: 8 / 1 / 1 split |
+| Runner stop after first target | 6 points from entry | 5 points locked in plus 1 point of buffer |
+| Quiet-day cutoff | TBD (relative volume around 1) | |
+| Quiet-day factor | 0.6 | Multiplies the stop and target distances |
+
+## Later ideas (on hold)
+
+- **Breakout and retest:**
+  1. Price breaks through a level.
+  2. Price comes back to retest the level, and the level holds. Dips back through it get bought (or sold) immediately.
+  3. Enter in the breakout direction.
+
+  This is not part of the first version.
+- **Add to the position on a weak retest:** after an early entry, add when the retest confirms the trade (less volume at the level, CVD lower high).
+
+## Build plan
+
+1. **Level study (Python):** using historical trades, answer three questions:
+   - Does price stall at POC clusters more often than at random prices?
+   - Does it cross low-volume gaps faster than other prices?
+   - Which long-term window works best?
+2. **Strategy backtest:** rebuild the absorption alerts, volume bubbles and delta from trade data that carries the buy/sell side. Then test the setup in section 2.
+3. **Add the order book:** test the resting-order signals with historical book data.
+4. **Live bot:** a NinjaScript strategy, tested in this order:
+   - Market Replay (past days replayed, order book included)
+   - Sim account
+   - Live trading with minimum size
+
+## Data
+
+- **Needed first, for the backtest:** historical CME tick data. Recommended source: Databento.
+  - Start with trades. They include the aggressor side, which is enough for levels, delta, volume bubbles and absorption alerts.
+  - Add order book history for build step 3.
+- **Needed last, for the live bot:** a futures broker account with Rithmic and a real-time CME data subscription that includes market depth, connected to NinjaTrader and Bookmap.
+- **Other historical option:** Rithmic's own history. It may be limited, and Rithmic may need to approve API access for a custom program.
+- **Bookmap recordings:** example 1 is a Bookmap replay, so recording files from past trading may exist. They contain the full order book, but they are in Bookmap's own format.
