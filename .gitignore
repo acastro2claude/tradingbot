@@ -1,0 +1,11 @@
+# Raw market data (downloaded from Databento; never commit)
+data/
+*.dbn
+*.dbn.zst
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ipynb_checkpoints/
