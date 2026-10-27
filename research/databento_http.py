@@ -86,8 +86,11 @@ def log_spend(what: str, schema: str, period: str, cost: float) -> None:
 
 def download(*, name: str, symbols: str, schema: str, start: str, end: str,
              stype_in: str, approved_max_cost: float, out_dir: Path,
-             description: str) -> Path:
-    """Download one request as zstd-compressed DBN, after a fresh price check."""
+             description: str, log: bool = True) -> Path:
+    """Download one request as zstd-compressed DBN, after a fresh price check.
+
+    log=False leaves the spend log to the caller (for batches logged as one line).
+    """
     out_dir.mkdir(parents=True, exist_ok=True)
     out_path = out_dir / f"{name}.dbn.zst"
     if out_path.exists():
@@ -118,8 +121,9 @@ def download(*, name: str, symbols: str, schema: str, start: str, end: str,
             for chunk in resp.iter_content(chunk_size=1 << 20):
                 f.write(chunk)
     tmp_path.rename(out_path)
-    log_spend(description, schema, f"{start} to {end}", cost)
-    print(f"{name}: saved {out_path.stat().st_size / 1e6:.1f} MB, logged ${cost:.2f}")
+    if log:
+        log_spend(description, schema, f"{start} to {end}", cost)
+    print(f"{name}: saved {out_path.stat().st_size / 1e6:.1f} MB (${cost:.4f})")
     return out_path
 
 

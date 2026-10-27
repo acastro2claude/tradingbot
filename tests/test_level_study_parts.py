@@ -283,3 +283,57 @@ def test_epoch_seconds_ignores_how_pandas_stores_the_time():
     a = pd.Series(pd.to_datetime([0, 90], unit="s", utc=True))
     b = a.astype("datetime64[ns, UTC]")
     assert list(epoch_seconds(a)) == [0.0, 90.0] == list(epoch_seconds(b))
+
+
+# ---------- absorption bursts ----------
+
+from pathlib import Path
+
+from research.absorption import find_bursts
+
+
+def test_bursts_count_one_price_and_one_side_within_the_window():
+    t = np.array([0.000, 0.004, 0.009, 0.020, 0.021, 0.022, 1.000])
+    px = np.array([10, 10, 10, 10, 11, 10, 10])
+    sz = np.array([40, 40, 30, 60, 90, 50, 100])
+    sd = np.array(["B", "B", "B", "B", "B", "A", "A"])
+    b = find_bursts(t, px, sz, sd, window=0.01, min_size=100)
+    got = list(b[["side", "price", "contracts", "colour"]].itertuples(index=False, name=None))
+    # 40+40+30 buys at 10 inside 0.01 s; the 60 at 0.020 starts a new window (60 < 100);
+    # 90 at another price and 50 sells don't count; 100 sells alone at t=1 do.
+    assert got == [("B", 10, 110, "purple"), ("A", 10, 100, "green")]
+
+
+EXAMPLE_1 = Path(__file__).resolve().parent.parent / "data" / "raw" / "MESM5_trades_2025-04-03.dbn.zst"
+
+
+@pytest.mark.skipif(not EXAMPLE_1.exists(), reason="Example 1 trades not downloaded in this session")
+def test_example_1_purple_markers():
+    from research.market_data import epoch_seconds, load_trades
+    tr = load_trades(EXAMPLE_1)
+    et = tr["ts"].dt.tz_convert("America/New_York")
+    w = tr[(et >= "2025-04-03 09:30") & (et < "2025-04-03 09:47")]
+    b = find_bursts(epoch_seconds(w["ts"]), w["price"].to_numpy(), w["size"].to_numpy(),
+                    w["side"].to_numpy(), window=0.01, min_size=100)
+    purple = {(r.price * 0.25, r.contracts) for r in b[b["colour"] == "purple"].itertuples()}
+    assert (5540.00, 120) in purple       # screenshot: 118 at about 5540
+    assert (5532.50, 112) in purple       # screenshot: 109 at about 5532.75
+
+
+from research.outcomes import event_outcomes
+
+
+def test_short_after_absorption_that_works():
+    # P = 100 at t=0; price pokes 2 ticks up (against), then falls 30 ticks
+    p, t = _walk(100, 102, 70)
+    o = event_outcomes(p, t, [0.0], [100], [-1], brk=12, horizon=1e9, checks=[1, 3])
+    r = o.iloc[0]
+    assert not r.broke and r.mfe == 30
+    assert r["against_1s"] == 1 and r["against_3s"] == 2
+
+
+def test_long_that_hits_the_stop_first():
+    p, t = _walk(100, 104, 80, 130)       # up 4, then down 20 (stop at 88), then up
+    o = event_outcomes(p, t, [0.0], [100], [1], brk=12, horizon=1e9)
+    r = o.iloc[0]
+    assert r.broke and r.mfe == 4
