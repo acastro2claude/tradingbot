@@ -14,7 +14,7 @@ import numpy as np
 import pandas as pd
 
 from research.level_study import BARS_FILE, OUT, RAW, SYMBOLOGY_FILE
-from research.market_data import load_bars, load_trades
+from research.market_data import epoch_seconds, load_bars, load_trades
 from research.paths import bar_path, trade_path
 from research.profiles import bar_volume_at_price, poc, trade_volume_at_price, value_area
 from research.settings import load_settings, ticks
@@ -52,8 +52,8 @@ def main() -> None:
         corr = np.corrcoef(pd.Series(tv, tt).reindex(grid, fill_value=0),
                            pd.Series(bv, bt).reindex(grid, fill_value=0))[0, 1]
 
-        tp, tts = trade_path(tr["price"].values, tr["ts"].astype("int64").values / 1e9)
-        bp, bts = bar_path(b["open"], b["high"], b["low"], b["close"], b["ts"].astype("int64").values / 1e9)
+        tp, tts = trade_path(tr["price"].values, epoch_seconds(tr["ts"]))
+        bp, bts = bar_path(b["open"], b["high"], b["low"], b["close"], epoch_seconds(b["ts"]))
         prices = np.arange(max(tp.min(), bp.min()), min(tp.max(), bp.max()) + 1)
         ot, ob = first_test_outcomes(tp, tts, prices, s), first_test_outcomes(bp, bts, prices, s)
         both = pd.concat([ot.rename("trades"), ob.rename("bars")], axis=1, join="inner")

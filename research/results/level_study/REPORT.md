@@ -160,6 +160,42 @@ Main period:
 - **Reading:** on their own, the owner's levels behave like any other price, and dropping covered POCs makes little difference.
 - **What this does not test:** this checks the levels alone. The owner reads them together with supply and demand zones (1b, still TBD) and the absorption at the level (step 2). The targets and the checkpoint are not tested yet either.
 
+## Supply and demand overlay (STRATEGY.md 1b, 1e and level strength)
+
+- **How the zones were built:** from the owner's description, using the proposed defaults in 1b.
+  - Chop: 3 or more candles through one common price.
+  - Sharp move: a candle at least 2× the last chop candle, closing outside the chop.
+  - A zone dies when a candle closes beyond its far side, after more than 60 minutes in a row inside it, or after a month.
+  - No lookahead: a zone only counts after its sharp-move candle has closed, and until it dies.
+- **What a match means:** a POC lines up with a zone when it sits inside it. A support test (price came down) needs a demand zone; a resistance test needs a supply zone.
+
+| Zone timeframe | Zones | Per session | Median height | Median life | Ended by: blown past / chopped in / a month old |
+|---|---|---|---|---|---|
+| 15 min | 1,532 | 3.7 | 10.5 pts | 5.8 h | 63% / 31% / 5% |
+| 30 min | 848 | 2.1 | 15.3 pts | 10.0 h | 47% / 46% / 7% |
+| 60 min | 435 | 1.1 | 20.0 pts | 13.9 h | 30% / 63% / 6% |
+
+Main period, held = 6 points back before 3 through. The comparison group is other prices with no POC within 2 points and outside every live zone, tested in the same hour:
+
+| Zones from | Group | Tests | Held | Other prices, same hour | Difference (95% range) |
+|---|---|---|---|---|---|
+| 15 min | Owner's POC inside a matching zone | 619 | 34.1% | 37.3% | −3.5 pts (−8.1 to +1.1) |
+| 15 min | Owner's POC, no zone | 3,042 | 32.7% | 36.3% | −4.1 pts (−6.1 to −2.1) |
+| 15 min | Zone near edge, no POC nearby | 2,270 | 34.5% | 33.6% | +1.4 pts (−0.9 to +3.6) |
+| 30 min | Owner's POC inside a matching zone | 515 | 34.6% | 38.8% | −5.6 pts (−10.5 to −0.5) |
+| 30 min | Owner's POC, no zone | 3,146 | 32.7% | 36.4% | −3.9 pts (−6.0 to −1.9) |
+| 30 min | Zone near edge, no POC nearby | 1,373 | 35.0% | 32.8% | +1.9 pts (−1.0 to +4.8) |
+| 60 min | Owner's POC inside a matching zone | 233 | 36.1% | 33.8% | +1.4 pts (−6.5 to +9.4) |
+| 60 min | Owner's POC, no zone | 3,428 | 32.8% | 36.1% | −3.6 pts (−5.5 to −1.6) |
+| 60 min | Zone near edge, no POC nearby | 768 | 32.7% | 32.1% | +0.6 pts (−3.1 to +4.1) |
+
+- **POC plus zone:** didn't hold better than other prices on any timeframe.
+- **Zones on their own:** the near edges came out 0.6 to 1.9 points better than other prices. That isn't reliable.
+- **The zones are tall** (median 10 to 20 points), probably taller than the zones the owner draws by eye.
+  - Keeping only zones up to 6 points tall leaves too few to judge: 284 zones on the 15-minute chart and 53 tests of a POC inside one.
+  - The near edges of those tight 15-minute zones held 38.3% against 35.2% for other prices: +5.1 pts (−2.0 to +11.5) over 201 tests. That's a hint, not proof (`sd_overlay_hold_rates.csv`).
+- **Next check:** the rules may not match how the owner draws zones. A few example zones from the owner's charts would show whether the detector finds the same ones.
+
 ## Proposals (your call)
 
 1. **Keep POC levels as "where to look", but don't expect them to do the work.** In step 2, compare absorption signals at levels with absorption signals anywhere. That shows whether the levels add anything once the order flow is included.
@@ -190,6 +226,7 @@ Main period:
 | `q2_crossing_by_volume.csv`, `q2_detail_by_volume.csv`, `q2_volume_class_edges.csv`, `q2_hindsight_check.csv` | Question 2 |
 | `q3_window_comparison.csv`, `q3_window_pairs.csv` | Question 3 |
 | `recent_pocs_hold_rates.csv` | Level source B: recent uncovered POCs |
+| `sd_overlay_hold_rates.csv`, `sd_zone_stats.csv` | Supply and demand overlay |
 | `check_bars_vs_trades.csv` | The data check |
 
 ## How to rerun
@@ -200,6 +237,7 @@ From the repo root (the downloads cost about $5.75, so ask first):
 python -m research.download_level_study_data   # bars + 4 trade days, checks prices first
 python -m research.level_study                 # about 2.5 minutes
 python -m research.recent_poc_study            # owner's levels (1e); needs level_study first
+python -m research.supply_demand_study         # supply and demand overlay; needs level_study first
 python -m research.check_bars_vs_trades
 python -m pytest tests
 ```

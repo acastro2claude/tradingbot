@@ -36,8 +36,27 @@ Source A and source B (1e, the owner's current method) are both tested. The data
 
 ### 1b. Supply and demand zones
 
-- Past areas of heavy volume where price then reversed or continued sharply.
-- Exact definition: **TBD** (volume threshold, how big a move counts as a reversal).
+How the owner draws them:
+
+- **What makes one:** an area where price hangs around (chops), then a sharp move away in one direction.
+  - A sharp move up leaves a **demand zone** below.
+  - A sharp move down leaves a **supply zone** above.
+- **Sharp move:** there's no set size. Roughly, it's at least double the size of the last candle in the chop.
+- **Chart:** zones hold up better when drawn on a higher-timeframe chart.
+- **Lookback:** zones from up to about a month back.
+- **When a zone stops counting:**
+  - price blows past it, or
+  - price starts chopping in it.
+  - Price can come back, hang around the zone for a little while and then retest. But if it hangs around too long (over about an hour), the zone is probably no longer valid.
+
+Proposed defaults for the bot (**TBD**, for the owner to confirm):
+
+- **Higher timeframe:** test 15-, 30- and 60-minute candles.
+- **The chop:** 3 or more candles in a row that all trade through one common price. The zone runs from the lowest low to the highest high of those candles.
+- **Sharp move:** the next candle's range is at least 2× the last chop candle's range, and it closes beyond the chop.
+- **Blows past:** a candle on the zone's timeframe closes beyond the far side of the zone.
+- **Chops in it:** more than 60 minutes in a row with every 1-minute close inside the zone.
+- **Lines up with a POC:** the POC sits inside the zone.
 
 ### 1c. Long-term volume profile
 
@@ -185,6 +204,11 @@ Every number below is an adjustable setting. The defaults come from this spec.
 | Recent POC lookback (1e) | 5 sessions | |
 | Covered POC rule (1e) | Next session's value area | A POC inside it no longer counts |
 | Value area | 70% of the session's volume | |
+| Supply/demand chart timeframe | TBD | Study tests 15, 30 and 60 minutes |
+| Supply/demand lookback | 1 month | |
+| Chop before the move | 3+ candles through one common price | Proposed, TBD |
+| Sharp move size | 2× the last chop candle | |
+| Zone invalid after chopping in it | 60 minutes | Also invalid when a candle closes beyond the far side |
 | Long-term profile window | 3 months | Backtest compares 1, 3 and 6 months |
 | Absorption burst | 100 contracts in 0.01 s | Matches the Bookmap add-on |
 | Absorption hold check | TBD | Price stays within X ticks for Y seconds |
@@ -214,7 +238,7 @@ Every number below is an adjustable setting. The defaults come from this spec.
    - Does it cross low-volume gaps faster than other prices?
    - Which long-term window works best?
 
-   **First results (Oct 2026, 1-minute bars, Sep 2025–Oct 2026):** POC clusters held no more often than other prices tested in the same hour. Low-volume areas were not crossed faster once the time of day is matched. The window comparison was inconclusive: shorter windows show more contrast simply because they cover less time. Strong levels (3+ POCs) were too rare to judge. Recent uncovered POCs (1e) on their own also held no better than other prices; the supply and demand overlay and the absorption read are not tested yet. Details and proposals: `research/results/level_study/REPORT.md`.
+   **First results (Oct 2026, 1-minute bars, Sep 2025–Oct 2026):** POC clusters held no more often than other prices tested in the same hour. Low-volume areas were not crossed faster once the time of day is matched. The window comparison was inconclusive: shorter windows show more contrast simply because they cover less time. Strong levels (3+ POCs) were too rare to judge. Recent uncovered POCs (1e) on their own also held no better than other prices, and neither did those POCs inside a supply or demand zone (zones built with the proposed 1b defaults, which may be wider than the owner draws them). The absorption read is not tested yet. Details and proposals: `research/results/level_study/REPORT.md`.
 2. **Strategy backtest:** rebuild the absorption alerts, volume bubbles and delta from trade data that carries the buy/sell side. Then test the setup in section 2.
 3. **Add the order book:** test the resting-order signals with historical book data.
 4. **Live bot:** a NinjaScript strategy, tested in this order:

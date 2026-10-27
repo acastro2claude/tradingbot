@@ -179,3 +179,101 @@ def test_stall_time_counts_until_price_leaves_the_area():
     ev = touch_events(p, t, [100], arm=20, brk=12, horizon=1e9, stall=12)
     e = ev.iloc[0]
     assert e.time == 30 and e.stall_after == 5 + 10 + 10 + 17
+
+
+# ---------- supply and demand zones ----------
+
+from research.supply_demand import find_zones, label_tests, make_candles, zone_lifetimes
+
+
+def _candles(rows, minutes=30, session="2026-01-05"):
+    c = pd.DataFrame(rows, columns=["open", "high", "low", "close"])
+    c["start"] = 1_000_000.0 + np.arange(len(c)) * minutes * 60
+    c["end"] = c["start"] + minutes * 60
+    c["session"] = pd.Timestamp(session)
+    return c
+
+
+def test_chop_then_sharp_move_up_makes_a_demand_zone():
+    c = _candles([(102, 104, 100, 103), (103, 105, 101, 102), (102, 103, 100, 101),
+                  (102, 115, 103, 114)])               # range 12 >= 2 x 3, closes above the chop
+    z = find_zones(c, base_min=3, ratio=2.0)
+    assert len(z) == 1
+    r = z.iloc[0]
+    assert (r.kind, r.low, r.high, r.base_candles) == ("demand", 100, 105, 3)
+    assert r.created == c["end"].iat[3]
+
+
+def test_no_zone_without_enough_chop_or_a_big_enough_move():
+    two_chop = _candles([(110, 120, 108, 118), (102, 104, 100, 103), (103, 105, 101, 102),
+                         (102, 115, 103, 114)])
+    assert find_zones(two_chop, base_min=3, ratio=2.0).empty
+    small = _candles([(102, 104, 100, 103), (103, 105, 101, 102), (102, 103, 100, 101),
+                      (102, 107, 102, 106)])             # range 5 < 2 x 3
+    assert find_zones(small, base_min=3, ratio=2.0).empty
+
+
+def test_sharp_move_down_makes_a_supply_zone():
+    c = _candles([(102, 104, 100, 103), (103, 105, 101, 102), (102, 103, 100, 101),
+                  (100, 100, 88, 89)])
+    z = find_zones(c, base_min=3, ratio=2.0)
+    assert list(z["kind"]) == ["supply"]
+
+
+def _minute_bars(closes, t0):
+    ts = pd.to_datetime(t0 + 60.0 * np.arange(len(closes)), unit="s", utc=True)
+    return pd.DataFrame({"ts": ts, "session": pd.Timestamp("2026-01-05"),
+                         "close_adj": closes})
+
+
+def test_zone_dies_when_price_chops_in_it_for_over_an_hour():
+    zones = pd.DataFrame([dict(kind="demand", low=100, high=105, created=0.0,
+                               created_session=pd.Timestamp("2026-01-05"))])
+    candles = _candles([(103, 103, 103, 103)] * 10)      # never closes below the zone
+    candles["start"] -= 1_000_000.0
+    candles["end"] -= 1_000_000.0
+    bars = _minute_bars([110] * 10 + [103] * 30 + [110] * 5 + [102] * 70, t0=0.0)
+    z = zone_lifetimes(zones, candles, bars, chop_minutes=60, lookback_sessions=21,
+                       session_order=[pd.Timestamp("2026-01-05")])
+    first_long_stay = 45 * 60.0                          # the 30-minute visit is fine; this one isn't
+    assert z.iloc[0].why == "chopped in"
+    assert z.iloc[0].dies == first_long_stay + 60 * 60
+
+
+def test_zone_dies_when_a_candle_closes_beyond_the_far_side():
+    zones = pd.DataFrame([dict(kind="demand", low=100, high=105, created=0.0,
+                               created_session=pd.Timestamp("2026-01-05"))])
+    candles = _candles([(103, 104, 101, 103), (101, 102, 95, 96)])
+    candles["start"] -= 1_000_000.0
+    candles["end"] -= 1_000_000.0
+    bars = _minute_bars([110, 103, 96], t0=0.0)
+    z = zone_lifetimes(zones, candles, bars, chop_minutes=60, lookback_sessions=21,
+                       session_order=[pd.Timestamp("2026-01-05")])
+    assert z.iloc[0].why == "blown past" and z.iloc[0].dies == candles["end"].iat[1]
+
+
+def test_label_tests_matches_zone_type_to_the_side_price_came_from():
+    zones = pd.DataFrame([dict(kind="demand", low=100, high=105, created=0.0, dies=1e9)])
+    ev = pd.DataFrame({"session": pd.Timestamp("2026-01-05"), "time": [10.0, 10.0, 10.0, 2e9],
+                       "price": [105, 102, 105, 105], "side": [1, 1, -1, 1]})
+    lab = label_tests(ev, zones)
+    assert list(lab["in_zone"]) == [True, True, False, False]   # resistance test / dead zone don't match
+    assert list(lab["zone_edge"]) == [True, False, False, False]
+    assert list(lab["in_any_zone"]) == [True, True, True, False]
+
+
+def test_make_candles_groups_minutes_into_clock_aligned_candles():
+    ts = pd.to_datetime(["2026-01-05 14:00", "2026-01-05 14:29", "2026-01-05 14:30"]).tz_localize("UTC")
+    bars = pd.DataFrame({"ts": ts, "session": pd.Timestamp("2026-01-05"), "open_adj": [1, 2, 3],
+                         "high_adj": [5, 6, 7], "low_adj": [0, 1, 2], "close_adj": [2, 3, 4],
+                         "volume": [1, 1, 1]})
+    c = make_candles(bars, 30)
+    assert len(c) == 2
+    assert (c.iloc[0].open, c.iloc[0].high, c.iloc[0].low, c.iloc[0].close) == (1, 6, 0, 3)
+
+
+def test_epoch_seconds_ignores_how_pandas_stores_the_time():
+    from research.market_data import epoch_seconds
+    a = pd.Series(pd.to_datetime([0, 90], unit="s", utc=True))
+    b = a.astype("datetime64[ns, UTC]")
+    assert list(epoch_seconds(a)) == [0.0, 90.0] == list(epoch_seconds(b))

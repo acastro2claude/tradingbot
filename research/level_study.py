@@ -23,7 +23,7 @@ import pandas as pd
 from research.crossings import band_relative_volume, band_visits
 from research.databento_http import REPO_ROOT
 from research.levels import cluster_pocs
-from research.market_data import NY, build_sessions, load_bars
+from research.market_data import NY, build_sessions, epoch_seconds, load_bars
 from research.paths import bar_path
 from research.profiles import ProfileMatrix, bar_volume_at_price, poc, value_area
 from research.settings import load_settings, ticks
@@ -123,7 +123,7 @@ def run(settings: dict | None = None, progress: bool = True):
 
     usable = list(sessions.index[sessions["use"]])
     usable_rows = np.array([pm.row[x] for x in usable])
-    ts_ns = fb["ts"].astype("int64").values
+    ts_s = epoch_seconds(fb["ts"])
     by_session = fb.groupby("session", sort=True).indices
 
     all_events, all_visits, all_levels = [], [], []
@@ -136,7 +136,7 @@ def run(settings: dict | None = None, progress: bool = True):
         rows = by_session[sess]
         day = fb.iloc[rows]
         p, t = bar_path(day["open_adj"].values, day["high_adj"].values, day["low_adj"].values,
-                        day["close_adj"].values, ts_ns[rows] / 1e9)
+                        day["close_adj"].values, ts_s[rows])
 
         # Question 1: every price in the session's range gets scored.
         prices = np.arange(p.min(), p.max() + 1)

@@ -26,6 +26,12 @@ def to_ticks(prices, tick_size: float) -> np.ndarray:
     return np.rint(np.asarray(prices, dtype=float) / tick_size).astype(np.int64)
 
 
+def epoch_seconds(ts) -> np.ndarray:
+    """Seconds since 1970 for UTC timestamps, whatever unit pandas stores them in."""
+    ts = pd.Series(ts) if not isinstance(ts, (pd.Series, pd.Index)) else ts
+    return ((ts - pd.Timestamp(0, tz="UTC")) / pd.Timedelta(seconds=1)).to_numpy(dtype=float)
+
+
 def session_dates(ts_utc: pd.Series, start_hour: int = 18) -> pd.Series:
     """Session date for each UTC timestamp (naive midnight of the session's day).
 
