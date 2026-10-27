@@ -63,7 +63,7 @@ def prepare(settings: dict):
         tk, vol = bar_volume_at_price(day["low_adj"].values, day["high_adj"].values, day["volume"].values)
         pm.add(sess, tk, vol)
         pocs.append(poc(tk, vol))
-        lo, hi = value_area(tk, vol)
+        lo, hi = value_area(tk, vol, settings["bot"]["value_area_share"])
         vals.append(lo)
         vahs.append(hi)
     tick = settings["market"]["tick_size"]

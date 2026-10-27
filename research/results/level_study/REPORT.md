@@ -139,6 +139,27 @@ The 4 days with full trade data:
 - **24 Feb:** the day had two nearly equal peaks. In trades it was 13,044 contracts at 6903.50 against 12,308 at 6889.75; the bars flipped the order by 14 contracts.
 - **How often that happens:** about 13% of days have a second peak within 2% of the POC, so roughly 1 POC in 10 could sit on the other peak. That would weaken a real level effect a little. It could not erase one.
 
+## Level source B: recent uncovered POCs (the owner's method, STRATEGY.md 1e)
+
+Added after the owner described how they trade:
+- **Levels:** the POCs of the last 5 sessions.
+- **Dropped:** any POC that the next session's value area covered. That removed 30% of the POCs that were 2 to 5 days old.
+- **Scoring:** the same as question 1, with held = 6 points back before 3 through.
+
+Main period:
+
+| Group | Tests | Sessions | Held | Other prices, same hour | Difference (95% range) |
+|---|---|---|---|---|---|
+| Uncovered recent POCs (owner's levels) | 3,661 | 232 | 33.0% | 35.9% | −3.2 pts (−5.1 to −1.3) |
+| … yesterday's POC | 1,636 | 206 | 33.2% | 35.5% | −2.7 pts (−5.4 to +0.2) |
+| … 2 to 5 days old | 2,025 | 163 | 32.8% | 36.2% | −3.6 pts (−6.0 to −1.0) |
+| … first test of the session | 454 | 231 | 32.8% | 30.4% | +2.1 pts (−2.7 to +6.8) |
+| Covered recent POCs (dropped) | 1,225 | 109 | 32.6% | 37.5% | −4.8 pts (−8.1 to −1.5) |
+
+- **Other hold distances and the early period:** 4- and 10-point hold distances, and the early period (Apr–Aug 2025), give the same picture (`recent_pocs_hold_rates.csv`).
+- **Reading:** on their own, the owner's levels behave like any other price, and dropping covered POCs makes little difference.
+- **What this does not test:** this checks the levels alone. The owner reads them together with supply and demand zones (1b, still TBD) and the absorption at the level (step 2). The targets and the checkpoint are not tested yet either.
+
 ## Proposals (your call)
 
 1. **Keep POC levels as "where to look", but don't expect them to do the work.** In step 2, compare absorption signals at levels with absorption signals anywhere. That shows whether the levels add anything once the order flow is included.
@@ -168,6 +189,7 @@ The 4 days with full trade data:
 | `q1_hold_rates.csv`, `q1_splits.csv`, `q1_pause.csv` | Question 1 |
 | `q2_crossing_by_volume.csv`, `q2_detail_by_volume.csv`, `q2_volume_class_edges.csv`, `q2_hindsight_check.csv` | Question 2 |
 | `q3_window_comparison.csv`, `q3_window_pairs.csv` | Question 3 |
+| `recent_pocs_hold_rates.csv` | Level source B: recent uncovered POCs |
 | `check_bars_vs_trades.csv` | The data check |
 
 ## How to rerun
@@ -177,6 +199,7 @@ From the repo root (the downloads cost about $5.75, so ask first):
 ```
 python -m research.download_level_study_data   # bars + 4 trade days, checks prices first
 python -m research.level_study                 # about 2.5 minutes
+python -m research.recent_poc_study            # owner's levels (1e); needs level_study first
 python -m research.check_bars_vs_trades
 python -m pytest tests
 ```

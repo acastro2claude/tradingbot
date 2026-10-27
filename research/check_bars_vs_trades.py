@@ -46,7 +46,8 @@ def main() -> None:
         tt, tv = trade_volume_at_price(tr["price"], tr["size"])
         bt, bv = bar_volume_at_price(b["low"], b["high"], b["volume"])
         t_poc, b_poc = poc(tt, tv), poc(bt, bv)
-        t_va, b_va = value_area(tt, tv), value_area(bt, bv)
+        share = s["bot"]["value_area_share"]
+        t_va, b_va = value_area(tt, tv, share), value_area(bt, bv, share)
         grid = np.arange(min(tt.min(), bt.min()), max(tt.max(), bt.max()) + 1)
         corr = np.corrcoef(pd.Series(tv, tt).reindex(grid, fill_value=0),
                            pd.Series(bv, bt).reindex(grid, fill_value=0))[0, 1]

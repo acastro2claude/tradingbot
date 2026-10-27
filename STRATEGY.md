@@ -23,7 +23,10 @@ When price reaches a strong high-volume level, the order flow there decides whet
 
 ## 1. Levels
 
-### 1a. Daily POC clusters (main level source)
+### 1a. Daily POC clusters (level source A)
+
+Source A and source B (1e, the owner's current method) are both tested. The data decides.
+
 
 - Find the point of control (POC, the price with the most volume) for each of the last **N = 20** sessions.
 - Group POCs that sit within **W ticks** of each other. The default W is **TBD**.
@@ -47,9 +50,26 @@ When price reaches a strong high-volume level, the order flow there decides whet
 - In example 1, the reaction happened at a heatmap line of heavy resting orders (5540). After that day's gap down, the previous days' POCs were likely far above.
 - **TBD:** whether lines of large resting orders should count as levels.
 
+### 1e. Recent uncovered POCs (level source B: how the owner trades now)
+
+- **Levels:** the POCs of the last **5** sessions. Trade the reversal against these.
+- **Covered POCs don't count:** drop a POC if the next session's value area (the range holding about 70% of that session's volume) includes it.
+  - Yesterday's POC always counts, because today's value area isn't finished.
+- **Supply and demand overlay:** these POCs are read together with the supply and demand zones (1b). The more they line up, the better the trade (see Level strength).
+- **Targets:** an older POC outside the last couple of days' trading can be the target. Price tends to be drawn back to prices that traded heavily before.
+  - **TBD:** how far back target POCs can come from, and whether a target POC must also be uncovered.
+- **Checkpoint on the way:** if a price between the entry and the target has traded more volume, traders may treat it as fair value.
+  - Watch whether price breaks out past it. If it doesn't, the trade may chop there or come back to the entry.
+  - This is not a reason to skip the trade or the target. It is a point to manage the trade.
+  - **TBD:** how to spot that price (for example, another day's POC between entry and target, or a heavy price in a combined profile of recent days), and what the bot does if price stalls there (for example, tighten the stop or take partial profit).
+
 ### Level strength
 
-A level ranks higher when the sources agree. Examples: a POC cluster that overlaps a supply or demand zone, or a cluster that sits next to a long-term low-volume area.
+A level ranks higher when the sources agree. Examples:
+
+- A recent uncovered POC (1e) that lines up with a supply or demand zone. This is how the owner trades now.
+- A POC cluster that overlaps a supply or demand zone.
+- A cluster that sits next to a long-term low-volume area.
 
 ## 2. Entries: absorption at the level
 
@@ -115,6 +135,7 @@ These rules follow how the user manages trades by hand. Example 1 prices are in 
 
 - **Contract split with 10 MES:** 9 contracts close at the first target, and 1 contract runs to the next target.
   - The backtest will compare this with an 8 / 1 / 1 split, where a second runner targets the level after that [5500]. The data decides.
+- **Alternative target (section 1e):** an older POC outside the last couple of days' trading. Any heavier-volume price on the way is a checkpoint to manage the trade. The backtest compares this with the targets above.
 - **Backtest costs:** assume a tick or two of slippage on entries and stops, plus commissions.
 
 ### Adjusting for the day's volume
@@ -161,6 +182,9 @@ Every number below is an adjustable setting. The defaults come from this spec.
 | POC lookback | 20 sessions | |
 | POC cluster width | TBD | |
 | POCs needed for a level | 2 (3 = strong) | |
+| Recent POC lookback (1e) | 5 sessions | |
+| Covered POC rule (1e) | Next session's value area | A POC inside it no longer counts |
+| Value area | 70% of the session's volume | |
 | Long-term profile window | 3 months | Backtest compares 1, 3 and 6 months |
 | Absorption burst | 100 contracts in 0.01 s | Matches the Bookmap add-on |
 | Absorption hold check | TBD | Price stays within X ticks for Y seconds |
@@ -190,7 +214,7 @@ Every number below is an adjustable setting. The defaults come from this spec.
    - Does it cross low-volume gaps faster than other prices?
    - Which long-term window works best?
 
-   **First results (Oct 2026, 1-minute bars, Sep 2025–Oct 2026):** POC clusters held no more often than other prices tested in the same hour. Low-volume areas were not crossed faster once the time of day is matched. The window comparison was inconclusive: shorter windows show more contrast simply because they cover less time. Strong levels (3+ POCs) were too rare to judge. Details and proposals: `research/results/level_study/REPORT.md`.
+   **First results (Oct 2026, 1-minute bars, Sep 2025–Oct 2026):** POC clusters held no more often than other prices tested in the same hour. Low-volume areas were not crossed faster once the time of day is matched. The window comparison was inconclusive: shorter windows show more contrast simply because they cover less time. Strong levels (3+ POCs) were too rare to judge. Recent uncovered POCs (1e) on their own also held no better than other prices; the supply and demand overlay and the absorption read are not tested yet. Details and proposals: `research/results/level_study/REPORT.md`.
 2. **Strategy backtest:** rebuild the absorption alerts, volume bubbles and delta from trade data that carries the buy/sell side. Then test the setup in section 2.
 3. **Add the order book:** test the resting-order signals with historical book data.
 4. **Live bot:** a NinjaScript strategy, tested in this order:
