@@ -100,7 +100,9 @@ The bot copies the read currently done by eye in Bookmap. That read uses volume 
 
 - **Absorption alerts** (rebuilds the Bookmap Absorption Indicator add-on):
   - Current add-on setting: mark the chart when **100 or more contracts trade within 0.01 seconds** (on MES).
-  - Purple markers mean seller absorption; green markers mean buyer absorption. **TBD:** whether purple means aggressive buying that sellers absorbed, or aggressive selling. The historical data can settle this.
+  - Purple markers mean seller absorption; green markers mean buyer absorption.
+  - **Settled by the data (Example 1, Oct 2026):** purple means aggressive buying that sellers absorbed. The markers match bursts of aggressive buys traded at a single price within 0.01 seconds.
+  - **Still to confirm:** whether a marker adds up repeated bursts at the same price.
   - The add-on only flags the burst of volume. The bot adds the absorption check itself: after the burst, price does not trade more than **X ticks** past that price within **Y seconds**.
 - **Volume bubbles:** unusually large traded volume at one price in a short time. Size cutoff: **TBD** (start from Bookmap's settings).
 - **Delta and CVD:** delta is aggressive buy volume minus aggressive sell volume. CVD (cumulative volume delta) is the running total of delta through the session. The bot compares the CVD highs (or lows) at the first test of a level and at the retest.
@@ -142,6 +144,10 @@ Mirror the steps for a long after price falls into a level.
 - With 10 MES, the trade risks about $300. The 9 contracts closed at the first target make about $990, before commissions.
 - April 3, 2025 was a very high-volume day (the tariff selloff), so normal settings apply.
 - **Test:** rebuilding the indicator over this window must reproduce these three markers.
+  - **Result from Databento trades** (aggressive buys at one price within 0.01 s):
+    - 120 at 5540.00 (09:33:39), against the screenshot's 118.
+    - 112 at 5532.50 (09:34:44), against 109.
+    - 102 + 110 = 212 at 5535.50 (09:34:32 and 09:34:48), against 212. This one matches only if the indicator adds up bursts at the same price.
 
 **Wanted:** an example trade from a quiet, low-volume day.
 
