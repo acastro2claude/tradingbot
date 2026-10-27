@@ -14,6 +14,8 @@ Run from the repo root:   python -u -m research.download_backtest_trades
 
 from __future__ import annotations
 
+import time
+
 import requests
 
 from research.databento_http import REPO_ROOT, SPEND_LOG, download, get_cost, log_spend
@@ -69,6 +71,12 @@ def main() -> None:
                               "trades", f"{a} to {b}", q)
                     already += q
                     print(f"{c} {a[:10]}: connection dropped ({type(err).__name__}), attempt {attempt}", flush=True)
+                except RuntimeError as err:
+                    # A gateway error (502/503/504) arrives before any data, so nothing was served or billed.
+                    if not any(f"failed {code}" in str(err) for code in (502, 503, 504)):
+                        raise
+                    print(f"{c} {a[:10]}: gateway error, retrying in 10 s (attempt {attempt})", flush=True)
+                    time.sleep(10)
             else:
                 raise SystemExit(f"Gave up on {c} {a[:10]} after {MAX_ATTEMPTS} attempts.")
     finally:
