@@ -12,6 +12,16 @@ Status: draft. Items marked **TBD** still need a decision.
 - **Data feed:** none active yet. Rithmic is planned for live trading.
 - **Live trading:** a NinjaScript strategy running in NinjaTrader 8, using the Rithmic feed for trades and the order book.
 - **Research and backtesting:** Python, using historical CME tick data.
+- **Prop firm (TBD):** the owner is considering a prop firm, for example Topstep. Topstep's published rules (checked 27 Oct 2026):
+  - Bots are allowed through the TopstepX API. High-frequency trading is banned, along with exploiting simulated fills and latency arbitrage. This strategy (at most a few trades a day, held for minutes) is not high-frequency.
+  - **New accounts can only use TopstepX.** NinjaTrader and Tradovate appear to remain only on older accounts.
+  - **TBD:** with Topstep, the live bot would connect to the TopstepX API instead of running as a NinjaScript strategy. The other option is a prop firm that supports NinjaTrader with Rithmic.
+  - **Flat by 3:10 PM CT (16:10 ET)** every day. No new positions after 3:08 PM CT, and nothing held overnight.
+    - **TBD:** if Topstep is used, the end-of-day times in section 4 must move earlier.
+  - **To confirm with the firm:**
+    - whether running from a VPS or VPN is allowed (a third-party guide says it isn't)
+    - whether the data feed includes every trade with its side and the market depth
+    - the loss limits the bot must stay inside
 
 ## Core idea
 
