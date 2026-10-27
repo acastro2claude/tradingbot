@@ -52,7 +52,8 @@ How the owner draws them:
 Proposed defaults for the bot (**TBD**, for the owner to confirm):
 
 - **Higher timeframe:** test 15-, 30- and 60-minute candles.
-- **The chop:** 3 or more candles in a row that all trade through one common price. The zone runs from the lowest low to the highest high of those candles.
+- **The chop:** 3 or more candles in a row that all trade through one common price.
+- **Where the zone is drawn (owner's choice):** the body of the last chop candle before the sharp move, from its open to its close. That gives zones of about 1.5 points on 15-minute candles, 2 points on 30-minute and 3 points on 60-minute.
 - **Sharp move:** the next candle's range is at least 2× the last chop candle's range, and it closes beyond the chop.
 - **Blows past:** a candle on the zone's timeframe closes beyond the far side of the zone.
 - **Chops in it:** more than 60 minutes in a row with every 1-minute close inside the zone.
@@ -207,6 +208,7 @@ Every number below is an adjustable setting. The defaults come from this spec.
 | Supply/demand chart timeframe | TBD | Study tests 15, 30 and 60 minutes |
 | Supply/demand lookback | 1 month | |
 | Chop before the move | 3+ candles through one common price | Proposed, TBD |
+| Zone drawn from | Body of the last chop candle | Open to close of the candle before the sharp move |
 | Sharp move size | 2× the last chop candle | |
 | Zone invalid after chopping in it | 60 minutes | Also invalid when a candle closes beyond the far side |
 | Long-term profile window | 3 months | Backtest compares 1, 3 and 6 months |
@@ -238,7 +240,7 @@ Every number below is an adjustable setting. The defaults come from this spec.
    - Does it cross low-volume gaps faster than other prices?
    - Which long-term window works best?
 
-   **First results (Oct 2026, 1-minute bars, Sep 2025–Oct 2026):** POC clusters held no more often than other prices tested in the same hour. Low-volume areas were not crossed faster once the time of day is matched. The window comparison was inconclusive: shorter windows show more contrast simply because they cover less time. Strong levels (3+ POCs) were too rare to judge. Recent uncovered POCs (1e) on their own also held no better than other prices, and neither did those POCs inside a supply or demand zone (zones built with the proposed 1b defaults, which may be wider than the owner draws them). The absorption read is not tested yet. Details and proposals: `research/results/level_study/REPORT.md`.
+   **First results (Oct 2026, 1-minute bars, Sep 2025–Oct 2026):** POC clusters held no more often than other prices tested in the same hour. Low-volume areas were not crossed faster once the time of day is matched. The window comparison was inconclusive: shorter windows show more contrast simply because they cover less time. Strong levels (3+ POCs) were too rare to judge. Recent uncovered POCs (1e) on their own also held no better than other prices, and neither did those POCs inside a supply or demand zone (zones drawn from the last chop candle's body, 1b), though that combination is rare (about 100–150 tests in 14 months). The absorption read is not tested yet. Details and proposals: `research/results/level_study/REPORT.md`.
 2. **Strategy backtest:** rebuild the absorption alerts, volume bubbles and delta from trade data that carries the buy/sell side. Then test the setup in section 2.
 3. **Add the order book:** test the resting-order signals with historical book data.
 4. **Live bot:** a NinjaScript strategy, tested in this order:

@@ -162,39 +162,39 @@ Main period:
 
 ## Supply and demand overlay (STRATEGY.md 1b, 1e and level strength)
 
-- **How the zones were built:** from the owner's description, using the proposed defaults in 1b.
+- **How the zones were built:** from the owner's description.
   - Chop: 3 or more candles through one common price.
   - Sharp move: a candle at least 2× the last chop candle, closing outside the chop.
+  - **The zone is the body (open to close) of the last chop candle**, the owner's choice.
   - A zone dies when a candle closes beyond its far side, after more than 60 minutes in a row inside it, or after a month.
   - No lookahead: a zone only counts after its sharp-move candle has closed, and until it dies.
 - **What a match means:** a POC lines up with a zone when it sits inside it. A support test (price came down) needs a demand zone; a resistance test needs a supply zone.
 
-| Zone timeframe | Zones | Per session | Median height | Median life | Ended by: blown past / chopped in / a month old |
+| Zone timeframe | Zones | Per session | Median height | Median life | Ended by: blown past / a month old / chopped in |
 |---|---|---|---|---|---|
-| 15 min | 1,532 | 3.7 | 10.5 pts | 5.8 h | 63% / 31% / 5% |
-| 30 min | 848 | 2.1 | 15.3 pts | 10.0 h | 47% / 46% / 7% |
-| 60 min | 435 | 1.1 | 20.0 pts | 13.9 h | 30% / 63% / 6% |
+| 15 min | 1,532 | 3.7 | 1.5 pts | 4.5 h | 95% / 4% / 1% |
+| 30 min | 848 | 2.1 | 2.0 pts | 10.3 h | 90% / 7% / 3% |
+| 60 min | 435 | 1.1 | 2.75 pts | 19.5 h | 83% / 9% / 7% |
 
 Main period, held = 6 points back before 3 through. The comparison group is other prices with no POC within 2 points and outside every live zone, tested in the same hour:
 
 | Zones from | Group | Tests | Held | Other prices, same hour | Difference (95% range) |
 |---|---|---|---|---|---|
-| 15 min | Owner's POC inside a matching zone | 619 | 34.1% | 37.3% | −3.5 pts (−8.1 to +1.1) |
-| 15 min | Owner's POC, no zone | 3,042 | 32.7% | 36.3% | −4.1 pts (−6.1 to −2.1) |
-| 15 min | Zone near edge, no POC nearby | 2,270 | 34.5% | 33.6% | +1.4 pts (−0.9 to +3.6) |
-| 30 min | Owner's POC inside a matching zone | 515 | 34.6% | 38.8% | −5.6 pts (−10.5 to −0.5) |
-| 30 min | Owner's POC, no zone | 3,146 | 32.7% | 36.4% | −3.9 pts (−6.0 to −1.9) |
-| 30 min | Zone near edge, no POC nearby | 1,373 | 35.0% | 32.8% | +1.9 pts (−1.0 to +4.8) |
-| 60 min | Owner's POC inside a matching zone | 233 | 36.1% | 33.8% | +1.4 pts (−6.5 to +9.4) |
-| 60 min | Owner's POC, no zone | 3,428 | 32.8% | 36.1% | −3.6 pts (−5.5 to −1.6) |
-| 60 min | Zone near edge, no POC nearby | 768 | 32.7% | 32.1% | +0.6 pts (−3.1 to +4.1) |
+| 15 min | Owner's POC inside a matching zone | 148 | 37.8% | 32.0% | +4.4 pts (−5.2 to +13.9) |
+| 15 min | Owner's POC, no zone | 3,513 | 32.8% | 36.0% | −3.4 pts (−5.2 to −1.6) |
+| 15 min | Zone near edge, no POC nearby | 1,582 | 35.7% | 33.9% | +1.6 pts (−0.7 to +3.8) |
+| 30 min | Owner's POC inside a matching zone | 140 | 36.4% | 39.9% | −7.1 pts (−16.9 to +2.7) |
+| 30 min | Owner's POC, no zone | 3,521 | 32.8% | 35.7% | −3.1 pts (−5.0 to −1.0) |
+| 30 min | Zone near edge, no POC nearby | 993 | 30.9% | 32.9% | −2.2 pts (−5.4 to +1.1) |
+| 60 min | Owner's POC inside a matching zone | 101 | 33.7% | 38.0% | −6.7 pts (−18.5 to +5.2) |
+| 60 min | Owner's POC, no zone | 3,560 | 32.9% | 35.9% | −3.1 pts (−5.0 to −1.1) |
+| 60 min | Zone near edge, no POC nearby | 589 | 32.6% | 31.6% | +0.9 pts (−2.9 to +4.8) |
 
-- **POC plus zone:** didn't hold better than other prices on any timeframe.
-- **Zones on their own:** the near edges came out 0.6 to 1.9 points better than other prices. That isn't reliable.
-- **The zones are tall** (median 10 to 20 points), probably taller than the zones the owner draws by eye.
-  - Keeping only zones up to 6 points tall leaves too few to judge: 284 zones on the 15-minute chart and 53 tests of a POC inside one.
-  - The near edges of those tight 15-minute zones held 38.3% against 35.2% for other prices: +5.1 pts (−2.0 to +11.5) over 201 tests. That's a hint, not proof (`sd_overlay_hold_rates.csv`).
-- **Next check:** the rules may not match how the owner draws zones. A few example zones from the owner's charts would show whether the detector finds the same ones.
+- **POC plus zone:**
+  - It's rare: 100 to 150 tests in 14 months, about one every 2 to 3 sessions.
+  - Results point different ways by timeframe, and every range is wide and includes 0. No edge shows, and this sample can't rule out a modest one.
+- **Zones on their own:** the near edges hold like other prices (−2.2 to +1.6 points).
+- **Earlier wider zones:** an earlier run drew zones over the whole chop, wicks included (median 10–20 points tall). It gave the same answer (`sd_overlay_hold_rates.csv` in git history, commit 22448b0).
 
 ## Proposals (your call)
 

@@ -34,12 +34,21 @@ def make_candles(bars: pd.DataFrame, minutes: int) -> pd.DataFrame:
     return c.drop(columns="start_ts")
 
 
-def find_zones(candles: pd.DataFrame, base_min: int, ratio: float) -> pd.DataFrame:
+DRAWINGS = ("last chop candle body", "whole chop wicks")
+
+
+def find_zones(candles: pd.DataFrame, base_min: int, ratio: float,
+               drawing: str = "last chop candle body") -> pd.DataFrame:
     """Zones from chop (base_min+ candles all through one common price) then a sharp candle.
 
     Sharp: range >= ratio x the last chop candle's range, closing beyond the chop.
+    Drawing (where the zone's edges go):
+      "last chop candle body": open to close of the candle just before the move (owner's choice)
+      "whole chop wicks":      lowest low to highest high of all the chop candles
     """
-    lo, hi, cl = (candles[k].to_numpy() for k in ("low", "high", "close"))
+    if drawing not in DRAWINGS:
+        raise ValueError(f"unknown zone drawing {drawing!r}; use one of {DRAWINGS}")
+    lo, hi, op, cl = (candles[k].to_numpy() for k in ("low", "high", "open", "close"))
     rng = hi - lo
     rows = []
     for i in range(base_min, len(candles)):
@@ -52,13 +61,17 @@ def find_zones(candles: pd.DataFrame, base_min: int, ratio: float) -> pd.DataFra
             continue
         if rng[i] < ratio * max(rng[i - 1], 1):
             continue
-        z_lo, z_hi = lo[j:i].min(), hi[j:i].max()
-        if cl[i] > z_hi:
+        chop_lo, chop_hi = lo[j:i].min(), hi[j:i].max()
+        if cl[i] > chop_hi:
             kind = "demand"
-        elif cl[i] < z_lo:
+        elif cl[i] < chop_lo:
             kind = "supply"
         else:
             continue
+        if drawing == "last chop candle body":
+            z_lo, z_hi = min(op[i - 1], cl[i - 1]), max(op[i - 1], cl[i - 1])
+        else:
+            z_lo, z_hi = chop_lo, chop_hi
         rows.append(dict(kind=kind, low=int(z_lo), high=int(z_hi), base_candles=i - j,
                          base_start=candles["start"].iat[j], created=candles["end"].iat[i],
                          created_session=candles["session"].iat[i]))

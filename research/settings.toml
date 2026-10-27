@@ -33,6 +33,7 @@ value_area_share = 0.70
 # sd_timeframe_minutes = TBD     (the study tests the list in [level_study])
 sd_lookback_months = 1
 sd_base_min_candles = 3          # proposed: candles in the chop, all through one common price
+sd_zone_drawing = "last chop candle body"   # owner's choice: open to close of the candle before the move
 sd_departure_min_ratio = 2.0     # sharp move: range >= 2x the last chop candle, closing beyond the chop
 sd_chop_invalid_minutes = 60     # zone dies after this long inside it in a row
 # zone also dies when a candle on its timeframe closes beyond the far side (proposed)
@@ -86,7 +87,7 @@ relative_volume_bins = [0.3, 0.5, 0.75, 1.0, 1.25, 1.5, 2.0]
 
 # Supply and demand overlay
 sd_timeframes_minutes = [15, 30, 60]
-sd_height_caps_points = [10, 6]           # also test only zones up to this tall
+sd_height_caps_points = []                # optionally also test only zones up to this tall
 
 # Statistics
 bootstrap_samples = 2000

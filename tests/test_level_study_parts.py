@@ -197,11 +197,13 @@ def _candles(rows, minutes=30, session="2026-01-05"):
 def test_chop_then_sharp_move_up_makes_a_demand_zone():
     c = _candles([(102, 104, 100, 103), (103, 105, 101, 102), (102, 103, 100, 101),
                   (102, 115, 103, 114)])               # range 12 >= 2 x 3, closes above the chop
-    z = find_zones(c, base_min=3, ratio=2.0)
+    z = find_zones(c, base_min=3, ratio=2.0, drawing="whole chop wicks")
     assert len(z) == 1
     r = z.iloc[0]
     assert (r.kind, r.low, r.high, r.base_candles) == ("demand", 100, 105, 3)
     assert r.created == c["end"].iat[3]
+    body = find_zones(c, base_min=3, ratio=2.0).iloc[0]     # default: last chop candle's body
+    assert (body.low, body.high) == (101, 102)              # that candle opened 102, closed 101
 
 
 def test_no_zone_without_enough_chop_or_a_big_enough_move():

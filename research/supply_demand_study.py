@@ -52,7 +52,8 @@ def main() -> None:
     rows, stats = [], []
     for tf in ls["sd_timeframes_minutes"]:
         candles = make_candles(fb, tf)
-        zones = find_zones(candles, bot["sd_base_min_candles"], bot["sd_departure_min_ratio"])
+        zones = find_zones(candles, bot["sd_base_min_candles"], bot["sd_departure_min_ratio"],
+                           bot["sd_zone_drawing"])
         zones = zone_lifetimes(zones, candles, fb, bot["sd_chop_invalid_minutes"], lookback,
                                list(sessions.index))
         zones.assign(timeframe_minutes=tf, low_price=zones["low"] * tick, high_price=zones["high"] * tick) \
