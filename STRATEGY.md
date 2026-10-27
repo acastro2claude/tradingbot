@@ -263,6 +263,8 @@ Every number below is an adjustable setting. The defaults come from this spec.
 
    **First results (Oct 2026, 1-minute bars, Sep 2025–Oct 2026):** POC clusters held no more often than other prices tested in the same hour. Low-volume areas were not crossed faster once the time of day is matched. The window comparison was inconclusive: shorter windows show more contrast simply because they cover less time. Strong levels (3+ POCs) were too rare to judge. Recent uncovered POCs (1e) on their own also held no better than other prices, and neither did those POCs inside a supply or demand zone (zones drawn from the last chop candle's body, 1b), though that combination is rare (about 100–150 tests in 14 months). The absorption read is not tested yet. Details and proposals: `research/results/level_study/REPORT.md`.
 2. **Strategy backtest:** rebuild the absorption alerts, volume bubbles and delta from trade data that carries the buy/sell side. Then test the setup in section 2.
+
+   **First results (Oct 2026, trades Apr–Oct 2026, regular hours):** absorption bursts point the right way slightly more often than random entries at the same time. The full setup (early or retest entry, stop 3 points past the level, the owner's targets, costs) still loses on every version tested. The best versions come out around break-even, and about 75–85% of trades are stopped out. The rules replay Example 1 correctly. Details: `research/results/step2/REPORT.md`.
 3. **Add the order book:** test the resting-order signals with historical book data.
 4. **Live bot:** a NinjaScript strategy, tested in this order:
    - Market Replay (past days replayed, order book included)

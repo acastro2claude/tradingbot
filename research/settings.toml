@@ -99,12 +99,77 @@ random_seed = 7
 
 [backtest]
 # Step 2 backtest of the full setup. Values marked proposed are TBD in STRATEGY.md.
-level_sources = ["your levels (POC or zone)", "recent uncovered POC", "S/D zone 15 min", "POC cluster", "no level"]
 level_tolerance_points = 2       # proposed: a burst counts as "at the level" within 2 points
 lopsided_window_minutes = 5      # proposed: seller vs buyer burst contracts at the level, last 5 minutes
-hold_check_variants = [[0, -1], [30, 2]]   # [seconds, ticks]; [0, -1] = no check (enter right after the burst)
 entry_cutoff_et = "15:30"        # data ends 16:00; spec says 16:30 (Topstep would need about 16:00)
 flatten_et = "15:59"             # data ends 16:00; spec says 16:50 (Topstep 16:10)
-slippage_ticks = [1, 2]          # on market entries and stop exits; targets are limit orders
+# slippage (ticks) on market entries and stop exits; targets are limit orders. Set per variant.
 commission_per_contract_round_trip = 1.24   # proposed, TBD (depends on broker or prop firm)
 news_calendar = "research/news_calendar.csv"
+# Retest entry (STRATEGY.md section 2, TBD values proposed)
+retest_pullaway_points = 6       # proposed: price must pull this far away after the first test (4 caught 14-second wiggles at the open)
+retest_trigger_ticks = 4         # enter once price turns 1 point off the retest high (low, for a long)
+retest_max_wait_minutes = 60     # the retest must start within this long after the pull-away
+
+# Variants: each runs on every source listed, at each slippage listed.
+[[backtest.variants]]
+name = "1 original (early entry)"
+sources = ["your levels (POC or zone)", "recent uncovered POC", "S/D zone 15 min", "POC cluster", "no level"]
+slippages = [1, 2]
+
+[[backtest.variants]]
+name = "1b original + 30 s hold check"
+sources = ["your levels (POC or zone)", "no level"]
+check_seconds = 30
+check_ticks = 2
+
+[[backtest.variants]]
+name = "2 absorption in front of the level"
+sources = ["your levels (POC or zone)", "no level"]
+front_only = true
+
+[[backtest.variants]]
+name = "3a no entries before 09:45"
+sources = ["your levels (POC or zone)", "no level"]
+start_et = "09:45"
+
+[[backtest.variants]]
+name = "3b no entries before 10:00"
+sources = ["your levels (POC or zone)", "no level"]
+start_et = "10:00"
+
+[[backtest.variants]]
+name = "4a bursts of 150+"
+sources = ["your levels (POC or zone)", "no level"]
+min_contracts = 150
+
+[[backtest.variants]]
+name = "4b bursts of 200+"
+sources = ["your levels (POC or zone)", "no level"]
+min_contracts = 200
+
+[[backtest.variants]]
+name = "4c 2+ bursts at the level"
+sources = ["your levels (POC or zone)", "no level"]
+min_bursts = 2
+
+[[backtest.variants]]
+name = "5 retest entry"
+sources = ["your levels (POC or zone)", "no level"]
+entry = "retest"
+front_only = true
+
+[[backtest.variants]]
+name = "6 all filters, early entry"
+sources = ["your levels (POC or zone)", "no level"]
+front_only = true
+start_et = "10:00"
+min_contracts = 150
+
+[[backtest.variants]]
+name = "7 all filters, retest entry"
+sources = ["your levels (POC or zone)", "no level"]
+entry = "retest"
+front_only = true
+start_et = "10:00"
+min_contracts = 150
