@@ -167,7 +167,10 @@ These rules follow how the user manages trades by hand. Example 1 prices are in 
 
 1. **Initial stop:** 3 points beyond the level being traded [5540 + 3 = 5543].
 2. **First target:** close about **90%** of the position where the move into the level started [5515, where the rally began].
+   - **Defined (owner, Oct 2026):** the top of the last chop before the sharp move into the level (for a long, its bottom). On 1-minute candles: 3 or more candles through one common price, then a candle at least 2× the last chop candle's range that closes beyond the chop. The target is that chop's high (low for a long), wicks included. [Example 1: 09:27–09:29 chopped at 5506.75–5515, and 09:30 broke out, so the target is 5515.]
+   - **Minimum reward (owner):** take the trade only if the first target is at least **2×** as far as the stop.
 3. **Runner:** the last contract targets the next low beyond that (high, for a long), such as the session's earlier low [5505].
+   - **Defined (owner, Oct 2026):** the lowest price from the start of that chop up to the entry (highest, for a long). [Example 1: 5506.75.]
 4. **After the first target:** move the runner's stop to lock in 5 points of profit plus 1 point of buffer, which is 6 points from entry [5536 − 6 = 5530].
 
 - **Contract split with 10 MES:** 9 contracts close at the first target, and 1 contract runs to the next target.
@@ -234,8 +237,9 @@ Every number below is an adjustable setting. The defaults come from this spec.
 | Entry mode | Early | Alternative: retest entry. Backtest compares. |
 | Max entry distance from level | 4 points | |
 | Stop buffer past the level | 3 points | |
-| First target | Start of the move into the level | Closes 9 of 10 contracts |
-| Runner | 1 contract to the next target | Alternative: 8 / 1 / 1 split |
+| First target | Top of the last chop before the move into the level | Closes 9 of 10 contracts |
+| Minimum reward | First target at least 2× the stop distance | |
+| Runner | 1 contract to the low of that chop and breakout | Alternative: 8 / 1 / 1 split |
 | Runner stop after first target | 6 points from entry | 5 points locked in plus 1 point of buffer |
 | Quiet-day cutoff | TBD (relative volume around 1) | |
 | Quiet-day factor | 0.6 | Multiplies the stop and target distances |

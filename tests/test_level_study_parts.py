@@ -337,3 +337,41 @@ def test_long_that_hits_the_stop_first():
     o = event_outcomes(p, t, [0.0], [100], [1], brk=12, horizon=1e9)
     r = o.iloc[0]
     assert r.broke and r.mfe == 4
+
+
+# ---------- backtest trade handling ----------
+
+from research.backtest import simulate_trade
+
+
+def test_short_hits_first_target_then_runner_target():
+    p, t = _walk(100, 74, 90, 58)           # entry 100; first target 76 (fills at 75); runner 60 (fills at 59)
+    r = simulate_trade(p, t, 0, entry=100, d=-1, stop=112, first_target=76, runner_target=60,
+                       flatten_t=1e9, slip=1)
+    assert r.first_target_hit and r.exit_reason == "first target + runner target"
+    assert r.points == (9 * (100 - 76) + 1 * (100 - 60)) * 0.25
+
+
+def test_short_stopped_with_slippage():
+    p, t = _walk(100, 112, 50)
+    r = simulate_trade(p, t, 0, entry=100, d=-1, stop=112, first_target=76, runner_target=60,
+                       flatten_t=1e9, slip=1)
+    assert r.exit_reason == "stop" and not r.first_target_hit
+    assert r.points == 10 * (100 - 113) * 0.25            # stop fills 1 tick worse
+
+
+def test_long_runner_stopped_at_locked_profit():
+    # long entry 100, first target 140 (fills at 141), runner target 160, lock 24 ticks -> stop 124
+    p, t = _walk(100, 141, 123)
+    r = simulate_trade(p, t, 0, entry=100, d=1, stop=88, first_target=140, runner_target=160,
+                       flatten_t=1e9, slip=1)
+    assert r.exit_reason == "first target + runner stop"
+    assert r.points == (9 * 40 + 1 * (124 - 1 - 100)) * 0.25
+
+
+def test_flatten_at_end_of_day():
+    p, t = _walk(100, 105, 95)
+    r = simulate_trade(p, t, 0, entry=100, d=-1, stop=112, first_target=76, runner_target=60,
+                       flatten_t=8.0, slip=1)                 # 8 seconds in: price 102
+    assert r.exit_reason == "flatten"
+    assert r.points == 10 * (100 - 103) * 0.25            # bought back 1 tick worse

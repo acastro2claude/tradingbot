@@ -44,7 +44,10 @@ absorption_burst_seconds = 0.01
 entry_mode = "early"             # alternative: "retest"
 max_entry_distance_points = 4
 stop_buffer_points = 3
-first_target = "start of the move into the level"
+first_target = "top of the last chop before the move into the level"   # owner, Oct 2026
+first_target_chop_minutes = 1    # chop found on 1-minute candles (same chop rule as the zones)
+min_reward_to_risk = 2.0         # owner: first target at least 2x the stop distance
+runner_target = "low of that chop and breakout"                        # owner, Oct 2026
 first_target_contracts = 9
 runner_contracts = 1             # alternative split: 8 / 1 / 1
 runner_stop_after_first_target_points = 6
@@ -93,3 +96,15 @@ sd_drawings_to_compare = ["last chop candle body", "last chop candle wicks", "wh
 # Statistics
 bootstrap_samples = 2000
 random_seed = 7
+
+[backtest]
+# Step 2 backtest of the full setup. Values marked proposed are TBD in STRATEGY.md.
+level_sources = ["your levels (POC or zone)", "recent uncovered POC", "S/D zone 15 min", "POC cluster", "no level"]
+level_tolerance_points = 2       # proposed: a burst counts as "at the level" within 2 points
+lopsided_window_minutes = 5      # proposed: seller vs buyer burst contracts at the level, last 5 minutes
+hold_check_variants = [[0, -1], [30, 2]]   # [seconds, ticks]; [0, -1] = no check (enter right after the burst)
+entry_cutoff_et = "15:30"        # data ends 16:00; spec says 16:30 (Topstep would need about 16:00)
+flatten_et = "15:59"             # data ends 16:00; spec says 16:50 (Topstep 16:10)
+slippage_ticks = [1, 2]          # on market entries and stop exits; targets are limit orders
+commission_per_contract_round_trip = 1.24   # proposed, TBD (depends on broker or prop firm)
+news_calendar = "research/news_calendar.csv"
