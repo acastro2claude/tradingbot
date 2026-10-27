@@ -29,6 +29,7 @@ When price reaches a strong high-volume level, the order flow there decides whet
 - Group POCs that sit within **W ticks** of each other. The default W is **TBD**.
 - 2 or more POCs in a group make a **level**; 3 or more make a **strong level**.
 - **Session:** the full Globex session, 18:00–17:00 ET (23 hours). The Sunday 18:00 open counts as the start of Monday's session.
+- **Contract rolls:** each session's profile uses one contract. POCs from the old contract are shifted by the roll gap (the price difference between the new and old contract on roll day), like a back-adjusted chart, so the 20-session lookback and the long-term profile keep working across rolls.
 
 ### 1b. Supply and demand zones
 
@@ -188,6 +189,8 @@ Every number below is an adjustable setting. The defaults come from this spec.
    - Does price stall at POC clusters more often than at random prices?
    - Does it cross low-volume gaps faster than other prices?
    - Which long-term window works best?
+
+   **First results (Oct 2026, 1-minute bars, Sep 2025–Oct 2026):** POC clusters held no more often than other prices tested in the same hour. Low-volume areas were not crossed faster once the time of day is matched. The 1-month window did slightly better than 3 or 6 months. Strong levels (3+ POCs) were too rare to judge. Details and proposals: `research/results/level_study/REPORT.md`.
 2. **Strategy backtest:** rebuild the absorption alerts, volume bubbles and delta from trade data that carries the buy/sell side. Then test the setup in section 2.
 3. **Add the order book:** test the resting-order signals with historical book data.
 4. **Live bot:** a NinjaScript strategy, tested in this order:

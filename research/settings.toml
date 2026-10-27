@@ -1,0 +1,79 @@
+# All strategy and study numbers live here. Code reads them; logic never hard-codes them.
+# [bot] mirrors STRATEGY.md section 5. Items that are TBD in STRATEGY.md are left
+# as comments, not given values.
+
+[market]
+instrument = "MES"
+tick_size = 0.25
+point_value_usd = 5.0          # $1.25 per tick
+timezone = "America/New_York"
+session_start_et = "18:00"     # Sunday 18:00 open belongs to Monday's session
+session_end_et = "17:00"
+rth_start_et = "09:30"         # regular trading hours, used only to split results
+rth_end_et = "16:00"
+
+[bot]
+contracts_per_trade = 10
+max_trades_per_day = 1
+daily_loss_limit_usd = 800
+no_new_entries_after_et = "16:30"
+close_open_trade_at_et = "16:50"
+news_events = ["CPI", "jobs report", "Fed decision"]
+news_blackout_before_min = 15
+news_blackout_after_min = 30     # Fed days: until the press conference ends
+close_before_news_min = 5
+poc_lookback_sessions = 20
+# poc_cluster_width_ticks = TBD  (the level study tests the widths listed below)
+pocs_for_level = 2
+pocs_for_strong_level = 3
+long_term_profile_months = 3     # backtest compares 1, 3 and 6
+absorption_burst_contracts = 100
+absorption_burst_seconds = 0.01
+# absorption_hold_check = TBD    (price stays within X ticks for Y seconds)
+entry_mode = "early"             # alternative: "retest"
+max_entry_distance_points = 4
+stop_buffer_points = 3
+first_target = "start of the move into the level"
+first_target_contracts = 9
+runner_contracts = 1             # alternative split: 8 / 1 / 1
+runner_stop_after_first_target_points = 6
+# quiet_day_cutoff = TBD         (relative volume around 1)
+quiet_day_factor = 0.6
+
+[level_study]
+# Data and periods
+data_start = "2025-03-01"
+data_end = "2026-10-24"          # exclusive: last session scored is Fri 23 Oct 2026
+study_start = "2025-09-08"       # first session with 6 months (126 sessions) of history
+early_check_start = "2025-04-01" # Apr-Aug 2025: second, separate period for question 1
+sessions_per_month = 21
+
+# Sessions left out
+exclude_short_sessions = true    # holiday / early-close sessions (last trade before 16:00 ET)
+short_session_last_bar_before_et = "16:00"
+
+# Question 1: does price stall at POC clusters more than at other prices?
+# A "test" of a price: price reaches it after being at least arm_distance away.
+# The test "holds" if price then moves hold_distance back away from the level
+# before it trades break_distance through it.
+cluster_widths_ticks = [2, 4, 6, 8, 12]
+arm_distance_points = 5
+break_distance_points = 3        # same as the bot's stop buffer
+hold_distances_points = [4, 6, 10]
+headline_hold_distance_points = 6
+outcome_horizon_minutes = 240
+stall_distance_points = 3        # "paused": time until price is 3 points away on either side
+control_min_distance_from_poc_ticks = 8   # "other prices" are at least 2 points from every POC
+time_match_window_minutes = 60            # compare with other prices tested in the same hour
+
+# Questions 2 and 3: does price cross low-volume areas faster? which window works best?
+band_widths_ticks = [4, 8, 16]            # 1-, 2- and 4-point zones
+headline_band_width_ticks = 8
+relative_volume_neighborhood_points = 25  # volume compared with the average within +/- 25 points
+long_term_windows_months = [1, 3, 6]
+# Finer volume bands for the detailed table (zone volume / nearby average; 0 = no volume yet)
+relative_volume_bins = [0.3, 0.5, 0.75, 1.0, 1.25, 1.5, 2.0]
+
+# Statistics
+bootstrap_samples = 2000
+random_seed = 7
