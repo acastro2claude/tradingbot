@@ -190,7 +190,7 @@ Every number below is an adjustable setting. The defaults come from this spec.
    - Does it cross low-volume gaps faster than other prices?
    - Which long-term window works best?
 
-   **First results (Oct 2026, 1-minute bars, Sep 2025–Oct 2026):** POC clusters held no more often than other prices tested in the same hour. Low-volume areas were not crossed faster once the time of day is matched. The 1-month window did slightly better than 3 or 6 months. Strong levels (3+ POCs) were too rare to judge. Details and proposals: `research/results/level_study/REPORT.md`.
+   **First results (Oct 2026, 1-minute bars, Sep 2025–Oct 2026):** POC clusters held no more often than other prices tested in the same hour. Low-volume areas were not crossed faster once the time of day is matched. The window comparison was inconclusive: shorter windows show more contrast simply because they cover less time. Strong levels (3+ POCs) were too rare to judge. Details and proposals: `research/results/level_study/REPORT.md`.
 2. **Strategy backtest:** rebuild the absorption alerts, volume bubbles and delta from trade data that carries the buy/sell side. Then test the setup in section 2.
 3. **Add the order book:** test the resting-order signals with historical book data.
 4. **Live bot:** a NinjaScript strategy, tested in this order:

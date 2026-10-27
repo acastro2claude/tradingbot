@@ -15,7 +15,7 @@ Data cost: $9.11 in total ($3.37 of it was a lost download, see `data-spend.md`)
    - Thin zones behaved like average zones.
    - The heaviest zones slowed price by about 20%, and prices that hadn't traded at all in the window were crossed about 10% faster.
    - Both effects disappear when a zone is compared with other zones in the same hour. They reflect busy versus quiet hours, not the zones themselves.
-4. **The 1-month profile did slightly better than 3 or 6 months**, which came out the same as each other. All the differences are small.
+4. **The window question is not settled.** The 1-month profile showed slightly bigger differences. But a shorter window has more contrast just because it covers less time, while longer windows blend into one bell-shaped profile with fewer thin spots. So this test can't pick a window.
 
 **What it means:** in this data the levels on their own carry no edge. Any edge has to come from the order flow read at the level (absorption). That is how the strategy is already built, and step 2 tests it directly.
 
@@ -118,6 +118,11 @@ Lowest-volume fifth of zones against the highest-volume fifth, 2-point zones, ra
   - Against 6 months it is about the same: 0.95× (0.89 to 1.00).
   - 3 and 6 months are identical.
 - **Within the same hour,** none of the windows predicts anything (previous section).
+- **Why this doesn't pick a window (owner's point):**
+  - A longer window blends into a flatter, bell-shaped profile with fewer thin spots. The thinnest fifth of zones is under 0.74× the nearby average for 1 month, against 0.80× for 6 months. Zones under 0.3× make up 2.3% of the 1-month profile and 1.5% of the 6-month one.
+  - So the 1-month profile was always going to separate zones a bit more.
+  - The 1–4 point zones also suit a short window's detail. A 6-month profile's real features (for example a wide gap between two big balance areas) are larger.
+  - A fair comparison would scale the zone size to each window.
 
 ## Data check: 1-minute bars against real trades
 
@@ -138,7 +143,7 @@ The 4 days with full trade data:
 
 1. **Keep POC levels as "where to look", but don't expect them to do the work.** In step 2, compare absorption signals at levels with absorption signals anywhere. That shows whether the levels add anything once the order flow is included.
 2. **POC cluster width stays TBD.** No width stood out. I suggest testing 1 point and 2 points in step 2.
-3. **Long-term window:** under the spec's own rule ("keep whichever best predicts fast moves"), 1 month wins narrowly. I suggest changing the default from 3 months to 1 month in section 5, with the caveat that none of the windows predicted well.
+3. **Long-term window:** keep the 3-month default for now. This test can't pick a window (see question 3). If the window matters later, retest with zone sizes scaled to each window.
 4. **Optional, $3.90:** two more years of 1-minute bars (Mar 2023 to Feb 2025) would more than double the strong-level sample. That is the only open question here more data could settle cheaply.
 5. **Low-volume areas as "fast move" zones:** the data doesn't support it. I suggest not leaning on them for targets or speed assumptions until step 2 shows otherwise.
 
