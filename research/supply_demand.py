@@ -34,7 +34,7 @@ def make_candles(bars: pd.DataFrame, minutes: int) -> pd.DataFrame:
     return c.drop(columns="start_ts")
 
 
-DRAWINGS = ("last chop candle body", "whole chop wicks")
+DRAWINGS = ("last chop candle body", "last chop candle wicks", "whole chop bodies", "whole chop wicks")
 
 
 def find_zones(candles: pd.DataFrame, base_min: int, ratio: float,
@@ -43,8 +43,10 @@ def find_zones(candles: pd.DataFrame, base_min: int, ratio: float,
 
     Sharp: range >= ratio x the last chop candle's range, closing beyond the chop.
     Drawing (where the zone's edges go):
-      "last chop candle body": open to close of the candle just before the move (owner's choice)
-      "whole chop wicks":      lowest low to highest high of all the chop candles
+      "last chop candle body":  open to close of the candle just before the move
+      "last chop candle wicks": low to high of that candle
+      "whole chop bodies":      lowest to highest open/close across all the chop candles
+      "whole chop wicks":       lowest low to highest high of all the chop candles
     """
     if drawing not in DRAWINGS:
         raise ValueError(f"unknown zone drawing {drawing!r}; use one of {DRAWINGS}")
@@ -70,6 +72,10 @@ def find_zones(candles: pd.DataFrame, base_min: int, ratio: float,
             continue
         if drawing == "last chop candle body":
             z_lo, z_hi = min(op[i - 1], cl[i - 1]), max(op[i - 1], cl[i - 1])
+        elif drawing == "last chop candle wicks":
+            z_lo, z_hi = lo[i - 1], hi[i - 1]
+        elif drawing == "whole chop bodies":
+            z_lo, z_hi = np.minimum(op[j:i], cl[j:i]).min(), np.maximum(op[j:i], cl[j:i]).max()
         else:
             z_lo, z_hi = chop_lo, chop_hi
         rows.append(dict(kind=kind, low=int(z_lo), high=int(z_hi), base_candles=i - j,

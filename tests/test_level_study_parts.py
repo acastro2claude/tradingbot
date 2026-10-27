@@ -204,6 +204,10 @@ def test_chop_then_sharp_move_up_makes_a_demand_zone():
     assert r.created == c["end"].iat[3]
     body = find_zones(c, base_min=3, ratio=2.0).iloc[0]     # default: last chop candle's body
     assert (body.low, body.high) == (101, 102)              # that candle opened 102, closed 101
+    wicks = find_zones(c, base_min=3, ratio=2.0, drawing="last chop candle wicks").iloc[0]
+    assert (wicks.low, wicks.high) == (100, 103)
+    bodies = find_zones(c, base_min=3, ratio=2.0, drawing="whole chop bodies").iloc[0]
+    assert (bodies.low, bodies.high) == (101, 103)          # bodies 102-103, 102-103, 101-102
 
 
 def test_no_zone_without_enough_chop_or_a_big_enough_move():

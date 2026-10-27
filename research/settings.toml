@@ -88,6 +88,7 @@ relative_volume_bins = [0.3, 0.5, 0.75, 1.0, 1.25, 1.5, 2.0]
 # Supply and demand overlay
 sd_timeframes_minutes = [15, 30, 60]
 sd_height_caps_points = []                # optionally also test only zones up to this tall
+sd_drawings_to_compare = ["last chop candle body", "last chop candle wicks", "whole chop bodies", "whole chop wicks"]
 
 # Statistics
 bootstrap_samples = 2000

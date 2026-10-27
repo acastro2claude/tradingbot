@@ -54,6 +54,7 @@ Proposed defaults for the bot (**TBD**, for the owner to confirm):
 - **Higher timeframe:** test 15-, 30- and 60-minute candles.
 - **The chop:** 3 or more candles in a row that all trade through one common price.
 - **Where the zone is drawn (owner's choice):** the body of the last chop candle before the sharp move, from its open to its close. That gives zones of about 1.5 points on 15-minute candles, 2 points on 30-minute and 3 points on 60-minute.
+  - The owner asked to use bigger zones if they work better. The level study compared four sizes (about 1.5 to 20 points) and none clearly worked better, so this drawing stays (see the level study report).
 - **Sharp move:** the next candle's range is at least 2× the last chop candle's range, and it closes beyond the chop.
 - **Blows past:** a candle on the zone's timeframe closes beyond the far side of the zone.
 - **Chops in it:** more than 60 minutes in a row with every 1-minute close inside the zone.

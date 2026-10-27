@@ -194,7 +194,35 @@ Main period, held = 6 points back before 3 through. The comparison group is othe
   - It's rare: 100 to 150 tests in 14 months, about one every 2 to 3 sessions.
   - Results point different ways by timeframe, and every range is wide and includes 0. No edge shows, and this sample can't rule out a modest one.
 - **Zones on their own:** the near edges hold like other prices (−2.2 to +1.6 points).
-- **Earlier wider zones:** an earlier run drew zones over the whole chop, wicks included (median 10–20 points tall). It gave the same answer (`sd_overlay_hold_rates.csv` in git history, commit 22448b0).
+### Does a bigger zone work better?
+
+The owner asked to keep zones bigger if that works better, so four drawings were compared.
+
+- **How the comparison works:** the best size is judged on the main period. The separate Apr–Aug 2025 period ("check") then shows whether it holds up. Trying several sizes and keeping the best builds in some luck, and the check period exposes it.
+- **How to read each cell:** the difference in points from other prices tested in the same hour, with the number of tests in brackets.
+
+| Zone drawn from | Chart | Height | POC in zone: main | POC in zone: check | Zone edge: main | Zone edge: check |
+|---|---|---|---|---|---|---|
+| last chop candle body | 15 min | 1.5 pts | +4.4 (148) | -19.9 (52) | +1.6 (1,582) | +0.2 (644) |
+| last chop candle body | 30 min | 2 pts | -7.1 (140) | -9.6 (37) | -2.2 (993) | +2.8 (490) |
+| last chop candle body | 60 min | 2.75 pts | -6.7 (101) | -5.3 (35) | +0.9 (589) | -0.1 (364) |
+| last chop candle wicks | 15 min | 4.5 pts | -0.4 (313) | -11.1 (117) | +1.2 (1,940) | -0.3 (818) |
+| last chop candle wicks | 30 min | 6.25 pts | -3.5 (280) | -9.6 (87) | +0.3 (1,249) | +2.8 (595) |
+| last chop candle wicks | 60 min | 9 pts | -6.0 (163) | -14.1 (62) | +1.0 (748) | +2.0 (481) |
+| whole chop bodies | 15 min | 7 pts | -2.8 (457) | -6.6 (168) | +2.1 (2,203) | +2.5 (951) |
+| whole chop bodies | 30 min | 9.625 pts | -3.7 (342) | -4.6 (120) | +3.0 (1,436) | +0.3 (645) |
+| whole chop bodies | 60 min | 12.5 pts | +4.5 (241) | -8.7 (103) | -0.3 (739) | +2.8 (513) |
+| whole chop wicks | 15 min | 10.5 pts | -3.5 (619) | -4.5 (233) | +1.4 (2,270) | +0.6 (1,071) |
+| whole chop wicks | 30 min | 15.25 pts | -5.6 (515) | -6.7 (129) | +1.9 (1,373) | +3.4 (701) |
+| whole chop wicks | 60 min | 20 pts | +1.4 (233) | -10.0 (99) | +0.6 (768) | +1.9 (483) |
+
+- **POC inside a zone:** no size works.
+  - The two best on the main period (last candle body on 15 min, +4.4; whole-chop bodies on 60 min, +4.5) were both negative on the check period.
+  - Every size was negative in Apr–Aug 2025.
+- **Zones on their own:** the near edge did a little better than other prices on most sizes, in both periods.
+  - Typically +1 to +3 points. The best and steadiest was whole-chop bodies on 15-minute candles (+2.1 main, +2.5 check).
+  - That's worth roughly $10 a trade on 10 MES with a 6-point target and a 3-point stop, less than slippage and commissions. Not enough to trade on its own, but it may help as a filter alongside absorption.
+- **Decision:** no size clearly works better, so the owner's drawing (last chop candle body) stays the default.
 
 ## Proposals (your call)
 

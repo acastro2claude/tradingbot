@@ -50,16 +50,18 @@ def main() -> None:
 
     lookback = bot["sd_lookback_months"] * ls["sessions_per_month"]
     rows, stats = [], []
-    for tf in ls["sd_timeframes_minutes"]:
-        candles = make_candles(fb, tf)
-        zones = find_zones(candles, bot["sd_base_min_candles"], bot["sd_departure_min_ratio"],
-                           bot["sd_zone_drawing"])
+    plan = [(tf, d) for d in ls["sd_drawings_to_compare"] for tf in ls["sd_timeframes_minutes"]]
+    candle_cache = {}
+    for tf, drawing in plan:
+        candles = candle_cache.setdefault(tf, make_candles(fb, tf))
+        zones = find_zones(candles, bot["sd_base_min_candles"], bot["sd_departure_min_ratio"], drawing)
         zones = zone_lifetimes(zones, candles, fb, bot["sd_chop_invalid_minutes"], lookback,
                                list(sessions.index))
-        zones.assign(timeframe_minutes=tf, low_price=zones["low"] * tick, high_price=zones["high"] * tick) \
-             .to_csv(DERIVED / f"sd_zones_{tf}min.csv", index=False)
+        zones.assign(timeframe_minutes=tf, drawing=drawing, low_price=zones["low"] * tick,
+                     high_price=zones["high"] * tick) \
+             .to_csv(DERIVED / f"sd_zones_{tf}min_{drawing.replace(' ', '_')}.csv", index=False)
         life_h = (zones["dies"].replace(np.inf, np.nan) - zones["created"]) / 3600
-        stats.append(dict(timeframe_minutes=tf, zones=len(zones),
+        stats.append(dict(timeframe_minutes=tf, drawing=drawing, zones=len(zones),
                           zones_per_session=len(zones) / sessions["use"].sum(),
                           demand_share=(zones["kind"] == "demand").mean(),
                           median_height_points=((zones["high"] - zones["low"]) * tick).median(),
@@ -87,17 +89,18 @@ def main() -> None:
                     inp = (e["period"] == period) & e[hold_col].notna()
                     for name, m in groups.items():
                         rows.append(_q1_row(e[inp & m], hold_col, exp_col, B, rng,
-                                            dict(timeframe_minutes=tf, max_zone_points=cap or "any",
+                                            dict(timeframe_minutes=tf, drawing=drawing,
+                                                 max_zone_points=cap or "any",
                                                  zones_used=len(zz), period=period, hold_points=R,
                                                  group=name)))
-        print(f"{tf}-minute zones done: {len(zones)} zones")
+        print(f"{tf}-minute zones, {drawing}: {len(zones)} zones")
 
     out = pd.DataFrame(rows)
     out.to_csv(OUT / "sd_overlay_hold_rates.csv", index=False)
     pd.DataFrame(stats).to_csv(OUT / "sd_zone_stats.csv", index=False)
     show = out[(out["period"] == "main") & (out["hold_points"] == ls["headline_hold_distance_points"])]
     print(pd.DataFrame(stats).round(2).to_string(index=False))
-    print(show[["timeframe_minutes", "max_zone_points", "group", "tests", "sessions", "hold_rate", "same_hour_other_prices_rate",
+    print(show[["timeframe_minutes", "drawing", "group", "tests", "sessions", "hold_rate", "same_hour_other_prices_rate",
                 "edge", "edge_low", "edge_high"]].round(3).to_string(index=False))
 
 
