@@ -266,6 +266,8 @@ Every number below is an adjustable setting. The defaults come from this spec.
 
    **First results (Oct 2026, trades Apr–Oct 2026, regular hours):** absorption bursts point the right way slightly more often than random entries at the same time. The full setup (early or retest entry, stop 3 points past the level, the owner's targets, costs) still loses on every version tested. The best versions come out around break-even, and about 75–85% of trades are stopped out. The rules replay Example 1 correctly. Details: `research/results/step2/REPORT.md`.
 3. **Add the order book:** test the resting-order signals with historical book data.
+
+   **First look (Oct 2026, full MES book for the owner's 20 busiest journal days in 2024–2025, 163 trades):** the owner's entries came once price had already started their way. Compared with random moments that had the same move, the orders in the path of the trade were being pulled faster than they were added more often (51% vs 40%). Big resting lines next to the entry were rare, and on their own they did not hold price. None of the book readings tested separated winners from losers. These 20 days were also the owner's losing days (26% win rate, −$6,015), and the journal trades are mostly ES while this book is MES. Details: `research/results/journal/REPORT.md`.
 4. **Live bot:** a NinjaScript strategy, tested in this order:
    - Market Replay (past days replayed, order book included)
    - Sim account
@@ -278,4 +280,4 @@ Every number below is an adjustable setting. The defaults come from this spec.
   - Add order book history for build step 3.
 - **Needed last, for the live bot:** a futures broker account with Rithmic and a real-time CME data subscription that includes market depth, connected to NinjaTrader and Bookmap.
 - **Other historical option:** Rithmic's own history. It may be limited, and Rithmic may need to approve API access for a custom program.
-- **Bookmap recordings:** example 1 is a Bookmap replay, so recording files from past trading may exist. They contain the full order book, but they are in Bookmap's own format.
+- **Bookmap recordings:** the owner has saved Bookmap recordings (.bmf) from past trading. They contain the full order book, but only Bookmap can open them: Bookmap offers no open file format for its feed data (owner, Oct 2026). The order book history comes from Databento's MBO data instead, which carries the same CME order-by-order feed Bookmap draws its heatmap from.
