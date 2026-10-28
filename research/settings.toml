@@ -1,0 +1,175 @@
+# All strategy and study numbers live here. Code reads them; logic never hard-codes them.
+# [bot] mirrors STRATEGY.md section 5. Items that are TBD in STRATEGY.md are left
+# as comments, not given values.
+
+[market]
+instrument = "MES"
+tick_size = 0.25
+point_value_usd = 5.0          # $1.25 per tick
+timezone = "America/New_York"
+session_start_et = "18:00"     # Sunday 18:00 open belongs to Monday's session
+session_end_et = "17:00"
+rth_start_et = "09:30"         # regular trading hours, used only to split results
+rth_end_et = "16:00"
+
+[bot]
+contracts_per_trade = 10
+max_trades_per_day = 1
+daily_loss_limit_usd = 800
+no_new_entries_after_et = "16:30"
+close_open_trade_at_et = "16:50"
+news_events = ["CPI", "jobs report", "Fed decision"]
+news_blackout_before_min = 15
+news_blackout_after_min = 30     # Fed days: until the press conference ends
+close_before_news_min = 5
+poc_lookback_sessions = 20
+# poc_cluster_width_ticks = TBD  (the level study tests the widths listed below)
+pocs_for_level = 2
+pocs_for_strong_level = 3
+recent_poc_lookback_sessions = 5           # level source B (STRATEGY.md 1e)
+covered_poc_rule = "next session's value area"   # a POC inside it no longer counts
+value_area_share = 0.70
+# Supply and demand zones (STRATEGY.md 1b). Values marked proposed are TBD.
+# sd_timeframe_minutes = TBD     (the study tests the list in [level_study])
+sd_lookback_months = 1
+sd_base_min_candles = 3          # proposed: candles in the chop, all through one common price
+sd_zone_drawing = "last chop candle body"   # owner's choice: open to close of the candle before the move
+sd_departure_min_ratio = 2.0     # sharp move: range >= 2x the last chop candle, closing beyond the chop
+sd_chop_invalid_minutes = 60     # zone dies after this long inside it in a row
+# zone also dies when a candle on its timeframe closes beyond the far side (proposed)
+long_term_profile_months = 3     # backtest compares 1, 3 and 6
+absorption_burst_contracts = 100
+absorption_burst_seconds = 0.01
+# absorption_hold_check = TBD    (price stays within X ticks for Y seconds)
+entry_mode = "early"             # alternative: "retest"
+max_entry_distance_points = 4
+stop_buffer_points = 3
+first_target = "top of the last chop before the move into the level"   # owner, Oct 2026
+first_target_chop_minutes = 1    # chop found on 1-minute candles (same chop rule as the zones)
+min_reward_to_risk = 2.0         # owner: first target at least 2x the stop distance
+runner_target = "low of that chop and breakout"                        # owner, Oct 2026
+first_target_contracts = 9
+runner_contracts = 1             # alternative split: 8 / 1 / 1
+runner_stop_after_first_target_points = 6
+# quiet_day_cutoff = TBD         (relative volume around 1)
+quiet_day_factor = 0.6
+
+[level_study]
+# Data and periods
+data_start = "2025-03-01"
+data_end = "2026-10-24"          # exclusive: last session scored is Fri 23 Oct 2026
+study_start = "2025-09-08"       # first session with 6 months (126 sessions) of history
+early_check_start = "2025-04-01" # Apr-Aug 2025: second, separate period for question 1
+sessions_per_month = 21
+
+# Sessions left out
+exclude_short_sessions = true    # holiday / early-close sessions (last trade before 16:00 ET)
+short_session_last_bar_before_et = "16:00"
+
+# Question 1: does price stall at POC clusters more than at other prices?
+# A "test" of a price: price reaches it after being at least arm_distance away.
+# The test "holds" if price then moves hold_distance back away from the level
+# before it trades break_distance through it.
+cluster_widths_ticks = [2, 4, 6, 8, 12]
+arm_distance_points = 5
+break_distance_points = 3        # same as the bot's stop buffer
+hold_distances_points = [4, 6, 10]
+headline_hold_distance_points = 6
+outcome_horizon_minutes = 240
+stall_distance_points = 3        # "paused": time until price is 3 points away on either side
+control_min_distance_from_poc_ticks = 8   # "other prices" are at least 2 points from every POC
+time_match_window_minutes = 60            # compare with other prices tested in the same hour
+
+# Questions 2 and 3: does price cross low-volume areas faster? which window works best?
+band_widths_ticks = [4, 8, 16]            # 1-, 2- and 4-point zones
+headline_band_width_ticks = 8
+relative_volume_neighborhood_points = 25  # volume compared with the average within +/- 25 points
+long_term_windows_months = [1, 3, 6]
+# Finer volume bands for the detailed table (zone volume / nearby average; 0 = no volume yet)
+relative_volume_bins = [0.3, 0.5, 0.75, 1.0, 1.25, 1.5, 2.0]
+
+# Supply and demand overlay
+sd_timeframes_minutes = [15, 30, 60]
+sd_height_caps_points = []                # optionally also test only zones up to this tall
+sd_drawings_to_compare = ["last chop candle body", "last chop candle wicks", "whole chop bodies", "whole chop wicks"]
+
+# Statistics
+bootstrap_samples = 2000
+random_seed = 7
+
+[backtest]
+# Step 2 backtest of the full setup. Values marked proposed are TBD in STRATEGY.md.
+level_tolerance_points = 2       # proposed: a burst counts as "at the level" within 2 points
+lopsided_window_minutes = 5      # proposed: seller vs buyer burst contracts at the level, last 5 minutes
+entry_cutoff_et = "15:30"        # data ends 16:00; spec says 16:30 (Topstep would need about 16:00)
+flatten_et = "15:59"             # data ends 16:00; spec says 16:50 (Topstep 16:10)
+# slippage (ticks) on market entries and stop exits; targets are limit orders. Set per variant.
+commission_per_contract_round_trip = 1.24   # proposed, TBD (depends on broker or prop firm)
+news_calendar = "research/news_calendar.csv"
+# Retest entry (STRATEGY.md section 2, TBD values proposed)
+retest_pullaway_points = 6       # proposed: price must pull this far away after the first test (4 caught 14-second wiggles at the open)
+retest_trigger_ticks = 4         # enter once price turns 1 point off the retest high (low, for a long)
+retest_max_wait_minutes = 60     # the retest must start within this long after the pull-away
+
+# Variants: each runs on every source listed, at each slippage listed.
+[[backtest.variants]]
+name = "1 original (early entry)"
+sources = ["your levels (POC or zone)", "recent uncovered POC", "S/D zone 15 min", "POC cluster", "no level"]
+slippages = [1, 2]
+
+[[backtest.variants]]
+name = "1b original + 30 s hold check"
+sources = ["your levels (POC or zone)", "no level"]
+check_seconds = 30
+check_ticks = 2
+
+[[backtest.variants]]
+name = "2 absorption in front of the level"
+sources = ["your levels (POC or zone)", "no level"]
+front_only = true
+
+[[backtest.variants]]
+name = "3a no entries before 09:45"
+sources = ["your levels (POC or zone)", "no level"]
+start_et = "09:45"
+
+[[backtest.variants]]
+name = "3b no entries before 10:00"
+sources = ["your levels (POC or zone)", "no level"]
+start_et = "10:00"
+
+[[backtest.variants]]
+name = "4a bursts of 150+"
+sources = ["your levels (POC or zone)", "no level"]
+min_contracts = 150
+
+[[backtest.variants]]
+name = "4b bursts of 200+"
+sources = ["your levels (POC or zone)", "no level"]
+min_contracts = 200
+
+[[backtest.variants]]
+name = "4c 2+ bursts at the level"
+sources = ["your levels (POC or zone)", "no level"]
+min_bursts = 2
+
+[[backtest.variants]]
+name = "5 retest entry"
+sources = ["your levels (POC or zone)", "no level"]
+entry = "retest"
+front_only = true
+
+[[backtest.variants]]
+name = "6 all filters, early entry"
+sources = ["your levels (POC or zone)", "no level"]
+front_only = true
+start_et = "10:00"
+min_contracts = 150
+
+[[backtest.variants]]
+name = "7 all filters, retest entry"
+sources = ["your levels (POC or zone)", "no level"]
+entry = "retest"
+front_only = true
+start_et = "10:00"
+min_contracts = 150

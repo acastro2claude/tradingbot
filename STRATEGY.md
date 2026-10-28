@@ -12,6 +12,16 @@ Status: draft. Items marked **TBD** still need a decision.
 - **Data feed:** none active yet. Rithmic is planned for live trading.
 - **Live trading:** a NinjaScript strategy running in NinjaTrader 8, using the Rithmic feed for trades and the order book.
 - **Research and backtesting:** Python, using historical CME tick data.
+- **Prop firm (TBD):** the owner is considering a prop firm, for example Topstep. Topstep's published rules (checked 27 Oct 2026):
+  - Bots are allowed through the TopstepX API. High-frequency trading is banned, along with exploiting simulated fills and latency arbitrage. This strategy (at most a few trades a day, held for minutes) is not high-frequency.
+  - **New accounts can only use TopstepX.** NinjaTrader and Tradovate appear to remain only on older accounts.
+  - **TBD:** with Topstep, the live bot would connect to the TopstepX API instead of running as a NinjaScript strategy. The other option is a prop firm that supports NinjaTrader with Rithmic.
+  - **Flat by 3:10 PM CT (16:10 ET)** every day. No new positions after 3:08 PM CT, and nothing held overnight.
+    - **TBD:** if Topstep is used, the end-of-day times in section 4 must move earlier.
+  - **To confirm with the firm:**
+    - whether running from a VPS or VPN is allowed (a third-party guide says it isn't)
+    - whether the data feed includes every trade with its side and the market depth
+    - the loss limits the bot must stay inside
 
 ## Core idea
 
@@ -23,17 +33,42 @@ When price reaches a strong high-volume level, the order flow there decides whet
 
 ## 1. Levels
 
-### 1a. Daily POC clusters (main level source)
+### 1a. Daily POC clusters (level source A)
+
+Source A and source B (1e, the owner's current method) are both tested. The data decides.
+
 
 - Find the point of control (POC, the price with the most volume) for each of the last **N = 20** sessions.
 - Group POCs that sit within **W ticks** of each other. The default W is **TBD**.
 - 2 or more POCs in a group make a **level**; 3 or more make a **strong level**.
 - **Session:** the full Globex session, 18:00–17:00 ET (23 hours). The Sunday 18:00 open counts as the start of Monday's session.
+- **Contract rolls:** each session's profile uses one contract. POCs from the old contract are shifted by the roll gap (the price difference between the new and old contract on roll day), like a back-adjusted chart, so the 20-session lookback and the long-term profile keep working across rolls.
 
 ### 1b. Supply and demand zones
 
-- Past areas of heavy volume where price then reversed or continued sharply.
-- Exact definition: **TBD** (volume threshold, how big a move counts as a reversal).
+How the owner draws them:
+
+- **What makes one:** an area where price hangs around (chops), then a sharp move away in one direction.
+  - A sharp move up leaves a **demand zone** below.
+  - A sharp move down leaves a **supply zone** above.
+- **Sharp move:** there's no set size. Roughly, it's at least double the size of the last candle in the chop.
+- **Chart:** zones hold up better when drawn on a higher-timeframe chart.
+- **Lookback:** zones from up to about a month back.
+- **When a zone stops counting:**
+  - price blows past it, or
+  - price starts chopping in it.
+  - Price can come back, hang around the zone for a little while and then retest. But if it hangs around too long (over about an hour), the zone is probably no longer valid.
+
+Proposed defaults for the bot (**TBD**, for the owner to confirm):
+
+- **Higher timeframe:** test 15-, 30- and 60-minute candles.
+- **The chop:** 3 or more candles in a row that all trade through one common price.
+- **Where the zone is drawn (owner's choice):** the body of the last chop candle before the sharp move, from its open to its close. That gives zones of about 1.5 points on 15-minute candles, 2 points on 30-minute and 3 points on 60-minute.
+  - The owner asked to use bigger zones if they work better. The level study compared four sizes (about 1.5 to 20 points) and none clearly worked better, so this drawing stays (see the level study report).
+- **Sharp move:** the next candle's range is at least 2× the last chop candle's range, and it closes beyond the chop.
+- **Blows past:** a candle on the zone's timeframe closes beyond the far side of the zone.
+- **Chops in it:** more than 60 minutes in a row with every 1-minute close inside the zone.
+- **Lines up with a POC:** the POC sits inside the zone.
 
 ### 1c. Long-term volume profile
 
@@ -46,9 +81,26 @@ When price reaches a strong high-volume level, the order flow there decides whet
 - In example 1, the reaction happened at a heatmap line of heavy resting orders (5540). After that day's gap down, the previous days' POCs were likely far above.
 - **TBD:** whether lines of large resting orders should count as levels.
 
+### 1e. Recent uncovered POCs (level source B: how the owner trades now)
+
+- **Levels:** the POCs of the last **5** sessions. Trade the reversal against these.
+- **Covered POCs don't count:** drop a POC if the next session's value area (the range holding about 70% of that session's volume) includes it.
+  - Yesterday's POC always counts, because today's value area isn't finished.
+- **Supply and demand overlay:** these POCs are read together with the supply and demand zones (1b). The more they line up, the better the trade (see Level strength).
+- **Targets:** an older POC outside the last couple of days' trading can be the target. Price tends to be drawn back to prices that traded heavily before.
+  - **TBD:** how far back target POCs can come from, and whether a target POC must also be uncovered.
+- **Checkpoint on the way:** if a price between the entry and the target has traded more volume, traders may treat it as fair value.
+  - Watch whether price breaks out past it. If it doesn't, the trade may chop there or come back to the entry.
+  - This is not a reason to skip the trade or the target. It is a point to manage the trade.
+  - **TBD:** how to spot that price (for example, another day's POC between entry and target, or a heavy price in a combined profile of recent days), and what the bot does if price stalls there (for example, tighten the stop or take partial profit).
+
 ### Level strength
 
-A level ranks higher when the sources agree. Examples: a POC cluster that overlaps a supply or demand zone, or a cluster that sits next to a long-term low-volume area.
+A level ranks higher when the sources agree. Examples:
+
+- A recent uncovered POC (1e) that lines up with a supply or demand zone. This is how the owner trades now.
+- A POC cluster that overlaps a supply or demand zone.
+- A cluster that sits next to a long-term low-volume area.
 
 ## 2. Entries: absorption at the level
 
@@ -58,7 +110,9 @@ The bot copies the read currently done by eye in Bookmap. That read uses volume 
 
 - **Absorption alerts** (rebuilds the Bookmap Absorption Indicator add-on):
   - Current add-on setting: mark the chart when **100 or more contracts trade within 0.01 seconds** (on MES).
-  - Purple markers mean seller absorption; green markers mean buyer absorption. **TBD:** whether purple means aggressive buying that sellers absorbed, or aggressive selling. The historical data can settle this.
+  - Purple markers mean seller absorption; green markers mean buyer absorption.
+  - **Settled by the data (Example 1, Oct 2026):** purple means aggressive buying that sellers absorbed. The markers match bursts of aggressive buys traded at a single price within 0.01 seconds.
+  - **Still to confirm:** whether a marker adds up repeated bursts at the same price.
   - The add-on only flags the burst of volume. The bot adds the absorption check itself: after the burst, price does not trade more than **X ticks** past that price within **Y seconds**.
 - **Volume bubbles:** unusually large traded volume at one price in a short time. Size cutoff: **TBD** (start from Bookmap's settings).
 - **Delta and CVD:** delta is aggressive buy volume minus aggressive sell volume. CVD (cumulative volume delta) is the running total of delta through the session. The bot compares the CVD highs (or lows) at the first test of a level and at the retest.
@@ -100,6 +154,10 @@ Mirror the steps for a long after price falls into a level.
 - With 10 MES, the trade risks about $300. The 9 contracts closed at the first target make about $990, before commissions.
 - April 3, 2025 was a very high-volume day (the tariff selloff), so normal settings apply.
 - **Test:** rebuilding the indicator over this window must reproduce these three markers.
+  - **Result from Databento trades** (aggressive buys at one price within 0.01 s):
+    - 120 at 5540.00 (09:33:39), against the screenshot's 118.
+    - 112 at 5532.50 (09:34:44), against 109.
+    - 102 + 110 = 212 at 5535.50 (09:34:32 and 09:34:48), against 212. This one matches only if the indicator adds up bursts at the same price.
 
 **Wanted:** an example trade from a quiet, low-volume day.
 
@@ -109,11 +167,15 @@ These rules follow how the user manages trades by hand. Example 1 prices are in 
 
 1. **Initial stop:** 3 points beyond the level being traded [5540 + 3 = 5543].
 2. **First target:** close about **90%** of the position where the move into the level started [5515, where the rally began].
+   - **Defined (owner, Oct 2026):** the top of the last chop before the sharp move into the level (for a long, its bottom). On 1-minute candles: 3 or more candles through one common price, then a candle at least 2× the last chop candle's range that closes beyond the chop. The target is that chop's high (low for a long), wicks included. [Example 1: 09:27–09:29 chopped at 5506.75–5515, and 09:30 broke out, so the target is 5515.]
+   - **Minimum reward (owner):** take the trade only if the first target is at least **2×** as far as the stop.
 3. **Runner:** the last contract targets the next low beyond that (high, for a long), such as the session's earlier low [5505].
+   - **Defined (owner, Oct 2026):** the lowest price from the start of that chop up to the entry (highest, for a long). [Example 1: 5506.75.]
 4. **After the first target:** move the runner's stop to lock in 5 points of profit plus 1 point of buffer, which is 6 points from entry [5536 − 6 = 5530].
 
 - **Contract split with 10 MES:** 9 contracts close at the first target, and 1 contract runs to the next target.
   - The backtest will compare this with an 8 / 1 / 1 split, where a second runner targets the level after that [5500]. The data decides.
+- **Alternative target (section 1e):** an older POC outside the last couple of days' trading. Any heavier-volume price on the way is a checkpoint to manage the trade. The backtest compares this with the targets above.
 - **Backtest costs:** assume a tick or two of slippage on entries and stops, plus commissions.
 
 ### Adjusting for the day's volume
@@ -160,14 +222,24 @@ Every number below is an adjustable setting. The defaults come from this spec.
 | POC lookback | 20 sessions | |
 | POC cluster width | TBD | |
 | POCs needed for a level | 2 (3 = strong) | |
+| Recent POC lookback (1e) | 5 sessions | |
+| Covered POC rule (1e) | Next session's value area | A POC inside it no longer counts |
+| Value area | 70% of the session's volume | |
+| Supply/demand chart timeframe | TBD | Study tests 15, 30 and 60 minutes |
+| Supply/demand lookback | 1 month | |
+| Chop before the move | 3+ candles through one common price | Proposed, TBD |
+| Zone drawn from | Body of the last chop candle | Open to close of the candle before the sharp move |
+| Sharp move size | 2× the last chop candle | |
+| Zone invalid after chopping in it | 60 minutes | Also invalid when a candle closes beyond the far side |
 | Long-term profile window | 3 months | Backtest compares 1, 3 and 6 months |
 | Absorption burst | 100 contracts in 0.01 s | Matches the Bookmap add-on |
 | Absorption hold check | TBD | Price stays within X ticks for Y seconds |
 | Entry mode | Early | Alternative: retest entry. Backtest compares. |
 | Max entry distance from level | 4 points | |
 | Stop buffer past the level | 3 points | |
-| First target | Start of the move into the level | Closes 9 of 10 contracts |
-| Runner | 1 contract to the next target | Alternative: 8 / 1 / 1 split |
+| First target | Top of the last chop before the move into the level | Closes 9 of 10 contracts |
+| Minimum reward | First target at least 2× the stop distance | |
+| Runner | 1 contract to the low of that chop and breakout | Alternative: 8 / 1 / 1 split |
 | Runner stop after first target | 6 points from entry | 5 points locked in plus 1 point of buffer |
 | Quiet-day cutoff | TBD (relative volume around 1) | |
 | Quiet-day factor | 0.6 | Multiplies the stop and target distances |
@@ -188,7 +260,11 @@ Every number below is an adjustable setting. The defaults come from this spec.
    - Does price stall at POC clusters more often than at random prices?
    - Does it cross low-volume gaps faster than other prices?
    - Which long-term window works best?
+
+   **First results (Oct 2026, 1-minute bars, Sep 2025–Oct 2026):** POC clusters held no more often than other prices tested in the same hour. Low-volume areas were not crossed faster once the time of day is matched. The window comparison was inconclusive: shorter windows show more contrast simply because they cover less time. Strong levels (3+ POCs) were too rare to judge. Recent uncovered POCs (1e) on their own also held no better than other prices, and neither did those POCs inside a supply or demand zone (zones drawn from the last chop candle's body, 1b), though that combination is rare (about 100–150 tests in 14 months). The absorption read is not tested yet. Details and proposals: `research/results/level_study/REPORT.md`.
 2. **Strategy backtest:** rebuild the absorption alerts, volume bubbles and delta from trade data that carries the buy/sell side. Then test the setup in section 2.
+
+   **First results (Oct 2026, trades Apr–Oct 2026, regular hours):** absorption bursts point the right way slightly more often than random entries at the same time. The full setup (early or retest entry, stop 3 points past the level, the owner's targets, costs) still loses on every version tested. The best versions come out around break-even, and about 75–85% of trades are stopped out. The rules replay Example 1 correctly. Details: `research/results/step2/REPORT.md`.
 3. **Add the order book:** test the resting-order signals with historical book data.
 4. **Live bot:** a NinjaScript strategy, tested in this order:
    - Market Replay (past days replayed, order book included)

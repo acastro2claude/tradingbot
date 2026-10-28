@@ -1,0 +1,18 @@
+date,time_et,event,blackout_until_et,source
+2026-04-29,14:00,Fed decision,15:30,FOMC calendar (press conference until about 15:30)
+2026-05-08,08:30,Jobs report,09:00,BLS Employment Situation
+2026-05-12,08:30,CPI,09:00,BLS
+2026-06-05,08:30,Jobs report,09:00,BLS Employment Situation
+2026-06-10,08:30,CPI,09:00,BLS
+2026-06-17,14:00,Fed decision,15:30,FOMC calendar (press conference until about 15:30)
+2026-07-02,08:30,Jobs report,09:00,BLS Employment Situation (Thursday; July 3 holiday)
+2026-07-14,08:30,CPI,09:00,BLS
+2026-07-29,14:00,Fed decision,15:30,FOMC calendar (press conference until about 15:30)
+2026-08-07,08:30,Jobs report,09:00,BLS Employment Situation
+2026-08-12,08:30,CPI,09:00,BLS
+2026-09-04,08:30,Jobs report,09:00,BLS Employment Situation
+2026-09-11,08:30,CPI,09:00,BLS
+2026-09-16,14:00,Fed decision,15:30,FOMC calendar (press conference until about 15:30)
+2026-10-02,08:30,Jobs report,09:00,BLS Employment Situation
+2026-10-14,08:30,CPI,09:00,BLS
+2026-10-28,14:00,Fed decision,15:30,FOMC calendar (press conference until about 15:30)
