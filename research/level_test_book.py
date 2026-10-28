@@ -16,8 +16,10 @@ at each moment:
     through the level (if it breaks first, there is no entry)
   - line before: the biggest resting size on the holding side (bids for a long)
     at any price in the level area, over the 5 minutes before the test, as a
-    multiple of the day's typical size per price; and what was left of it when
-    price arrived (pulled before arrival)
+    multiple of the day's typical size per price; what was left of it when
+    price arrived (pulled before arrival); and the longest a line (2x+) sat at
+    one price, so orders that follow the last price around don't count as a
+    line (owner, Oct 2026: those are impossible to gauge)
   - during the test (start to entry), in the level area on the holding side:
     contracts filled ("eaten"), added and pulled; more added than pulled = stacking
   - delta over the 10 seconds before the entry, in the trade's direction (owner: "starts to skew")
@@ -41,17 +43,29 @@ from research.absorption import find_bursts
 from research.orderbook import ASK, BID, Book
 from research.paths import trade_path
 from research.recent_poc_study import recent_poc_labels
+from research.settings import load_settings
 from research.touches import touch_events
 
-AREA_TICKS = 4            # proposed: "at or around" a level = within 1 point of it (zones: of its edges)
-ARM_TICKS = 20            # a test needs price to have been 5 points away first (level study setting)
-BREAK_TICKS = 12          # 3 points through the level = the test failed (stop buffer)
-TURN_TICKS = 4            # proposed: entry once price trades 1 point back from the test's extreme (2 ticks fired on bid/ask bounce)
-MAX_TEST_S = 300          # the turn must come within 5 minutes of the test start
-LINE_LOOKBACK_S = 300
-DELTA_S = 10
-TARGET_TICKS, STOP_TICKS, HORIZON_S = 16, 8, 1800
-OWNER_MATCH_S, OWNER_MATCH_TICKS = 600, 4
+# All numbers come from [book_study] in settings.toml (proposals until the owner settles them).
+_S = load_settings()
+_B = _S["book_study"]
+
+
+def _ticks(points: float) -> int:
+    return int(round(points / _S["market"]["tick_size"]))
+
+
+AREA_TICKS = _ticks(_B["level_area_points"])
+ARM_TICKS = _ticks(_B["test_arm_points"])
+BREAK_TICKS = _ticks(_B["test_break_points"])
+TURN_TICKS = _ticks(_B["turn_points"])
+MAX_TEST_S = _B["max_test_minutes"] * 60
+LINE_LOOKBACK_S = _B["line_lookback_minutes"] * 60
+LINE_MULT = _B["line_multiple"]
+DELTA_S = _B["delta_seconds"]
+TARGET_TICKS, STOP_TICKS = _ticks(_B["check_target_points"]), _ticks(_B["check_stop_points"])
+HORIZON_S = _B["check_minutes"] * 60
+OWNER_MATCH_S, OWNER_MATCH_TICKS = _B["owner_match_minutes"] * 60, _ticks(_B["owner_match_points"])
 
 
 def marked_levels(sessions: pd.DataFrame, zones: pd.DataFrame, session, offset: int, t0: float, t1: float,
@@ -76,6 +90,22 @@ def marked_levels(sessions: pd.DataFrame, zones: pd.DataFrame, session, offset: 
         else:
             rows.append(dict(source="zone", direction=-1, edge=lo, lo=lo, hi=hi, created=zr.created, dies=zr.dies))
     return pd.DataFrame(rows)
+
+
+def longest_stay(big: np.ndarray) -> int:
+    """Longest run of seconds (rows) that any one price (column) stayed True.
+
+    A line that sits at one price scores high; orders that follow the last price
+    from one price to the next score low (owner: those are impossible to gauge).
+    """
+    best = 0
+    for col in big.T:
+        if not col.any():
+            continue
+        edges = np.diff(np.concatenate([[0], col.astype(np.int8), [0]]))
+        starts, ends = np.nonzero(edges == 1)[0], np.nonzero(edges == -1)[0]
+        best = max(best, int((ends - starts).max()))
+    return best
 
 
 def _hold_depth(book: Book, side: int, r0: int, r1: int, lo: int, hi: int) -> np.ndarray:
@@ -142,7 +172,8 @@ class TestReader:
         line_before = before.max() if before.size else 0
         line_now = before[-1].max() if before.size else 0
         out = dict(line_before=line_before / self.typ, line_at_arrival=line_now / self.typ,
-                   line_left_share=line_now / line_before if line_before else np.nan)
+                   line_left_share=line_now / line_before if line_before else np.nan,
+                   line_sat_s=longest_stay(before >= LINE_MULT * self.typ))
         t_in, how = self.turn(t0, d, edge)
         out["turn"] = how
         if t_in is None:
@@ -155,7 +186,10 @@ class TestReader:
         b = self.bursts
         fit = b[(b["direction"] == d) & (b["price"] >= a_lo) & (b["price"] <= a_hi)
                 & (b["end_time"] >= t0 - 60) & (b["end_time"] < t_in)]
-        out.update(entry_time=t_in, entry_price=entry, test_seconds=t_in - t0,
+        i, j = np.searchsorted(self.t, [t0, t_in], "left")
+        seg = self.px[i:j + 1]
+        extreme = int(seg.min() if d == 1 else seg.max()) if len(seg) else edge
+        out.update(entry_time=t_in, entry_price=entry, test_seconds=t_in - t0, test_extreme=extreme,
                    eaten=int(filled), added=int(added), pulled=int(pulled),
                    stacking=int(added) - int(pulled),
                    hold_depth_at_entry=int(depth_in.sum()) if depth_in.size else 0,

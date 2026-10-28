@@ -119,6 +119,39 @@ these exits, break-even needs about a 40% win rate.
 **Charts to check by eye:** `orderbook_charts/bot_*.png` show full-read wins and losses,
 and tests you traded, on the rebuilt ES heatmap with your trades nearby.
 
+## 5. Exit styles on the same tests (`exit_study_*.csv`, Oct 2026)
+
+Every test that turned was traded with each exit style in `[[book_study.exits]]`
+(settings.toml). Targets fill only when price trades 1 tick through them. Stops pay
+1 tick of slippage. Code: `research/exit_study.py`.
+
+| Exit style | Tests traded | Win rate | Avg win / loss (pts) | $ per trade (1 ES) |
+|---|---|---|---|---|
+| 2-pt stop, 4-pt target | 221 | 25% | +4.0 / −2.25 | −47 |
+| 3-pt stop, 7-pt target (owner) | 221 | 21% | +6.9 / −3.25 | −70 |
+| Stop 1 pt past the test, target 2× the risk | 221 | 25% | +4.1 / −2.45 | −53 |
+| Stop 1 pt past the test, STRATEGY.md targets | 116 | 12% | +9.8 / −2.25 | −52 |
+| Stop 3 pts past the level, STRATEGY.md targets | 76 | 24% | +11.8 / −3.7 | −15 |
+
+- STRATEGY.md targets: the first target is the top of the last 1-minute chop before the move into the level, and the runner targets the low of that chop and breakout. The trade is skipped when the first target is under 2× the risk, which removed about two thirds of the tests.
+- **No exit style made the read profitable.** The closest was the STRATEGY.md exits with the stop 3 points past the level: −$15 per trade. The bot version (one trade at a time) made +$362 over 42 trades. But two runners (34 and 19 points) carry that result, and 3 of the 5 weeks lost.
+- **Adding the read's conditions (line held, eaten, stacking, delta, absorption) made results worse under every exit.** The full read was usually the worst. This suggests the coded read is not what the owner does, which is why the blind review below comes next.
+
+**Orders that move with price (checked Oct 2026).** On the owner's request, the moving
+"channel" of resting orders (for example 30 Jul 2024, 10:04–10:18) was checked against
+the order-by-order data. It is real, not a data error:
+- Specific orders of exactly 150 contracts were moved 20–32 times each to follow price.
+- Bids stayed 3.25–3.5 points below the last trade and asks 3.5 points above.
+- A dozen or so stacked on each side.
+
+The owner says moving orders can still count. `line_sat_s` records how long a line sat at
+one price, so the two can be compared.
+
+**Blind review (next).** `review/review_*.png` are 12 tests drawn at random. Each chart
+stops at the moment the bot would enter, and shows the heatmap, the marked POCs and
+zones, today's volume profile, and cumulative delta. The owner marks take or skip, and
+`review/review_key.csv` holds the outcomes for scoring afterwards.
+
 ## Caveats
 
 - The read is my translation of the owner's description. Every threshold above is a proposal, and the owner's eye may weigh things differently.
@@ -129,5 +162,4 @@ and tests you traded, on the rebuilt ES heatmap with your trades nearby.
 ## Possible next steps (each needs the owner's OK)
 
 - The owner checks the charts, ideally next to their own Bookmap recordings of the same days if they have them, and says where my read differs from theirs.
-- Other exits: stop beyond the test's extreme, and the STRATEGY.md targets (top of the last chop, runner).
 - The ES setting of the absorption add-on, and the size that makes a "line" on the owner's screen.

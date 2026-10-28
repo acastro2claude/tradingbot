@@ -1,0 +1,1106 @@
+test,exit,taken,why,points,exit_time,risk_points
+196,"2-pt stop, 4-pt target",True,stop,-2.25,1708960102.7829084,2.0
+196,"3-pt stop, 7-pt target",True,stop,-3.25,1708960104.0729623,3.0
+196,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1708960102.7829084,2.0
+196,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+196,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+197,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1708961451.5445046,2.0
+197,"3-pt stop, 7-pt target",True,first target (no runner),7.0,1708963044.8686502,3.0
+197,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),4.5,1708961451.7297983,2.25
+197,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+197,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+198,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1708962012.4273846,2.0
+198,"3-pt stop, 7-pt target",True,first target (no runner),7.0,1708962630.5643857,3.0
+198,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),4.0,1708962012.4273846,2.0
+198,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+198,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+199,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1709045842.5426738,2.0
+199,"3-pt stop, 7-pt target",True,first target (no runner),7.0,1709046012.1515355,3.0
+199,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),4.0,1709045842.5426738,2.0
+199,"stop 1 pt past the test, STRATEGY.md targets",True,first target + runner stop,6.875,1709046027.3736236,2.0
+199,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+200,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1709046274.3191683,2.0
+200,"3-pt stop, 7-pt target",True,first target (no runner),7.0,1709046330.171702,3.0
+200,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),4.0,1709046274.3191683,2.0
+200,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+200,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+201,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1709048911.3139958,2.0
+201,"3-pt stop, 7-pt target",True,stop,-3.25,1709051835.5095828,3.0
+201,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),4.5,1709048946.2479498,2.25
+201,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+201,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+202,"2-pt stop, 4-pt target",True,stop,-2.25,1709051832.8442972,2.0
+202,"3-pt stop, 7-pt target",True,stop,-3.25,1709051835.5095828,3.0
+202,"stop 1 pt past the test, target 2x the risk",True,stop,-2.5,1709051835.507568,2.25
+202,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+202,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+203,"2-pt stop, 4-pt target",True,stop,-2.25,1709063957.9526658,2.0
+203,"3-pt stop, 7-pt target",True,stop,-3.25,1709064642.7741113,3.0
+203,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1709063957.9526658,2.0
+203,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1709063957.9526658,2.0
+203,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+204,"2-pt stop, 4-pt target",True,stop,-2.25,1709065651.8787844,2.0
+204,"3-pt stop, 7-pt target",True,stop,-3.25,1709065682.6419387,3.0
+204,"stop 1 pt past the test, target 2x the risk",True,stop,-2.5,1709065653.2875183,2.25
+204,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.5,1709065653.2875183,2.25
+204,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+205,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1709131849.5743396,2.0
+205,"3-pt stop, 7-pt target",True,first target (no runner),7.0,1709132004.5335763,3.0
+205,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),4.5,1709131961.5388415,2.25
+205,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+205,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+206,"2-pt stop, 4-pt target",True,stop,-2.25,1709133008.6598706,2.0
+206,"3-pt stop, 7-pt target",True,stop,-3.25,1709133162.0079286,3.0
+206,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1709133008.6598706,2.0
+206,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+206,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+207,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1709134047.8987563,2.0
+207,"3-pt stop, 7-pt target",True,stop,-3.25,1709134510.1134176,3.0
+207,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),4.0,1709134047.8987563,2.0
+207,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+207,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+208,"2-pt stop, 4-pt target",True,stop,-2.25,1709134503.5614016,2.0
+208,"3-pt stop, 7-pt target",True,stop,-3.25,1709134509.9712007,3.0
+208,"stop 1 pt past the test, target 2x the risk",True,stop,-2.5,1709134503.770432,2.25
+208,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+208,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+209,"2-pt stop, 4-pt target",True,stop,-2.25,1709141580.700706,2.0
+209,"3-pt stop, 7-pt target",True,stop,-3.25,1709141605.2439601,3.0
+209,"stop 1 pt past the test, target 2x the risk",True,stop,-2.5,1709141603.9985657,2.25
+209,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+209,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+210,"2-pt stop, 4-pt target",True,stop,-2.25,1709147602.3360686,2.0
+210,"3-pt stop, 7-pt target",True,stop,-3.25,1709147746.2475357,3.0
+210,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1709147602.3360686,2.0
+210,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1709147602.3360686,2.0
+210,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-2.75,1709147608.2485876,2.5
+211,"2-pt stop, 4-pt target",True,stop,-2.25,1709150525.9880686,2.0
+211,"3-pt stop, 7-pt target",True,stop,-3.25,1709150557.4278502,3.0
+211,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1709150525.9880686,2.0
+211,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+211,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+212,"2-pt stop, 4-pt target",True,stop,-2.25,1709217191.4583309,2.0
+212,"3-pt stop, 7-pt target",True,stop,-3.25,1709217250.8717225,3.0
+212,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1709217191.4583309,2.0
+212,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1709217191.4583309,2.0
+212,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+213,"2-pt stop, 4-pt target",True,stop,-2.25,1709219416.9356933,2.0
+213,"3-pt stop, 7-pt target",True,stop,-3.25,1709219427.0343149,3.0
+213,"stop 1 pt past the test, target 2x the risk",True,stop,-2.5,1709219426.7393937,2.25
+213,"stop 1 pt past the test, STRATEGY.md targets",False,no chop target,,,
+213,"stop 3 pts past the level, STRATEGY.md targets",False,no chop target,,,
+214,"2-pt stop, 4-pt target",True,stop,-2.25,1709219608.3510344,2.0
+214,"3-pt stop, 7-pt target",True,stop,-3.25,1709219609.5783622,3.0
+214,"stop 1 pt past the test, target 2x the risk",True,stop,-2.0,1709219607.8018498,1.75
+214,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.0,1709219607.8018498,1.75
+214,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-2.75,1709219608.5795467,2.5
+215,"2-pt stop, 4-pt target",True,stop,-2.25,1709220213.96495,2.0
+215,"3-pt stop, 7-pt target",True,stop,-3.25,1709220245.6085842,3.0
+215,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1709220213.96495,2.0
+215,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1709220213.96495,2.0
+215,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+216,"2-pt stop, 4-pt target",True,stop,-2.25,1709222844.394997,2.0
+216,"3-pt stop, 7-pt target",True,stop,-3.25,1709223464.7097385,3.0
+216,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1709222844.394997,2.0
+216,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1709222844.394997,2.0
+216,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+217,"2-pt stop, 4-pt target",True,stop,-2.25,1709224792.793675,2.0
+217,"3-pt stop, 7-pt target",True,stop,-3.25,1709224802.1274185,3.0
+217,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1709224792.793675,2.0
+217,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1709224792.793675,2.0
+217,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+218,"2-pt stop, 4-pt target",True,stop,-2.25,1709225074.8065267,2.0
+218,"3-pt stop, 7-pt target",True,stop,-3.25,1709225229.3370235,3.0
+218,"stop 1 pt past the test, target 2x the risk",True,stop,-2.5,1709225093.8427699,2.25
+218,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.5,1709225093.8427699,2.25
+218,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-3.75,1709225276.8003545,3.5
+219,"2-pt stop, 4-pt target",True,stop,-2.25,1709229180.9287229,2.0
+219,"3-pt stop, 7-pt target",True,stop,-3.25,1709229273.7672958,3.0
+219,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1709229180.9287229,2.0
+219,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+219,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+220,"2-pt stop, 4-pt target",True,stop,-2.25,1709229725.1154132,2.0
+220,"3-pt stop, 7-pt target",True,stop,-3.25,1709230210.5134306,3.0
+220,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1709229725.1154132,2.0
+220,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1709229725.1154132,2.0
+220,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+221,"2-pt stop, 4-pt target",True,stop,-2.25,1709235905.772688,2.0
+221,"3-pt stop, 7-pt target",True,stop,-3.25,1709235914.3316207,3.0
+221,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1709235905.772688,2.0
+221,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1709235905.772688,2.0
+221,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+222,"2-pt stop, 4-pt target",True,stop,-2.25,1709303441.8218794,2.0
+222,"3-pt stop, 7-pt target",True,stop,-3.25,1709303448.3372715,3.0
+222,"stop 1 pt past the test, target 2x the risk",True,stop,-2.5,1709303442.2177014,2.25
+222,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+222,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+223,"2-pt stop, 4-pt target",True,stop,-2.25,1709304908.3745873,2.0
+223,"3-pt stop, 7-pt target",True,first target (no runner),7.0,1709305200.010246,3.0
+223,"stop 1 pt past the test, target 2x the risk",True,stop,-2.5,1709304908.9547966,2.25
+223,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+223,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+224,"2-pt stop, 4-pt target",True,stop,-2.25,1709305200.0078514,2.0
+224,"3-pt stop, 7-pt target",True,stop,-3.25,1709305200.0078514,3.0
+224,"stop 1 pt past the test, target 2x the risk",True,stop,-5.25,1709305200.0114224,5.0
+224,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+224,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+225,"2-pt stop, 4-pt target",True,stop,-2.25,1709305201.9684346,2.0
+225,"3-pt stop, 7-pt target",True,stop,-3.25,1709305202.087719,3.0
+225,"stop 1 pt past the test, target 2x the risk",True,stop,-4.25,1709305206.435879,4.0
+225,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+225,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+226,"2-pt stop, 4-pt target",True,stop,-2.25,1709305476.2546473,2.0
+226,"3-pt stop, 7-pt target",True,first target (no runner),7.0,1709305695.6652918,3.0
+226,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1709305476.2546473,2.0
+226,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+226,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+227,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1709305546.1424842,2.0
+227,"3-pt stop, 7-pt target",True,first target (no runner),7.0,1709305694.360458,3.0
+227,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),4.5,1709305547.7534258,2.25
+227,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+227,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+228,"2-pt stop, 4-pt target",True,stop,-2.25,1709305679.3047247,2.0
+228,"3-pt stop, 7-pt target",True,stop,-3.25,1709305693.1416194,3.0
+228,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1709305679.3047247,2.0
+228,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+228,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+229,"2-pt stop, 4-pt target",True,stop,-2.25,1709306141.563022,2.0
+229,"3-pt stop, 7-pt target",True,stop,-3.25,1709306146.4264004,3.0
+229,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1709306141.563022,2.0
+229,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1709306141.563022,2.0
+229,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-3.75,1709306729.8544917,3.5
+104,"2-pt stop, 4-pt target",True,stop,-2.25,1712583577.858281,2.0
+104,"3-pt stop, 7-pt target",True,stop,-3.25,1712583590.0815763,3.0
+104,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1712583577.858281,2.0
+104,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1712583577.858281,2.0
+104,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-3.75,1712583619.2378597,3.5
+105,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1712584583.8111737,2.0
+105,"3-pt stop, 7-pt target",True,stop,-3.25,1712585250.3361742,3.0
+105,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),4.5,1712584596.8353517,2.25
+105,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.5,1712585035.334403,2.25
+105,"stop 3 pts past the level, STRATEGY.md targets",True,first target + runner target,11.975,1712586811.97151,3.75
+106,"2-pt stop, 4-pt target",True,stop,-2.25,1712585035.3338678,2.0
+106,"3-pt stop, 7-pt target",True,stop,-3.25,1712585250.3361742,3.0
+106,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1712585035.3338678,2.0
+106,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1712585035.3338678,2.0
+106,"stop 3 pts past the level, STRATEGY.md targets",True,first target + runner target,11.975,1712586811.97151,3.75
+107,"2-pt stop, 4-pt target",True,stop,-2.25,1712591797.3819013,2.0
+107,"3-pt stop, 7-pt target",True,stop,-3.25,1712592827.239326,3.0
+107,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),3.5,1712591544.5881925,1.75
+107,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.0,1712591797.121035,1.75
+107,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+108,"2-pt stop, 4-pt target",True,stop,-2.25,1712593672.0833392,2.0
+108,"3-pt stop, 7-pt target",True,stop,-3.25,1712593672.0850093,3.0
+108,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1712593672.0833392,2.0
+108,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+108,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+109,"2-pt stop, 4-pt target",True,stop,-2.25,1712669704.5966802,2.0
+109,"3-pt stop, 7-pt target",True,stop,-3.25,1712669729.4348285,3.0
+109,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1712669704.5966802,2.0
+109,"stop 1 pt past the test, STRATEGY.md targets",False,no chop target,,,
+109,"stop 3 pts past the level, STRATEGY.md targets",False,no chop target,,,
+110,"2-pt stop, 4-pt target",True,stop,-2.25,1712670270.6575856,2.0
+110,"3-pt stop, 7-pt target",True,stop,-3.25,1712670275.2119281,3.0
+110,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1712670270.6575856,2.0
+110,"stop 1 pt past the test, STRATEGY.md targets",False,no chop target,,,
+110,"stop 3 pts past the level, STRATEGY.md targets",False,no chop target,,,
+111,"2-pt stop, 4-pt target",True,stop,-2.25,1712671605.7560291,2.0
+111,"3-pt stop, 7-pt target",True,stop,-3.25,1712672830.6521358,3.0
+111,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1712671605.7560291,2.0
+111,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1712671605.7560291,2.0
+111,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-3.5,1712672830.6521435,3.25
+112,"2-pt stop, 4-pt target",True,stop,-2.25,1712672953.7966435,2.0
+112,"3-pt stop, 7-pt target",True,stop,-3.25,1712672958.4730048,3.0
+112,"stop 1 pt past the test, target 2x the risk",True,stop,-2.0,1712672953.6497226,1.75
+112,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.0,1712672953.6497226,1.75
+112,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-4.0,1712672961.8640833,3.75
+113,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1712681191.9866574,2.0
+113,"3-pt stop, 7-pt target",True,first target (no runner),7.0,1712681593.504399,3.0
+113,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),4.0,1712681191.9866574,2.0
+113,"stop 1 pt past the test, STRATEGY.md targets",True,first target + runner target,5.15,1712681615.790609,2.0
+113,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+114,"2-pt stop, 4-pt target",True,stop,-2.25,1712690790.0330899,2.0
+114,"3-pt stop, 7-pt target",True,stop,-3.25,1712690804.7667785,3.0
+114,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1712690790.0330899,2.0
+114,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1712690790.0330899,2.0
+114,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+115,"2-pt stop, 4-pt target",True,stop,-2.25,1712769645.190498,2.0
+115,"3-pt stop, 7-pt target",True,stop,-3.25,1712769658.2945976,3.0
+115,"stop 1 pt past the test, target 2x the risk",True,stop,-2.0,1712769645.1904788,1.75
+115,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.0,1712769645.1904788,1.75
+115,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+116,"2-pt stop, 4-pt target",True,stop,-2.25,1712770503.1247394,2.0
+116,"3-pt stop, 7-pt target",True,first target (no runner),7.0,1712770665.360721,3.0
+116,"stop 1 pt past the test, target 2x the risk",True,stop,-2.0,1712770503.0531926,1.75
+116,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.0,1712770503.0531926,1.75
+116,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+117,"2-pt stop, 4-pt target",True,stop,-2.25,1712771793.4373658,2.0
+117,"3-pt stop, 7-pt target",True,stop,-3.25,1712771795.1076128,3.0
+117,"stop 1 pt past the test, target 2x the risk",True,stop,-3.75,1712771795.1085625,3.5
+117,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+117,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+118,"2-pt stop, 4-pt target",True,stop,-2.25,1712844102.195811,2.0
+118,"3-pt stop, 7-pt target",True,stop,-3.25,1712844352.36885,3.0
+118,"stop 1 pt past the test, target 2x the risk",True,stop,-2.5,1712844110.3906207,2.25
+118,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.5,1712844110.3906207,2.25
+118,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-4.5,1712844355.3927624,4.25
+119,"2-pt stop, 4-pt target",True,stop,-2.25,1712845030.6845937,2.0
+119,"3-pt stop, 7-pt target",True,first target (no runner),7.0,1712845287.155025,3.0
+119,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),4.5,1712845265.2510629,2.25
+119,"stop 1 pt past the test, STRATEGY.md targets",True,first target + runner target,34.475,1712855066.406748,2.25
+119,"stop 3 pts past the level, STRATEGY.md targets",True,first target + runner target,34.475,1712855066.406748,7.0
+120,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1712847559.1413836,2.0
+120,"3-pt stop, 7-pt target",True,stop,-3.25,1712848566.1301086,3.0
+120,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),4.0,1712847559.1413836,2.0
+120,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1712847870.8941386,2.0
+120,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-3.25,1712848566.1301086,3.0
+121,"2-pt stop, 4-pt target",True,stop,-2.25,1712847870.8917885,2.0
+121,"3-pt stop, 7-pt target",True,stop,-3.25,1712848565.9472048,3.0
+121,"stop 1 pt past the test, target 2x the risk",True,stop,-2.5,1712847870.8941386,2.25
+121,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+121,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+122,"2-pt stop, 4-pt target",True,stop,-2.25,1712848565.3800287,2.0
+122,"3-pt stop, 7-pt target",True,stop,-3.25,1712848565.9472048,3.0
+122,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1712848565.3800287,2.0
+122,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+122,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+123,"2-pt stop, 4-pt target",True,stop,-2.25,1712849174.820959,2.0
+123,"3-pt stop, 7-pt target",True,stop,-3.25,1712849434.9598188,3.0
+123,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1712849174.820959,2.0
+123,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1712849174.820959,2.0
+123,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-3.25,1712849434.9598188,3.0
+124,"2-pt stop, 4-pt target",True,stop,-2.25,1712855974.3515766,2.0
+124,"3-pt stop, 7-pt target",True,stop,-3.25,1712855978.2506652,3.0
+124,"stop 1 pt past the test, target 2x the risk",True,stop,-3.25,1712855978.2506652,3.0
+124,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-3.25,1712855978.2506652,3.0
+124,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-4.0,1712855998.1167955,3.75
+125,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1712856305.8452752,2.0
+125,"3-pt stop, 7-pt target",True,stop,-3.25,1712857299.8744223,3.0
+125,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),3.5,1712856301.136815,1.75
+125,"stop 1 pt past the test, STRATEGY.md targets",False,no chop target,,,
+125,"stop 3 pts past the level, STRATEGY.md targets",False,no chop target,,,
+126,"2-pt stop, 4-pt target",True,stop,-2.25,1712857292.0140917,2.0
+126,"3-pt stop, 7-pt target",True,stop,-3.25,1712857301.4168918,3.0
+126,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1712857292.0140917,2.0
+126,"stop 1 pt past the test, STRATEGY.md targets",False,no chop target,,,
+126,"stop 3 pts past the level, STRATEGY.md targets",False,no chop target,,,
+127,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1712928965.4716039,2.0
+127,"3-pt stop, 7-pt target",True,stop,-3.25,1712929533.859672,3.0
+127,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),4.0,1712928965.4716039,2.0
+127,"stop 1 pt past the test, STRATEGY.md targets",False,no chop target,,,
+127,"stop 3 pts past the level, STRATEGY.md targets",False,no chop target,,,
+128,"2-pt stop, 4-pt target",True,stop,-2.25,1712929929.7541687,2.0
+128,"3-pt stop, 7-pt target",True,stop,-3.25,1712929935.5955145,3.0
+128,"stop 1 pt past the test, target 2x the risk",True,stop,-2.5,1712929930.2882447,2.25
+128,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+128,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+129,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1712930400.018711,2.0
+129,"3-pt stop, 7-pt target",True,first target (no runner),7.0,1712930419.896755,3.0
+129,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),3.5,1712930400.0177722,1.75
+129,"stop 1 pt past the test, STRATEGY.md targets",False,no chop target,,,
+129,"stop 3 pts past the level, STRATEGY.md targets",False,no chop target,,,
+130,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1712930535.5741155,2.0
+130,"3-pt stop, 7-pt target",True,first target (no runner),7.0,1712930616.7608807,3.0
+130,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),4.0,1712930535.5741155,2.0
+130,"stop 1 pt past the test, STRATEGY.md targets",False,no chop target,,,
+130,"stop 3 pts past the level, STRATEGY.md targets",False,no chop target,,,
+131,"2-pt stop, 4-pt target",True,stop,-2.25,1712933562.7917194,2.0
+131,"3-pt stop, 7-pt target",True,first target (no runner),7.0,1712933880.2873812,3.0
+131,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1712933562.7917194,2.0
+131,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1712933562.7917194,2.0
+131,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-5.25,1712939468.2197692,5.0
+132,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1712934026.9715374,2.0
+132,"3-pt stop, 7-pt target",True,first target (no runner),7.0,1712934160.2434878,3.0
+132,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),4.0,1712934026.9715374,2.0
+132,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+132,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+133,"2-pt stop, 4-pt target",True,stop,-2.25,1712938752.6486433,2.0
+133,"3-pt stop, 7-pt target",True,stop,-3.25,1712938761.8928568,3.0
+133,"stop 1 pt past the test, target 2x the risk",True,stop,-2.5,1712938755.6120658,2.25
+133,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.5,1712938755.6120658,2.25
+133,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-7.5,1712939468.2197692,7.25
+134,"2-pt stop, 4-pt target",True,stop,-2.25,1712944040.477325,2.0
+134,"3-pt stop, 7-pt target",True,stop,-3.25,1712944056.8430586,3.0
+134,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1712944040.477325,2.0
+134,"stop 1 pt past the test, STRATEGY.md targets",False,no chop target,,,
+134,"stop 3 pts past the level, STRATEGY.md targets",False,no chop target,,,
+135,"2-pt stop, 4-pt target",True,stop,-2.25,1712945145.0510836,2.0
+135,"3-pt stop, 7-pt target",True,stop,-3.25,1712945152.6601617,3.0
+135,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1712945145.0510836,2.0
+135,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+135,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+0,"2-pt stop, 4-pt target",True,stop,-2.25,1717423200.0365114,2.0
+0,"3-pt stop, 7-pt target",True,stop,-3.25,1717423200.0365114,3.0
+0,"stop 1 pt past the test, target 2x the risk",True,stop,-11.0,1717423206.637443,10.75
+0,"stop 1 pt past the test, STRATEGY.md targets",False,no chop target,,,
+0,"stop 3 pts past the level, STRATEGY.md targets",False,no chop target,,,
+1,"2-pt stop, 4-pt target",True,stop,-2.25,1717426100.663989,2.0
+1,"3-pt stop, 7-pt target",True,stop,-3.25,1717426143.9548206,3.0
+1,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1717426100.663989,2.0
+1,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1717426100.663989,2.0
+1,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-3.0,1717426141.9676108,2.75
+2,"2-pt stop, 4-pt target",True,stop,-2.25,1717431789.054357,2.0
+2,"3-pt stop, 7-pt target",True,stop,-3.25,1717431802.9483619,3.0
+2,"stop 1 pt past the test, target 2x the risk",True,stop,-2.5,1717431799.3450172,2.25
+2,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.5,1717431799.3450172,2.25
+2,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+3,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1717440180.4293087,2.0
+3,"3-pt stop, 7-pt target",True,first target (no runner),7.0,1717440792.6232367,3.0
+3,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),4.0,1717440180.4293087,2.0
+3,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+3,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+4,"2-pt stop, 4-pt target",True,stop,-2.25,1717442427.457745,2.0
+4,"3-pt stop, 7-pt target",True,stop,-3.25,1717442462.058031,3.0
+4,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1717442427.457745,2.0
+4,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1717442427.457745,2.0
+4,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+5,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1717509373.8598726,2.0
+5,"3-pt stop, 7-pt target",True,stop,-3.25,1717509601.1025274,3.0
+5,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),4.5,1717509374.9200869,2.25
+5,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+5,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+6,"2-pt stop, 4-pt target",True,stop,-2.25,1717509601.1041143,2.0
+6,"3-pt stop, 7-pt target",True,stop,-3.25,1717509601.1041143,3.0
+6,"stop 1 pt past the test, target 2x the risk",True,stop,-5.75,1717509601.139588,5.5
+6,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+6,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+8,"2-pt stop, 4-pt target",True,stop,-2.25,1717510840.639117,2.0
+8,"3-pt stop, 7-pt target",True,stop,-3.25,1717510841.6131682,3.0
+8,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1717510840.639117,2.0
+8,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+8,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+9,"2-pt stop, 4-pt target",True,stop,-2.25,1717511340.6934426,2.0
+9,"3-pt stop, 7-pt target",True,stop,-3.25,1717511436.3766823,3.0
+9,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1717511340.6934426,2.0
+9,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+9,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+10,"2-pt stop, 4-pt target",True,stop,-2.25,1717511641.1503632,2.0
+10,"3-pt stop, 7-pt target",True,stop,-3.25,1717511768.3923955,3.0
+10,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1717511641.1503632,2.0
+10,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+10,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+12,"2-pt stop, 4-pt target",True,stop,-2.25,1717512499.6082773,2.0
+12,"3-pt stop, 7-pt target",True,stop,-3.25,1717512796.3260946,3.0
+12,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1717512499.6082773,2.0
+12,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+12,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+13,"2-pt stop, 4-pt target",True,stop,-2.25,1717519696.794538,2.0
+13,"3-pt stop, 7-pt target",True,first target (no runner),7.0,1717519986.526362,3.0
+13,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1717519696.794538,2.0
+13,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1717519696.794538,2.0
+13,"stop 3 pts past the level, STRATEGY.md targets",True,first target + runner stop,9.35,1717521058.1402304,4.0
+14,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1717521918.0520492,2.0
+14,"3-pt stop, 7-pt target",True,stop,-3.25,1717522191.9876165,3.0
+14,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),4.0,1717521918.0520492,2.0
+14,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1717522148.9008024,2.0
+14,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-4.25,1717522202.50849,4.0
+16,"2-pt stop, 4-pt target",True,stop,-2.25,1717525036.814154,2.0
+16,"3-pt stop, 7-pt target",True,stop,-3.25,1717525044.320839,3.0
+16,"stop 1 pt past the test, target 2x the risk",True,stop,-2.5,1717525036.8315096,2.25
+16,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+16,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+17,"2-pt stop, 4-pt target",True,stop,-2.25,1717525380.863137,2.0
+17,"3-pt stop, 7-pt target",True,stop,-3.25,1717525515.7515008,3.0
+17,"stop 1 pt past the test, target 2x the risk",True,stop,-2.5,1717525396.4446702,2.25
+17,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.5,1717525396.4446702,2.25
+17,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+18,"2-pt stop, 4-pt target",True,stop,-2.25,1717525452.1233068,2.0
+18,"3-pt stop, 7-pt target",True,stop,-3.25,1717526721.2502306,3.0
+18,"stop 1 pt past the test, target 2x the risk",True,stop,-2.5,1717525515.7515008,2.25
+18,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.5,1717525515.7515008,2.25
+18,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+19,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1717525870.0909739,2.0
+19,"3-pt stop, 7-pt target",True,first target (no runner),7.0,1717527661.3890805,3.0
+19,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),4.5,1717525924.8687086,2.25
+19,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.5,1717526721.3393795,2.25
+19,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+20,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1717525870.0909739,2.0
+20,"3-pt stop, 7-pt target",True,first target (no runner),7.0,1717527661.3890805,3.0
+20,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),4.5,1717525924.8687086,2.25
+20,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.5,1717526721.3393795,2.25
+20,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-2.5,1717526721.3393795,2.25
+21,"2-pt stop, 4-pt target",True,stop,-2.25,1717528049.95874,2.0
+21,"3-pt stop, 7-pt target",True,first target (no runner),7.0,1717528325.5817275,3.0
+21,"stop 1 pt past the test, target 2x the risk",True,stop,-1.75,1717528049.1208928,1.5
+21,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-1.75,1717528049.1208928,1.5
+21,"stop 3 pts past the level, STRATEGY.md targets",True,first target + runner target,14.1,1717530687.1984804,3.5
+23,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1717596009.6062746,2.0
+23,"3-pt stop, 7-pt target",True,first target (no runner),7.0,1717596016.2911339,3.0
+23,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),4.5,1717596009.6675754,2.25
+23,"stop 1 pt past the test, STRATEGY.md targets",True,first target + runner target,19.15,1717598048.9566205,2.25
+23,"stop 3 pts past the level, STRATEGY.md targets",True,first target + runner target,19.15,1717598048.9566205,2.25
+24,"2-pt stop, 4-pt target",True,stop,-2.25,1717596390.6585486,2.0
+24,"3-pt stop, 7-pt target",True,stop,-3.25,1717596426.0955613,3.0
+24,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1717596390.6585486,2.0
+24,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1717596390.6585486,2.0
+24,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-5.0,1717596600.2681663,4.75
+25,"2-pt stop, 4-pt target",True,stop,-2.25,1717600532.7629037,2.0
+25,"3-pt stop, 7-pt target",True,stop,-3.25,1717600574.4210842,3.0
+25,"stop 1 pt past the test, target 2x the risk",True,stop,-2.5,1717600561.778712,2.25
+25,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.5,1717600561.778712,2.25
+25,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-3.75,1717600581.219268,3.5
+26,"2-pt stop, 4-pt target",True,stop,-2.25,1717690512.0319643,2.0
+26,"3-pt stop, 7-pt target",True,stop,-3.25,1717690551.396745,3.0
+26,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1717690512.0319643,2.0
+26,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1717690512.0319643,2.0
+26,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+27,"2-pt stop, 4-pt target",True,stop,-2.25,1717691460.2670434,2.0
+27,"3-pt stop, 7-pt target",True,stop,-3.25,1717691789.038041,3.0
+27,"stop 1 pt past the test, target 2x the risk",True,stop,-2.5,1717691555.4258273,2.25
+27,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.5,1717691555.4258273,2.25
+27,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-2.5,1717691555.4258273,2.25
+28,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1717691460.2474074,2.0
+28,"3-pt stop, 7-pt target",True,first target (no runner),7.0,1717691828.027524,3.0
+28,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),4.5,1717691555.4258273,2.25
+28,"stop 1 pt past the test, STRATEGY.md targets",False,no chop target,,,
+28,"stop 3 pts past the level, STRATEGY.md targets",False,no chop target,,,
+29,"2-pt stop, 4-pt target",True,stop,-2.25,1717695378.9928856,2.0
+29,"3-pt stop, 7-pt target",True,stop,-3.25,1717695423.5358682,3.0
+29,"stop 1 pt past the test, target 2x the risk",True,stop,-2.5,1717695402.519218,2.25
+29,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.5,1717695402.519218,2.25
+29,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-2.75,1717695409.5808747,2.5
+30,"2-pt stop, 4-pt target",True,stop,-2.25,1717699803.5514672,2.0
+30,"3-pt stop, 7-pt target",True,stop,-3.25,1717699834.9269786,3.0
+30,"stop 1 pt past the test, target 2x the risk",True,stop,-2.5,1717699815.727254,2.25
+30,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.5,1717699815.727254,2.25
+30,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+31,"2-pt stop, 4-pt target",True,stop,-2.25,1717699834.8991861,2.0
+31,"3-pt stop, 7-pt target",True,stop,-3.25,1717699975.7991076,3.0
+31,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1717699834.8991861,2.0
+31,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1717699834.8991861,2.0
+31,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+32,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1717702174.554881,2.0
+32,"3-pt stop, 7-pt target",True,flatten,1.25,1717703940.0429955,3.0
+32,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),4.5,1717702176.5311806,2.25
+32,"stop 1 pt past the test, STRATEGY.md targets",True,flatten,1.25,1717703940.0429955,2.25
+32,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+33,"2-pt stop, 4-pt target",True,stop,-2.25,1717770566.6362016,2.0
+33,"3-pt stop, 7-pt target",True,stop,-3.25,1717771026.9971063,3.0
+33,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1717770566.6362016,2.0
+33,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1717770566.6362016,2.0
+33,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-4.25,1717771029.931115,4.0
+34,"2-pt stop, 4-pt target",True,stop,-2.25,1717771154.9678788,2.0
+34,"3-pt stop, 7-pt target",True,stop,-3.25,1717771160.703413,3.0
+34,"stop 1 pt past the test, target 2x the risk",True,stop,-2.5,1717771156.5730543,2.25
+34,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.5,1717771156.5730543,2.25
+34,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-4.0,1717771160.7099683,3.75
+35,"2-pt stop, 4-pt target",True,stop,-2.25,1717772770.5268188,2.0
+35,"3-pt stop, 7-pt target",True,stop,-3.25,1717772772.3365664,3.0
+35,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1717772770.5268188,2.0
+35,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1717772770.5268188,2.0
+35,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+36,"2-pt stop, 4-pt target",True,stop,-2.25,1717772770.5268188,2.0
+36,"3-pt stop, 7-pt target",True,stop,-3.25,1717772772.3365664,3.0
+36,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1717772770.5268188,2.0
+36,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1717772770.5268188,2.0
+36,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+38,"2-pt stop, 4-pt target",True,stop,-2.25,1717783530.7835844,2.0
+38,"3-pt stop, 7-pt target",True,stop,-3.25,1717783689.409356,3.0
+38,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1717783530.7835844,2.0
+38,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1717783530.7835844,2.0
+38,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-3.5,1717783689.4386415,3.25
+39,"2-pt stop, 4-pt target",True,stop,-2.25,1717783530.7835844,2.0
+39,"3-pt stop, 7-pt target",True,stop,-3.25,1717783689.409356,3.0
+39,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1717783530.7835844,2.0
+39,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1717783530.7835844,2.0
+39,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+40,"2-pt stop, 4-pt target",True,stop,-2.25,1717784871.1677103,2.0
+40,"3-pt stop, 7-pt target",True,stop,-3.25,1717784894.8717923,3.0
+40,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1717784871.1677103,2.0
+40,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1717784871.1677103,2.0
+40,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+41,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1717786924.124542,2.0
+41,"3-pt stop, 7-pt target",True,stop,-3.25,1717787596.114157,3.0
+41,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),4.0,1717786924.124542,2.0
+41,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1717787595.5638754,2.0
+41,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-4.0,1717787598.486361,3.75
+42,"2-pt stop, 4-pt target",True,stop,-2.25,1717787595.5638754,2.0
+42,"3-pt stop, 7-pt target",True,stop,-3.25,1717787596.114157,3.0
+42,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1717787595.5638754,2.0
+42,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+42,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+43,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1717787943.7026522,2.0
+43,"3-pt stop, 7-pt target",True,first target (no runner),7.0,1717788078.1011212,3.0
+43,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),4.5,1717787974.9509296,2.25
+43,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+43,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+44,"2-pt stop, 4-pt target",True,stop,-2.25,1717788497.1109414,2.0
+44,"3-pt stop, 7-pt target",True,stop,-3.25,1717788554.6445105,3.0
+44,"stop 1 pt past the test, target 2x the risk",True,stop,-2.0,1717788486.8245947,1.75
+44,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.0,1717788486.8245947,1.75
+44,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+45,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1722263915.068196,2.0
+45,"3-pt stop, 7-pt target",True,first target (no runner),7.0,1722264008.8472092,3.0
+45,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),3.5,1722263913.3302443,1.75
+45,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.0,1722264651.2102613,1.75
+45,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-3.0,1722265190.3890831,2.75
+46,"2-pt stop, 4-pt target",True,stop,-2.25,1722264651.2102613,2.0
+46,"3-pt stop, 7-pt target",True,stop,-3.25,1722265190.3890831,3.0
+46,"stop 1 pt past the test, target 2x the risk",True,stop,-2.0,1722264625.1098256,1.75
+46,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.0,1722264625.1098256,1.75
+46,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-3.25,1722265190.3890831,3.0
+47,"2-pt stop, 4-pt target",True,stop,-2.25,1722268168.7965834,2.0
+47,"3-pt stop, 7-pt target",True,stop,-3.25,1722268176.913219,3.0
+47,"stop 1 pt past the test, target 2x the risk",True,stop,-2.5,1722268169.3710291,2.25
+47,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.5,1722268169.3710291,2.25
+47,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-2.25,1722268168.7965834,2.0
+48,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1722278579.8638635,2.0
+48,"3-pt stop, 7-pt target",True,first target (no runner),7.0,1722279531.9358814,3.0
+48,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),3.5,1722278074.53589,1.75
+48,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+48,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+49,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1722279416.803658,2.0
+49,"3-pt stop, 7-pt target",True,first target (no runner),7.0,1722279673.6993299,3.0
+49,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),4.5,1722279517.648627,2.25
+49,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+49,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+50,"2-pt stop, 4-pt target",True,stop,-2.25,1722347422.595306,2.0
+50,"3-pt stop, 7-pt target",True,stop,-3.25,1722347674.0268223,3.0
+50,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1722347422.595306,2.0
+50,"stop 1 pt past the test, STRATEGY.md targets",False,no chop target,,,
+50,"stop 3 pts past the level, STRATEGY.md targets",False,no chop target,,,
+51,"2-pt stop, 4-pt target",True,stop,-2.25,1722347736.9002676,2.0
+51,"3-pt stop, 7-pt target",True,stop,-3.25,1722347746.472966,3.0
+51,"stop 1 pt past the test, target 2x the risk",True,stop,-2.0,1722347736.3314676,1.75
+51,"stop 1 pt past the test, STRATEGY.md targets",False,no chop target,,,
+51,"stop 3 pts past the level, STRATEGY.md targets",False,no chop target,,,
+52,"2-pt stop, 4-pt target",True,stop,-2.25,1722348076.8097975,2.0
+52,"3-pt stop, 7-pt target",True,stop,-3.25,1722348078.198516,3.0
+52,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1722348076.8097975,2.0
+52,"stop 1 pt past the test, STRATEGY.md targets",False,no chop target,,,
+52,"stop 3 pts past the level, STRATEGY.md targets",False,no chop target,,,
+53,"2-pt stop, 4-pt target",True,stop,-2.25,1722348096.3399787,2.0
+53,"3-pt stop, 7-pt target",True,stop,-3.25,1722348099.418838,3.0
+53,"stop 1 pt past the test, target 2x the risk",True,stop,-3.25,1722348099.418838,3.0
+53,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+53,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+54,"2-pt stop, 4-pt target",True,stop,-2.25,1722348335.6726375,2.0
+54,"3-pt stop, 7-pt target",True,stop,-3.25,1722348348.4224005,3.0
+54,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1722348335.6726375,2.0
+54,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+54,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+55,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1722349022.2675188,2.0
+55,"3-pt stop, 7-pt target",True,stop,-3.25,1722349112.2582705,3.0
+55,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),4.0,1722349022.2675188,2.0
+55,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+55,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+56,"2-pt stop, 4-pt target",True,stop,-2.25,1722349112.2582705,2.0
+56,"3-pt stop, 7-pt target",True,stop,-3.25,1722349138.1388035,3.0
+56,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1722349112.2582705,2.0
+56,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1722349112.2582705,2.0
+56,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+57,"2-pt stop, 4-pt target",True,stop,-2.25,1722350112.7200992,2.0
+57,"3-pt stop, 7-pt target",True,stop,-3.25,1722350125.8236322,3.0
+57,"stop 1 pt past the test, target 2x the risk",True,stop,-2.0,1722350112.4934928,1.75
+57,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.0,1722350112.4934928,1.75
+57,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-3.5,1722350126.490549,3.25
+58,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1722350587.9551516,2.0
+58,"3-pt stop, 7-pt target",True,stop,-3.25,1722350839.4468758,3.0
+58,"stop 1 pt past the test, target 2x the risk",True,stop,-2.5,1722350765.9220726,2.25
+58,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.5,1722350765.9220726,2.25
+58,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+59,"2-pt stop, 4-pt target",True,stop,-2.25,1722350850.467006,2.0
+59,"3-pt stop, 7-pt target",True,first target (no runner),7.0,1722351535.822547,3.0
+59,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1722350850.467006,2.0
+59,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+59,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+60,"2-pt stop, 4-pt target",True,stop,-2.25,1722351669.5352852,2.0
+60,"3-pt stop, 7-pt target",True,stop,-3.25,1722351684.7505288,3.0
+60,"stop 1 pt past the test, target 2x the risk",True,stop,-2.0,1722351667.8573005,1.75
+60,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.0,1722351667.8573005,1.75
+60,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-4.75,1722351699.502436,4.5
+61,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1722352078.8195498,2.0
+61,"3-pt stop, 7-pt target",True,first target (no runner),7.0,1722352244.864198,3.0
+61,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),3.5,1722352071.7592204,1.75
+61,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.0,1722353963.621941,1.75
+61,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-4.0,1722354088.4996073,3.75
+62,"2-pt stop, 4-pt target",True,stop,-2.25,1722353963.9550076,2.0
+62,"3-pt stop, 7-pt target",True,stop,-3.25,1722354017.331944,3.0
+62,"stop 1 pt past the test, target 2x the risk",True,stop,-2.0,1722353963.621941,1.75
+62,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.0,1722353963.621941,1.75
+62,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-4.0,1722354088.4996073,3.75
+63,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1722355851.4200866,2.0
+63,"3-pt stop, 7-pt target",True,first target (no runner),7.0,1722356287.7680473,3.0
+63,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),4.0,1722355851.4200866,2.0
+63,"stop 1 pt past the test, STRATEGY.md targets",True,first target + runner target,4.8,1722356537.7287865,2.0
+63,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+64,"2-pt stop, 4-pt target",True,stop,-2.25,1722358470.326019,2.0
+64,"3-pt stop, 7-pt target",True,stop,-3.25,1722358470.875656,3.0
+64,"stop 1 pt past the test, target 2x the risk",True,stop,-2.0,1722358470.3083205,1.75
+64,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.0,1722358470.3083205,1.75
+64,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-3.5,1722358475.3404427,3.25
+65,"2-pt stop, 4-pt target",True,stop,-2.25,1722361056.854602,2.0
+65,"3-pt stop, 7-pt target",True,stop,-3.25,1722361074.1776388,3.0
+65,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1722361056.854602,2.0
+65,"stop 1 pt past the test, STRATEGY.md targets",False,no chop target,,,
+65,"stop 3 pts past the level, STRATEGY.md targets",False,no chop target,,,
+66,"2-pt stop, 4-pt target",True,stop,-2.25,1722361093.9047844,2.0
+66,"3-pt stop, 7-pt target",True,stop,-3.25,1722362419.835597,3.0
+66,"stop 1 pt past the test, target 2x the risk",True,stop,-3.5,1722362419.835597,3.25
+66,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+66,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-3.25,1722362419.835597,3.0
+67,"2-pt stop, 4-pt target",True,stop,-2.25,1722365369.6033223,2.0
+67,"3-pt stop, 7-pt target",True,stop,-3.25,1722366105.679661,3.0
+67,"stop 1 pt past the test, target 2x the risk",True,stop,-2.0,1722365369.089802,1.75
+67,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.0,1722365369.089802,1.75
+67,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-3.0,1722366105.5329537,2.75
+68,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1722366837.3197088,2.0
+68,"3-pt stop, 7-pt target",True,stop,-3.25,1722367129.9497616,3.0
+68,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),4.0,1722366837.3197088,2.0
+68,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1722367063.7563927,2.0
+68,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-2.75,1722367112.0496738,2.5
+69,"2-pt stop, 4-pt target",True,stop,-2.25,1722434763.7837052,2.0
+69,"3-pt stop, 7-pt target",True,stop,-3.25,1722434890.0268936,3.0
+69,"stop 1 pt past the test, target 2x the risk",True,stop,-3.75,1722435000.2242703,3.5
+69,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+69,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+70,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1722450898.2414787,2.0
+70,"3-pt stop, 7-pt target",True,first target (no runner),7.0,1722450930.0737357,3.0
+70,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),4.0,1722450898.2414787,2.0
+70,"stop 1 pt past the test, STRATEGY.md targets",True,first target + runner target,9.025,1722451001.7779179,2.0
+70,"stop 3 pts past the level, STRATEGY.md targets",True,first target + runner target,9.025,1722451001.7779179,3.75
+71,"2-pt stop, 4-pt target",True,stop,-2.25,1722451306.8821683,2.0
+71,"3-pt stop, 7-pt target",True,stop,-3.25,1722451400.7569458,3.0
+71,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1722451306.8821683,2.0
+71,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1722451306.8821683,2.0
+71,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+72,"2-pt stop, 4-pt target",True,stop,-2.25,1722451705.3997564,2.0
+72,"3-pt stop, 7-pt target",True,stop,-3.25,1722451710.9548469,3.0
+72,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1722451705.3997564,2.0
+72,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1722451705.3997564,2.0
+72,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-4.25,1722451730.7069027,4.0
+73,"2-pt stop, 4-pt target",True,stop,-2.25,1722453587.4689744,2.0
+73,"3-pt stop, 7-pt target",True,stop,-3.25,1722453589.821684,3.0
+73,"stop 1 pt past the test, target 2x the risk",True,stop,-2.0,1722453587.1335661,1.75
+73,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.0,1722453587.1335661,1.75
+73,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-4.25,1722453601.4939852,4.0
+74,"2-pt stop, 4-pt target",True,stop,-2.25,1722453874.8266535,2.0
+74,"3-pt stop, 7-pt target",True,stop,-3.25,1722453880.523396,3.0
+74,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1722453874.8266535,2.0
+74,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1722453874.8266535,2.0
+74,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-4.0,1722453880.523417,3.75
+75,"2-pt stop, 4-pt target",True,stop,-2.25,1722519783.118938,2.0
+75,"3-pt stop, 7-pt target",True,stop,-3.25,1722519787.4305205,3.0
+75,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1722519783.118938,2.0
+75,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1722519783.118938,2.0
+75,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+76,"2-pt stop, 4-pt target",True,stop,-2.25,1722522145.4534767,2.0
+76,"3-pt stop, 7-pt target",True,stop,-3.25,1722522151.0218427,3.0
+76,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1722522145.4534767,2.0
+76,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1722522145.4534767,2.0
+76,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-2.5,1722522148.1627362,2.25
+77,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1722522361.2597578,2.0
+77,"3-pt stop, 7-pt target",True,first target (no runner),7.0,1722522550.8668454,3.0
+77,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),3.0,1722522358.4512036,1.5
+77,"stop 1 pt past the test, STRATEGY.md targets",False,no chop target,,,
+77,"stop 3 pts past the level, STRATEGY.md targets",False,no chop target,,,
+78,"2-pt stop, 4-pt target",True,stop,-2.25,1722523795.772011,2.0
+78,"3-pt stop, 7-pt target",True,first target (no runner),7.0,1722523837.6931963,3.0
+78,"stop 1 pt past the test, target 2x the risk",True,stop,-2.0,1722523792.769078,1.75
+78,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.0,1722523792.769078,1.75
+78,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+79,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1722524195.997675,2.0
+79,"3-pt stop, 7-pt target",True,stop,-3.25,1722524383.4821055,3.0
+79,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),4.5,1722524203.5571458,2.25
+79,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+79,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+80,"2-pt stop, 4-pt target",True,stop,-2.25,1722524383.4821055,2.0
+80,"3-pt stop, 7-pt target",True,stop,-3.25,1722524432.2981045,3.0
+80,"stop 1 pt past the test, target 2x the risk",True,stop,-2.0,1722524378.7481935,1.75
+80,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.0,1722524378.7481935,1.75
+80,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+81,"2-pt stop, 4-pt target",True,stop,-2.25,1722526561.6890001,2.0
+81,"3-pt stop, 7-pt target",True,stop,-3.25,1722526574.0753038,3.0
+81,"stop 1 pt past the test, target 2x the risk",True,stop,-2.75,1722526572.75723,2.5
+81,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+81,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+82,"2-pt stop, 4-pt target",True,stop,-2.25,1722526951.130042,2.0
+82,"3-pt stop, 7-pt target",True,stop,-3.25,1722527100.5806103,3.0
+82,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1722526951.130042,2.0
+82,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1722526951.130042,2.0
+82,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-3.25,1722527100.5806103,3.0
+83,"2-pt stop, 4-pt target",True,stop,-2.25,1722527100.6176257,2.0
+83,"3-pt stop, 7-pt target",True,stop,-3.25,1722527110.5049267,3.0
+83,"stop 1 pt past the test, target 2x the risk",True,stop,-3.0,1722527103.8329003,2.75
+83,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-3.0,1722527103.8329003,2.75
+83,"stop 3 pts past the level, STRATEGY.md targets",True,first target + runner stop,14.075,1722529311.003196,7.0
+84,"2-pt stop, 4-pt target",True,stop,-2.25,1722527539.9196098,2.0
+84,"3-pt stop, 7-pt target",True,stop,-3.25,1722527552.484201,3.0
+84,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1722527539.9196098,2.0
+84,"stop 1 pt past the test, STRATEGY.md targets",False,no chop target,,,
+84,"stop 3 pts past the level, STRATEGY.md targets",False,no chop target,,,
+85,"2-pt stop, 4-pt target",True,stop,-2.25,1722527973.0324454,2.0
+85,"3-pt stop, 7-pt target",True,stop,-3.25,1722527999.0321085,3.0
+85,"stop 1 pt past the test, target 2x the risk",True,stop,-2.0,1722527969.6854806,1.75
+85,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.0,1722527969.6854806,1.75
+85,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-4.0,1722528003.5605145,3.75
+86,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1722528162.253267,2.0
+86,"3-pt stop, 7-pt target",True,first target (no runner),7.0,1722528201.5413625,3.0
+86,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),4.0,1722528162.253267,2.0
+86,"stop 1 pt past the test, STRATEGY.md targets",True,first target + runner stop,14.75,1722529320.106853,2.0
+86,"stop 3 pts past the level, STRATEGY.md targets",True,first target + runner stop,14.75,1722529320.106853,6.25
+87,"2-pt stop, 4-pt target",True,stop,-2.25,1722528427.285395,2.0
+87,"3-pt stop, 7-pt target",True,stop,-3.25,1722528439.0831668,3.0
+87,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1722528427.285395,2.0
+87,"stop 1 pt past the test, STRATEGY.md targets",False,no chop target,,,
+87,"stop 3 pts past the level, STRATEGY.md targets",False,no chop target,,,
+88,"2-pt stop, 4-pt target",True,stop,-2.25,1722528674.243806,2.0
+88,"3-pt stop, 7-pt target",True,stop,-3.25,1722528683.3187358,3.0
+88,"stop 1 pt past the test, target 2x the risk",True,stop,-2.0,1722528674.010385,1.75
+88,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.0,1722528674.010385,1.75
+88,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+89,"2-pt stop, 4-pt target",True,stop,-2.25,1722529196.1964862,2.0
+89,"3-pt stop, 7-pt target",True,stop,-3.25,1722529254.8102467,3.0
+89,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1722529196.1964862,2.0
+89,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1722529196.1964862,2.0
+89,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+90,"2-pt stop, 4-pt target",True,stop,-2.25,1722529398.8607543,2.0
+90,"3-pt stop, 7-pt target",True,stop,-3.25,1722529443.0568388,3.0
+90,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1722529398.8607543,2.0
+90,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1722529398.8607543,2.0
+90,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-2.5,1722529399.8815272,2.25
+91,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1722529763.7375846,2.0
+91,"3-pt stop, 7-pt target",True,stop,-3.25,1722530109.9805243,3.0
+91,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),4.0,1722529763.7375846,2.0
+91,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1722530096.5334656,2.0
+91,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-6.25,1722530368.8761413,6.0
+92,"2-pt stop, 4-pt target",True,stop,-2.25,1722530097.0897942,2.0
+92,"3-pt stop, 7-pt target",True,stop,-3.25,1722530112.3398623,3.0
+92,"stop 1 pt past the test, target 2x the risk",True,stop,-2.0,1722530097.0897565,1.75
+92,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.0,1722530097.0897565,1.75
+92,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-5.75,1722530368.8761413,5.5
+93,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1722530201.6373603,2.0
+93,"3-pt stop, 7-pt target",True,stop,-3.25,1722530395.1371682,3.0
+93,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),4.0,1722530201.6373603,2.0
+93,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1722530368.8761225,2.0
+93,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-5.25,1722530401.614634,5.0
+94,"2-pt stop, 4-pt target",True,stop,-2.25,1722530396.4527338,2.0
+94,"3-pt stop, 7-pt target",True,stop,-3.25,1722530401.0006692,3.0
+94,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1722530396.4527338,2.0
+94,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1722530396.4527338,2.0
+94,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-3.75,1722530401.614634,3.5
+95,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1722533274.974848,2.0
+95,"3-pt stop, 7-pt target",True,first target (no runner),7.0,1722533349.9884703,3.0
+95,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),4.0,1722533274.974848,2.0
+95,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1722533765.2588508,2.0
+95,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-4.0,1722533772.5460188,3.75
+96,"2-pt stop, 4-pt target",True,stop,-2.25,1722533765.2588198,2.0
+96,"3-pt stop, 7-pt target",True,stop,-3.25,1722533768.526963,3.0
+96,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1722533765.2588198,2.0
+96,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1722533765.2588198,2.0
+96,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-4.25,1722533772.5460188,4.0
+97,"2-pt stop, 4-pt target",True,stop,-2.25,1722533896.0131054,2.0
+97,"3-pt stop, 7-pt target",True,stop,-3.25,1722533958.3111324,3.0
+97,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1722533896.0131054,2.0
+97,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1722533896.0131054,2.0
+97,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-4.0,1722533962.0672107,3.75
+98,"2-pt stop, 4-pt target",True,stop,-2.25,1722534865.7219684,2.0
+98,"3-pt stop, 7-pt target",True,stop,-3.25,1722534874.3173976,3.0
+98,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1722534865.7219684,2.0
+98,"stop 1 pt past the test, STRATEGY.md targets",False,no chop target,,,
+98,"stop 3 pts past the level, STRATEGY.md targets",False,no chop target,,,
+99,"2-pt stop, 4-pt target",True,stop,-2.25,1722535095.8056407,2.0
+99,"3-pt stop, 7-pt target",True,stop,-3.25,1722535158.0374305,3.0
+99,"stop 1 pt past the test, target 2x the risk",True,stop,-2.5,1722535143.7917008,2.25
+99,"stop 1 pt past the test, STRATEGY.md targets",False,no chop target,,,
+99,"stop 3 pts past the level, STRATEGY.md targets",False,no chop target,,,
+100,"2-pt stop, 4-pt target",True,stop,-2.25,1722535373.0114062,2.0
+100,"3-pt stop, 7-pt target",True,stop,-3.25,1722535503.56752,3.0
+100,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1722535373.0114062,2.0
+100,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1722535373.0114062,2.0
+100,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-3.0,1722535500.170851,2.75
+101,"2-pt stop, 4-pt target",True,stop,-2.25,1722535770.7237334,2.0
+101,"3-pt stop, 7-pt target",True,stop,-3.25,1722535807.8395522,3.0
+101,"stop 1 pt past the test, target 2x the risk",True,stop,-2.0,1722535754.4763234,1.75
+101,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.0,1722535754.4763234,1.75
+101,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-3.75,1722535807.895935,3.5
+102,"2-pt stop, 4-pt target",True,stop,-2.25,1722540414.0004644,2.0
+102,"3-pt stop, 7-pt target",True,stop,-3.25,1722540620.8352563,3.0
+102,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1722540414.0004644,2.0
+102,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1722540414.0004644,2.0
+102,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-3.75,1722540624.6852298,3.5
+103,"2-pt stop, 4-pt target",True,stop,-2.25,1722540624.6852298,2.0
+103,"3-pt stop, 7-pt target",True,stop,-3.25,1722540696.1199021,3.0
+103,"stop 1 pt past the test, target 2x the risk",True,stop,-2.0,1722540624.6851625,1.75
+103,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.0,1722540624.6851625,1.75
+103,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-2.25,1722540624.6852298,2.0
+136,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1727098500.0018632,2.0
+136,"3-pt stop, 7-pt target",True,first target (no runner),7.0,1727098550.765235,3.0
+136,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),4.0,1727098500.0018632,2.0
+136,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+136,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+137,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1727099497.0192301,2.0
+137,"3-pt stop, 7-pt target",True,first target (no runner),7.0,1727100017.7802205,3.0
+137,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),4.5,1727099517.4658031,2.25
+137,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+137,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+138,"2-pt stop, 4-pt target",True,stop,-2.25,1727100549.915682,2.0
+138,"3-pt stop, 7-pt target",True,stop,-3.25,1727100550.2330298,3.0
+138,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),3.5,1727100345.3218367,1.75
+138,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+138,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+139,"2-pt stop, 4-pt target",True,stop,-2.25,1727100527.9416883,2.0
+139,"3-pt stop, 7-pt target",True,stop,-3.25,1727100550.0591412,3.0
+139,"stop 1 pt past the test, target 2x the risk",True,stop,-2.5,1727100549.915682,2.25
+139,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+139,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+140,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1727100823.9274862,2.0
+140,"3-pt stop, 7-pt target",True,first target (no runner),7.0,1727100901.1825306,3.0
+140,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),3.5,1727100812.5392118,1.75
+140,"stop 1 pt past the test, STRATEGY.md targets",True,first target + runner stop,4.25,1727101140.634019,1.75
+140,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+141,"2-pt stop, 4-pt target",True,stop,-2.25,1727101159.1713889,2.0
+141,"3-pt stop, 7-pt target",True,stop,-3.25,1727101210.189801,3.0
+141,"stop 1 pt past the test, target 2x the risk",True,stop,-2.0,1727101159.1647668,1.75
+141,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+141,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-1.25,1727101159.0699968,1.0
+142,"2-pt stop, 4-pt target",True,stop,-2.25,1727101159.1713889,2.0
+142,"3-pt stop, 7-pt target",True,stop,-3.25,1727101210.189801,3.0
+142,"stop 1 pt past the test, target 2x the risk",True,stop,-2.0,1727101159.1647668,1.75
+142,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+142,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+143,"2-pt stop, 4-pt target",True,stop,-2.25,1727101220.781525,2.0
+143,"3-pt stop, 7-pt target",True,stop,-3.25,1727101392.6596599,3.0
+143,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1727101220.781525,2.0
+143,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1727101220.781525,2.0
+143,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+144,"2-pt stop, 4-pt target",True,stop,-2.25,1727102189.1762154,2.0
+144,"3-pt stop, 7-pt target",True,stop,-3.25,1727102363.341607,3.0
+144,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1727102189.1762154,2.0
+144,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+144,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+145,"2-pt stop, 4-pt target",True,stop,-2.25,1727102575.8403056,2.0
+145,"3-pt stop, 7-pt target",True,stop,-3.25,1727102581.4488823,3.0
+145,"stop 1 pt past the test, target 2x the risk",True,stop,-2.5,1727102576.0661402,2.25
+145,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+145,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+146,"2-pt stop, 4-pt target",True,stop,-2.25,1727102859.7565536,2.0
+146,"3-pt stop, 7-pt target",True,stop,-3.25,1727103237.0951252,3.0
+146,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1727102859.7565536,2.0
+146,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1727102859.7565536,2.0
+146,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+147,"2-pt stop, 4-pt target",True,stop,-2.25,1727103786.0288384,2.0
+147,"3-pt stop, 7-pt target",True,stop,-3.25,1727103791.8104787,3.0
+147,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1727103786.0288384,2.0
+147,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+147,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+148,"2-pt stop, 4-pt target",True,stop,-2.25,1727105085.779483,2.0
+148,"3-pt stop, 7-pt target",True,stop,-3.25,1727105121.0282264,3.0
+148,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1727105085.779483,2.0
+148,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+148,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+149,"2-pt stop, 4-pt target",True,stop,-2.25,1727105595.4715917,2.0
+149,"3-pt stop, 7-pt target",True,stop,-3.25,1727106000.1325674,3.0
+149,"stop 1 pt past the test, target 2x the risk",True,stop,-2.5,1727105608.5655167,2.25
+149,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+149,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+150,"2-pt stop, 4-pt target",True,stop,-2.25,1727107825.8825114,2.0
+150,"3-pt stop, 7-pt target",True,stop,-3.25,1727107826.984049,3.0
+150,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1727107825.8825114,2.0
+150,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+150,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+151,"2-pt stop, 4-pt target",True,stop,-2.25,1727109926.2656832,2.0
+151,"3-pt stop, 7-pt target",True,stop,-3.25,1727109926.2682714,3.0
+151,"stop 1 pt past the test, target 2x the risk",True,stop,-5.0,1727110867.2772987,4.75
+151,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+151,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+152,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1727111044.361513,2.0
+152,"3-pt stop, 7-pt target",True,first target (no runner),7.0,1727112005.8551466,3.0
+152,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),4.0,1727111044.361513,2.0
+152,"stop 1 pt past the test, STRATEGY.md targets",True,first target + runner target,5.05,1727112794.8470318,2.0
+152,"stop 3 pts past the level, STRATEGY.md targets",True,first target + runner target,5.05,1727112794.8470318,1.75
+153,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1727115988.958738,2.0
+153,"3-pt stop, 7-pt target",True,stop,-3.25,1727120059.0135534,3.0
+153,"stop 1 pt past the test, target 2x the risk",True,stop,-2.5,1727120036.3955898,2.25
+153,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+153,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+154,"2-pt stop, 4-pt target",True,stop,-2.25,1727118350.5803251,2.0
+154,"3-pt stop, 7-pt target",True,stop,-3.25,1727120042.0576015,3.0
+154,"stop 1 pt past the test, target 2x the risk",True,stop,-2.5,1727120005.3295212,2.25
+154,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+154,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+155,"2-pt stop, 4-pt target",True,stop,-2.25,1727185804.9556634,2.0
+155,"3-pt stop, 7-pt target",True,stop,-3.25,1727186230.4915285,3.0
+155,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1727185804.9556634,2.0
+155,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1727185804.9556634,2.0
+155,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-4.25,1727186367.6243029,4.0
+156,"2-pt stop, 4-pt target",True,stop,-2.25,1727186379.4909194,2.0
+156,"3-pt stop, 7-pt target",True,stop,-3.25,1727186402.210019,3.0
+156,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1727186379.4909194,2.0
+156,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1727186379.4909194,2.0
+156,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-4.25,1727186411.8841934,4.0
+158,"2-pt stop, 4-pt target",True,stop,-2.25,1727186582.8699074,2.0
+158,"3-pt stop, 7-pt target",True,stop,-3.25,1727186585.3762841,3.0
+158,"stop 1 pt past the test, target 2x the risk",True,stop,-2.0,1727186582.8444626,1.75
+158,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.0,1727186582.8444626,1.75
+158,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-3.5,1727186585.4009178,3.25
+159,"2-pt stop, 4-pt target",True,stop,-2.25,1727186855.513823,2.0
+159,"3-pt stop, 7-pt target",True,stop,-3.25,1727186870.630202,3.0
+159,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1727186855.513823,2.0
+159,"stop 1 pt past the test, STRATEGY.md targets",False,no chop target,,,
+159,"stop 3 pts past the level, STRATEGY.md targets",False,no chop target,,,
+160,"2-pt stop, 4-pt target",True,stop,-2.25,1727186870.630202,2.0
+160,"3-pt stop, 7-pt target",True,stop,-3.25,1727186965.3339353,3.0
+160,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1727186870.630202,2.0
+160,"stop 1 pt past the test, STRATEGY.md targets",False,no chop target,,,
+160,"stop 3 pts past the level, STRATEGY.md targets",False,no chop target,,,
+161,"2-pt stop, 4-pt target",True,stop,-2.25,1727187489.4895172,2.0
+161,"3-pt stop, 7-pt target",True,stop,-3.25,1727187780.072166,3.0
+161,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1727187489.4895172,2.0
+161,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1727187489.4895172,2.0
+161,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+162,"2-pt stop, 4-pt target",True,stop,-2.25,1727187904.3136353,2.0
+162,"3-pt stop, 7-pt target",True,first target (no runner),7.0,1727188599.6282394,3.0
+162,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1727187904.3136353,2.0
+162,"stop 1 pt past the test, STRATEGY.md targets",False,no chop target,,,
+162,"stop 3 pts past the level, STRATEGY.md targets",False,no chop target,,,
+163,"2-pt stop, 4-pt target",True,stop,-2.25,1727189191.4613333,2.0
+163,"3-pt stop, 7-pt target",True,stop,-3.25,1727189191.541343,3.0
+163,"stop 1 pt past the test, target 2x the risk",True,stop,-2.5,1727189191.4630406,2.25
+163,"stop 1 pt past the test, STRATEGY.md targets",False,no chop target,,,
+163,"stop 3 pts past the level, STRATEGY.md targets",False,no chop target,,,
+164,"2-pt stop, 4-pt target",True,stop,-2.25,1727189824.6622117,2.0
+164,"3-pt stop, 7-pt target",True,stop,-3.25,1727189841.2621427,3.0
+164,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1727189824.6622117,2.0
+164,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+164,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+165,"2-pt stop, 4-pt target",True,stop,-2.25,1727190694.6804376,2.0
+165,"3-pt stop, 7-pt target",True,stop,-3.25,1727190694.6806114,3.0
+165,"stop 1 pt past the test, target 2x the risk",True,stop,-2.5,1727190694.6805801,2.25
+165,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+165,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+166,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1727191561.227349,2.0
+166,"3-pt stop, 7-pt target",True,first target (no runner),7.0,1727193129.669948,3.0
+166,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),4.0,1727191561.227349,2.0
+166,"stop 1 pt past the test, STRATEGY.md targets",True,first target + runner target,8.625,1727193223.2615342,2.0
+166,"stop 3 pts past the level, STRATEGY.md targets",True,first target + runner target,8.625,1727193223.2615342,4.0
+167,"2-pt stop, 4-pt target",True,stop,-2.25,1727193258.2674181,2.0
+167,"3-pt stop, 7-pt target",True,stop,-3.25,1727193258.7049832,3.0
+167,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1727193258.2674181,2.0
+167,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1727193258.2674181,2.0
+167,"stop 3 pts past the level, STRATEGY.md targets",True,first target + runner stop,10.25,1727202826.4596162,5.0
+168,"2-pt stop, 4-pt target",True,stop,-2.25,1727196019.1307974,2.0
+168,"3-pt stop, 7-pt target",True,stop,-3.25,1727196100.630636,3.0
+168,"stop 1 pt past the test, target 2x the risk",True,stop,-2.5,1727196095.3213735,2.25
+168,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.5,1727196095.3213735,2.25
+168,"stop 3 pts past the level, STRATEGY.md targets",True,first target + runner stop,10.025,1727202825.3441122,5.25
+169,"2-pt stop, 4-pt target",True,stop,-2.25,1727202618.3990395,2.0
+169,"3-pt stop, 7-pt target",True,stop,-3.25,1727202621.5842924,3.0
+169,"stop 1 pt past the test, target 2x the risk",True,stop,-2.5,1727202620.2161677,2.25
+169,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+169,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+170,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1727202673.2332096,2.0
+170,"3-pt stop, 7-pt target",True,first target (no runner),7.0,1727202905.6181927,3.0
+170,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),4.0,1727202673.2332096,2.0
+170,"stop 1 pt past the test, STRATEGY.md targets",True,first target + runner target,8.65,1727203198.9161026,2.0
+170,"stop 3 pts past the level, STRATEGY.md targets",True,first target + runner target,8.65,1727203198.9161026,3.0
+171,"2-pt stop, 4-pt target",True,stop,-2.25,1727274387.8886292,2.0
+171,"3-pt stop, 7-pt target",True,stop,-3.25,1727275688.428219,3.0
+171,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1727274387.8886292,2.0
+171,"stop 1 pt past the test, STRATEGY.md targets",False,no chop target,,,
+171,"stop 3 pts past the level, STRATEGY.md targets",False,no chop target,,,
+172,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1727275891.581121,2.0
+172,"3-pt stop, 7-pt target",True,stop,-3.25,1727279534.3490815,3.0
+172,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),4.5,1727275893.047303,2.25
+172,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+172,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+173,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1727278698.3662953,2.0
+173,"3-pt stop, 7-pt target",True,stop,-3.25,1727279534.431725,3.0
+173,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),4.0,1727278698.3662953,2.0
+173,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+173,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+174,"2-pt stop, 4-pt target",True,stop,-2.25,1727279286.0947425,2.0
+174,"3-pt stop, 7-pt target",True,stop,-3.25,1727279534.3014052,3.0
+174,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1727279286.0947425,2.0
+174,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+174,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+176,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1727283665.8079586,2.0
+176,"3-pt stop, 7-pt target",True,first target (no runner),7.0,1727283770.186684,3.0
+176,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),3.5,1727283659.4310012,1.75
+176,"stop 1 pt past the test, STRATEGY.md targets",True,first target + runner stop,9.125,1727284159.241696,1.75
+176,"stop 3 pts past the level, STRATEGY.md targets",True,first target + runner stop,9.125,1727284159.241696,2.0
+177,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1727284695.9879644,2.0
+177,"3-pt stop, 7-pt target",True,stop,-3.25,1727285700.5021882,3.0
+177,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),4.0,1727284695.9879644,2.0
+177,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+177,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+179,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1727286130.3199604,2.0
+179,"3-pt stop, 7-pt target",True,stop,-3.25,1727286877.9043686,3.0
+179,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),4.0,1727286130.3199604,2.0
+179,"stop 1 pt past the test, STRATEGY.md targets",False,no chop target,,,
+179,"stop 3 pts past the level, STRATEGY.md targets",False,no chop target,,,
+180,"2-pt stop, 4-pt target",True,stop,-2.25,1727286793.318381,2.0
+180,"3-pt stop, 7-pt target",True,stop,-3.25,1727286829.3938093,3.0
+180,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1727286793.318381,2.0
+180,"stop 1 pt past the test, STRATEGY.md targets",False,no chop target,,,
+180,"stop 3 pts past the level, STRATEGY.md targets",False,no chop target,,,
+181,"2-pt stop, 4-pt target",True,stop,-2.25,1727288086.6796978,2.0
+181,"3-pt stop, 7-pt target",True,stop,-3.25,1727288106.4584467,3.0
+181,"stop 1 pt past the test, target 2x the risk",True,stop,-2.5,1727288086.7096279,2.25
+181,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+181,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+182,"2-pt stop, 4-pt target",True,stop,-2.25,1727288106.5334752,2.0
+182,"3-pt stop, 7-pt target",True,stop,-3.25,1727288106.8288598,3.0
+182,"stop 1 pt past the test, target 2x the risk",True,stop,-2.5,1727288106.533495,2.25
+182,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.5,1727288106.533495,2.25
+182,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+183,"2-pt stop, 4-pt target",True,stop,-2.25,1727288333.1068473,2.0
+183,"3-pt stop, 7-pt target",True,stop,-3.25,1727288724.1021104,3.0
+183,"stop 1 pt past the test, target 2x the risk",True,stop,-2.5,1727288335.0613234,2.25
+183,"stop 1 pt past the test, STRATEGY.md targets",False,no chop target,,,
+183,"stop 3 pts past the level, STRATEGY.md targets",False,no chop target,,,
+184,"2-pt stop, 4-pt target",True,stop,-2.25,1727357440.798321,2.0
+184,"3-pt stop, 7-pt target",True,stop,-3.25,1727357456.588909,3.0
+184,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1727357440.798321,2.0
+184,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+184,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+185,"2-pt stop, 4-pt target",True,stop,-2.25,1727360944.6547604,2.0
+185,"3-pt stop, 7-pt target",True,first target (no runner),7.0,1727361524.84597,3.0
+185,"stop 1 pt past the test, target 2x the risk",True,stop,-2.25,1727360944.6547604,2.0
+185,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.25,1727360944.6547604,2.0
+185,"stop 3 pts past the level, STRATEGY.md targets",True,stop,-3.75,1727362087.0549095,3.5
+186,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1727361946.5688677,2.0
+186,"3-pt stop, 7-pt target",True,stop,-3.25,1727362085.5390136,3.0
+186,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),4.0,1727361946.5688677,2.0
+186,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+186,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+188,"2-pt stop, 4-pt target",True,stop,-2.25,1727362339.9999921,2.0
+188,"3-pt stop, 7-pt target",True,stop,-3.25,1727362340.0681872,3.0
+188,"stop 1 pt past the test, target 2x the risk",True,stop,-2.5,1727362340.0001705,2.25
+188,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+188,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+189,"2-pt stop, 4-pt target",True,stop,-2.25,1727362532.0327728,2.0
+189,"3-pt stop, 7-pt target",True,stop,-3.25,1727362532.0333061,3.0
+189,"stop 1 pt past the test, target 2x the risk",True,stop,-3.75,1727362552.1797876,3.5
+189,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+189,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+190,"2-pt stop, 4-pt target",True,stop,-2.25,1727362804.323983,2.0
+190,"3-pt stop, 7-pt target",True,stop,-3.25,1727362804.606886,3.0
+190,"stop 1 pt past the test, target 2x the risk",True,stop,-2.5,1727362804.3344417,2.25
+190,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.5,1727362804.3344417,2.25
+190,"stop 3 pts past the level, STRATEGY.md targets",True,first target + runner stop,9.8,1727366599.6775365,4.25
+191,"2-pt stop, 4-pt target",True,stop,-2.25,1727362804.606886,2.0
+191,"3-pt stop, 7-pt target",True,first target (no runner),7.0,1727363104.7251637,3.0
+191,"stop 1 pt past the test, target 2x the risk",True,stop,-2.0,1727362804.3345253,1.75
+191,"stop 1 pt past the test, STRATEGY.md targets",True,stop,-2.0,1727362804.3345253,1.75
+191,"stop 3 pts past the level, STRATEGY.md targets",True,first target + runner stop,6.425,1727363144.458698,3.25
+192,"2-pt stop, 4-pt target",True,first target (no runner),4.0,1727365150.982178,2.0
+192,"3-pt stop, 7-pt target",True,first target (no runner),7.0,1727365507.6902719,3.0
+192,"stop 1 pt past the test, target 2x the risk",True,first target (no runner),4.5,1727365151.9438088,2.25
+192,"stop 1 pt past the test, STRATEGY.md targets",True,first target + runner stop,6.2,1727365615.9533234,2.25
+192,"stop 3 pts past the level, STRATEGY.md targets",True,first target + runner stop,6.2,1727365615.9533234,2.75
+193,"2-pt stop, 4-pt target",True,stop,-2.25,1727368888.6688006,2.0
+193,"3-pt stop, 7-pt target",True,stop,-3.25,1727368888.725691,3.0
+193,"stop 1 pt past the test, target 2x the risk",True,stop,-2.0,1727368888.6684768,1.75
+193,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+193,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+194,"2-pt stop, 4-pt target",True,stop,-2.25,1727370968.209279,2.0
+194,"3-pt stop, 7-pt target",True,stop,-3.25,1727370975.7174034,3.0
+194,"stop 1 pt past the test, target 2x the risk",True,stop,-3.75,1727370976.4599164,3.5
+194,"stop 1 pt past the test, STRATEGY.md targets",False,first target under 2x the risk,,,
+194,"stop 3 pts past the level, STRATEGY.md targets",False,first target under 2x the risk,,,
+195,"2-pt stop, 4-pt target",True,stop,-2.25,1727371851.4685009,2.0
+195,"3-pt stop, 7-pt target",True,stop,-3.25,1727371908.0209308,3.0
+195,"stop 1 pt past the test, target 2x the risk",True,stop,-2.5,1727371851.468513,2.25
+195,"stop 1 pt past the test, STRATEGY.md targets",False,no chop target,,,
+195,"stop 3 pts past the level, STRATEGY.md targets",False,no chop target,,,

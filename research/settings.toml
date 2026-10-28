@@ -210,3 +210,65 @@ exits = "fixed"
 stop_points = 2
 target_points = 4
 max_trades = 3
+
+[book_study]
+# Build step 3: the owner's Bookmap read at tests of marked levels, on the full order book.
+# All values are proposals (TBD in STRATEGY.md) until the owner settles them.
+level_area_points = 1.0          # "at or around" a level: within this of it (zones: of their edges)
+test_arm_points = 5.0            # a test needs price to have been this far away first
+test_break_points = 3.0          # this far through the level = the test failed
+turn_points = 1.0                # entry once price trades this far back off the test's extreme (2 ticks fired on bid/ask bounce)
+max_test_minutes = 5             # the turn must come within this long of the test start
+line_lookback_minutes = 5        # a line must be there in the minutes before the test
+line_multiple = 2.0              # a line = this many times the day's typical size per price
+delta_seconds = 10               # owner: delta "starts to skew" the trade's way
+burst_contracts_es = 50          # ES absorption burst size (the owner's MES add-on setting is 100; ES setting TBD)
+burst_contracts_mes = 100
+check_stop_points = 2            # quick check of each test: 4 points before 2 against, within 30 minutes
+check_target_points = 4
+check_minutes = 30
+owner_match_minutes = 10         # an owner trade "took" a test if entered this soon after it, same way,
+owner_match_points = 1.0         # within this of the level area
+max_trades_per_day = 3           # bot vs owner: up to 3 trades a day, one at a time (the owner's median)
+slippage_ticks = 1               # on market entries and stops
+flatten_et = "15:59"
+
+# Exit styles compared on every test (owner, Oct 2026: "try 3 and 7, and the STRATEGY.md targets").
+# stop: "fixed" (stop_points from the fill), "past test" (stop_points past the test's low or high),
+#       "past level" (stop_points past the level).
+# target: "fixed" (target_points from the fill), "risk multiple" (target_multiple x the risk),
+#         "strategy" (STRATEGY.md section 3: first target = top of the last 1-minute chop before
+#         the move into the level, runner = low of that chop and breakout; skipped if the first
+#         target is under min_reward_to_risk x the risk).
+[[book_study.exits]]
+name = "2-pt stop, 4-pt target"
+stop = "fixed"
+stop_points = 2
+target = "fixed"
+target_points = 4
+
+[[book_study.exits]]
+name = "3-pt stop, 7-pt target"
+stop = "fixed"
+stop_points = 3
+target = "fixed"
+target_points = 7
+
+[[book_study.exits]]
+name = "stop 1 pt past the test, target 2x the risk"
+stop = "past test"
+stop_points = 1
+target = "risk multiple"
+target_multiple = 2.0
+
+[[book_study.exits]]
+name = "stop 1 pt past the test, STRATEGY.md targets"
+stop = "past test"
+stop_points = 1
+target = "strategy"
+
+[[book_study.exits]]
+name = "stop 3 pts past the level, STRATEGY.md targets"
+stop = "past level"
+stop_points = 3
+target = "strategy"

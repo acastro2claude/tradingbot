@@ -1,0 +1,27 @@
+exit,who,trades,win_rate,net_usd,same_as_you
+"2-pt stop, 4-pt target",bot A every level test,69,0.30434782608695654,-2055.6,7.0
+"2-pt stop, 4-pt target",bot B line held at the level,56,0.23214285714285715,-2931.9,1.0
+"2-pt stop, 4-pt target",bot C line held + eaten + stacking,51,0.21568627450980393,-2932.4,2.0
+"2-pt stop, 4-pt target",bot D full read (C + delta + absorption),22,0.18181818181818182,-1497.8,1.0
+"2-pt stop, 4-pt target","bot E eaten + stacking, no line needed",68,0.3088235294117647,-1930.7,6.0
+"3-pt stop, 7-pt target",bot A every level test,68,0.23529411764705882,-3693.2,8.0
+"3-pt stop, 7-pt target",bot B line held at the level,54,0.25925925925925924,-2557.1,1.0
+"3-pt stop, 7-pt target",bot C line held + eaten + stacking,49,0.24489795918367346,-2707.6,2.0
+"3-pt stop, 7-pt target",bot D full read (C + delta + absorption),21,0.14285714285714285,-2135.4,1.0
+"3-pt stop, 7-pt target","bot E eaten + stacking, no line needed",67,0.26865671641791045,-2493.3,7.0
+"stop 1 pt past the test, target 2x the risk",bot A every level test,69,0.3333333333333333,-2305.6,7.0
+"stop 1 pt past the test, target 2x the risk",bot B line held at the level,55,0.2545454545454545,-2782.0,1.0
+"stop 1 pt past the test, target 2x the risk",bot C line held + eaten + stacking,50,0.24,-2620.0,2.0
+"stop 1 pt past the test, target 2x the risk",bot D full read (C + delta + absorption),22,0.13636363636363635,-1847.8,1.0
+"stop 1 pt past the test, target 2x the risk","bot E eaten + stacking, no line needed",68,0.3235294117647059,-1655.7,6.0
+"stop 1 pt past the test, STRATEGY.md targets",bot A every level test,57,0.14035087719298245,-1619.3000000000002,8.0
+"stop 1 pt past the test, STRATEGY.md targets",bot B line held at the level,42,0.09523809523809523,-2562.05,2.0
+"stop 1 pt past the test, STRATEGY.md targets",bot C line held + eaten + stacking,36,0.1111111111111111,-1302.65,2.0
+"stop 1 pt past the test, STRATEGY.md targets",bot D full read (C + delta + absorption),14,0.07142857142857142,-1416.1,1.0
+"stop 1 pt past the test, STRATEGY.md targets","bot E eaten + stacking, no line needed",54,0.1111111111111111,-2564.6,7.0
+"stop 3 pts past the level, STRATEGY.md targets",bot A every level test,42,0.23809523809523808,361.6999999999998,4.0
+"stop 3 pts past the level, STRATEGY.md targets",bot B line held at the level,29,0.20689655172413793,-588.3499999999998,1.0
+"stop 3 pts past the level, STRATEGY.md targets",bot C line held + eaten + stacking,23,0.17391304347826086,-443.9499999999998,1.0
+"stop 3 pts past the level, STRATEGY.md targets",bot D full read (C + delta + absorption),7,0.0,-1574.3,1.0
+"stop 3 pts past the level, STRATEGY.md targets","bot E eaten + stacking, no line needed",40,0.225,-485.99999999999994,5.0
+(your own exits),you (journal),126,0.3412698412698413,-1410.1200000000008,

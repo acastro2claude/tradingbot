@@ -37,7 +37,7 @@ import pandas as pd
 
 from research.journal_replay import es_context
 from research.journal_study import OUT
-from research.level_study import RAW
+from research.level_study import DERIVED, RAW
 from research.level_test_book import (OWNER_MATCH_S, OWNER_MATCH_TICKS, TestReader, day_bursts, find_tests,
                                       marked_levels, owner_traded)
 from research.level_test_study import owner_trades, summarise
@@ -47,10 +47,18 @@ from research.orderbook_study import typical_depth
 from research.settings import load_settings
 
 BOOK_DIR = RAW / "es_weeks_mbo"
-STOP_TICKS, TARGET_TICKS, SLIP_TICKS = 8, 16, 1
-MAX_TRADES = 3
-ES_POINT = 50.0
-BURST_MIN = 50                   # proposed for ES (owner's MES setting is 100; ES setting TBD)
+TRADES_DIR = DERIVED / "es_weeks_trades"      # each day's trades, saved so exits can be re-run without the book
+_S = load_settings()
+_B = _S["book_study"]
+TICK = _S["market"]["tick_size"]
+STOP_TICKS = int(round(_B["check_stop_points"] / TICK))       # the basic 2-pt stop, 4-pt target exit
+TARGET_TICKS = int(round(_B["check_target_points"] / TICK))
+SLIP_TICKS = _B["slippage_ticks"]
+MAX_TRADES = _B["max_trades_per_day"]
+FLAT_ET = _B["flatten_et"]
+CONTRACTS = _S["bot"]["contracts_per_trade"]                  # 10 MES = 1 ES
+ES_POINT = _S["market"]["point_value_usd"] * CONTRACTS        # $ per point for the whole position
+BURST_MIN = _B["burst_contracts_es"]
 CTX = {}
 
 
@@ -65,6 +73,8 @@ def one_day(row) -> pd.DataFrame | None:
         return None
     day = row["day"]
     book = build_book(load_mbo(f), int(et(day, "08:00")), int(et(day, "16:00")))
+    TRADES_DIR.mkdir(parents=True, exist_ok=True)
+    book.trades.to_parquet(TRADES_DIR / f"{row['es']}_{day}.parquet", index=False)
     reader = TestReader(book, typical_depth(book), day_bursts(book, s["bot"]["absorption_burst_seconds"], 20))
     session = pd.Timestamp(session_dates(pd.Series([pd.Timestamp(et(day, "12:00"), unit="s", tz="UTC")])).iat[0])
     levels = marked_levels(sessions, zones, session, int(offsets[row["es"]]), et(day, "09:30"), et(day, "15:30"),
@@ -76,7 +86,7 @@ def one_day(row) -> pd.DataFrame | None:
     reads = pd.DataFrame([reader.read(x.time, x.direction, x.lo, x.hi, x.edge) for x in tests.itertuples()])
     tests = pd.concat([tests.reset_index(drop=True), reads], axis=1)
     # exit of a trade taken at each test's entry: 2-pt stop, 4-pt target, flat at 15:59
-    flat = et(day, "15:59")
+    flat = et(day, FLAT_ET)
     ex = [trade_exit(reader, r.entry_time, r.entry_price, r.direction, flat) if r.turn == "turned" else (np.nan,) * 3
           for r in tests.itertuples()]
     tests[["points", "exit_time", "exit_how"]] = pd.DataFrame(ex, index=tests.index)
@@ -98,10 +108,10 @@ def trade_exit(reader: TestReader, t_in: float, entry: int, d: int, flat: float)
     b = b[0] if len(b) else np.inf
     if a == b == np.inf:
         k = j - 1
-        return (reader.px[k] - fill) * d * 0.25, float(reader.t[k]), "flat at close"
+        return (reader.px[k] - fill) * d * TICK, float(reader.t[k]), "flat at close"
     if a < b:
-        return TARGET_TICKS * 0.25, float(reader.t[i + a]), "target"
-    return -(STOP_TICKS + SLIP_TICKS) * 0.25, float(reader.t[i + b]), "stop"
+        return TARGET_TICKS * TICK, float(reader.t[i + a]), "target"
+    return -(STOP_TICKS + SLIP_TICKS) * TICK, float(reader.t[i + b]), "stop"
 
 
 RULES = {
@@ -191,7 +201,7 @@ def main() -> None:
     reads = summarise(tests, BURST_MIN)          # every test, not just the ones the bot could take
     reads.to_csv(OUT / "level_tests_es_weeks_summary.csv", index=False)
 
-    cost = 10 * s["backtest"]["commission_per_contract_round_trip"]
+    cost = CONTRACTS * s["backtest"]["commission_per_contract_round_trip"]
     by_read = reads_after_costs(tests, cost)
     by_read.to_csv(OUT / "level_tests_es_weeks_after_costs.csv", index=False)
     rows = []

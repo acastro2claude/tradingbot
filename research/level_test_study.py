@@ -25,7 +25,8 @@ from research.settings import load_settings
 
 BOOKS = {"MES": (RAW / "journal_mbo", "orderbook_price_plan.csv", "mes"),
          "ES": (RAW / "journal_es_mbo", "es_orderbook_price_plan.csv", "es")}
-BURST_SIZES = {"MES": 100, "ES": 50}     # proposed for ES: the owner's MES setting is 100; ES setting TBD
+BURST_SIZES = {"MES": load_settings()["book_study"]["burst_contracts_mes"],
+               "ES": load_settings()["book_study"]["burst_contracts_es"]}
 
 
 def owner_trades() -> pd.DataFrame:

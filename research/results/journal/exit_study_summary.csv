@@ -1,0 +1,36 @@
+exit,read,tests,traded,win_rate,avg_win,avg_loss,usd_per_trade
+"2-pt stop, 4-pt target",A every level test,221,221,0.248868778280543,4.0,-2.25,-47.128506787330316
+"2-pt stop, 4-pt target",B line held at the level,99,99,0.23232323232323232,4.0,-2.25,-52.2989898989899
+"2-pt stop, 4-pt target",C line held + eaten + stacking,80,80,0.25,4.0,-2.25,-46.775
+"2-pt stop, 4-pt target",D full read (C + delta + absorption),25,25,0.2,4.0,-2.25,-62.4
+"2-pt stop, 4-pt target","E eaten + stacking, no line needed",179,179,0.2737430167597765,4.0,-2.25,-39.35530726256983
+"2-pt stop, 4-pt target",line before + stacking + delta,38,38,0.2894736842105263,4.0,-2.25,-34.439473684210526
+"2-pt stop, 4-pt target",line sat at one price 60 s+,103,103,0.22330097087378642,4.0,-2.25,-55.11844660194174
+"3-pt stop, 7-pt target",A every level test,221,221,0.2081447963800905,6.875,-3.25,-69.52669683257919
+"3-pt stop, 7-pt target",B line held at the level,99,99,0.20202020202020202,6.7125,-3.25,-74.26868686868687
+"3-pt stop, 7-pt target",C line held + eaten + stacking,80,80,0.225,6.680555555555555,-3.25,-63.18125
+"3-pt stop, 7-pt target",D full read (C + delta + absorption),25,25,0.16,7.0,-3.25,-92.9
+"3-pt stop, 7-pt target","E eaten + stacking, no line needed",179,179,0.22905027932960895,6.859756097560975,-3.25,-59.117877094972066
+"3-pt stop, 7-pt target",line before + stacking + delta,38,38,0.18421052631578946,7.0,-3.25,-80.49210526315791
+"3-pt stop, 7-pt target",line sat at one price 60 s+,103,103,0.21359223300970873,6.738636363636363,-3.25,-68.22524271844661
+"stop 1 pt past the test, target 2x the risk",A every level test,221,221,0.25339366515837103,4.0625,-2.453030303030303,-52.50180995475113
+"stop 1 pt past the test, target 2x the risk",B line held at the level,99,99,0.24242424242424243,4.041666666666667,-2.36,-52.8040404040404
+"stop 1 pt past the test, target 2x the risk",C line held + eaten + stacking,80,80,0.2625,4.0476190476190474,-2.3220338983050848,-44.9
+"stop 1 pt past the test, target 2x the risk",D full read (C + delta + absorption),25,25,0.16,4.0,-2.2857142857142856,-76.4
+"stop 1 pt past the test, target 2x the risk","E eaten + stacking, no line needed",179,179,0.2737430167597765,4.081632653061225,-2.2846153846153845,-39.49497206703911
+"stop 1 pt past the test, target 2x the risk",line before + stacking + delta,38,38,0.2631578947368421,3.95,-2.294642857142857,-44.96578947368421
+"stop 1 pt past the test, target 2x the risk",line sat at one price 60 s+,103,103,0.23300970873786409,4.083333333333333,-2.4272151898734178,-57.90970873786408
+"stop 1 pt past the test, STRATEGY.md targets",A every level test,221,116,0.1206896551724138,9.8125,-2.252450980392157,-52.216810344827586
+"stop 1 pt past the test, STRATEGY.md targets",B line held at the level,99,59,0.0847457627118644,12.135,-2.2824074074074074,-65.42966101694915
+"stop 1 pt past the test, STRATEGY.md targets",C line held + eaten + stacking,80,47,0.0851063829787234,13.90625,-2.2848837209302326,-57.74574468085106
+"stop 1 pt past the test, STRATEGY.md targets",D full read (C + delta + absorption),25,15,0.06666666666666667,5.15,-2.3035714285714284,-102.73333333333335
+"stop 1 pt past the test, STRATEGY.md targets","E eaten + stacking, no line needed",179,97,0.1134020618556701,9.902272727272727,-2.244186046511628,-55.737628865979374
+"stop 1 pt past the test, STRATEGY.md targets",line before + stacking + delta,38,22,0.045454545454545456,5.15,-2.261904761904762,-108.65
+"stop 1 pt past the test, STRATEGY.md targets",line sat at one price 60 s+,103,66,0.12121212121212122,10.5375,-2.2844827586206895,-48.915151515151514
+"stop 3 pts past the level, STRATEGY.md targets",A every level test,221,76,0.23684210526315788,11.834722222222222,-3.7327586206896552,-14.686184210526314
+"stop 3 pts past the level, STRATEGY.md targets",B line held at the level,99,36,0.19444444444444445,13.385714285714286,-3.9655172413793105,-41.983333333333334
+"stop 3 pts past the level, STRATEGY.md targets",C line held + eaten + stacking,80,26,0.15384615384615385,17.20625,-3.9431818181818183,-46.87115384615384
+"stop 3 pts past the level, STRATEGY.md targets",D full read (C + delta + absorption),25,8,0.0,,-4.65625,-245.2125
+"stop 3 pts past the level, STRATEGY.md targets","E eaten + stacking, no line needed",179,61,0.21311475409836064,11.917307692307691,-3.7552083333333335,-33.15819672131148
+"stop 3 pts past the level, STRATEGY.md targets",line before + stacking + delta,38,15,0.0,,-4.316666666666666,-228.23333333333332
+"stop 3 pts past the level, STRATEGY.md targets",line sat at one price 60 s+,103,45,0.2222222222222222,12.367500000000001,-3.9214285714285713,-27.483333333333334
