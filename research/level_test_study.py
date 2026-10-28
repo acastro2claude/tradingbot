@@ -50,11 +50,11 @@ def summarise(x: pd.DataFrame, burst_min: int) -> pd.DataFrame:
         "line still there when price arrived (half or more left)": (e["line_before"] >= 2) & (e["line_left_share"] >= 0.5),
         "orders eaten at the level during the test": e["eaten"] > 0,
         "more orders joined than were pulled (stacking)": e["stacking"] > 0,
-        "delta last 30 s the trade's way": e["delta_30s"] > 0,
+        "delta last 10 s the trade's way": e["delta_10s"] > 0,
         f"fitting absorption {burst_min}+ at the level": e["absorption_max"] >= burst_min,
-        "line before + stacking + delta": (e["line_before"] >= 2) & (e["stacking"] > 0) & (e["delta_30s"] > 0),
+        "line before + stacking + delta": (e["line_before"] >= 2) & (e["stacking"] > 0) & (e["delta_10s"] > 0),
         "full read: line before + stacking + delta + absorption": (e["line_before"] >= 2) & (e["stacking"] > 0)
-        & (e["delta_30s"] > 0) & (e["absorption_max"] >= burst_min),
+        & (e["delta_10s"] > 0) & (e["absorption_max"] >= burst_min),
         "you traded this test": e["owner_points"].notna(),
         "you did not trade this test": e["owner_points"].isna(),
     }

@@ -16,23 +16,34 @@ Run from the repo root:   python -m research.es_orderbook_price_plan
 from __future__ import annotations
 
 import time
+from concurrent.futures import ThreadPoolExecutor
 
 import pandas as pd
+import requests
 
-from research.databento_http import get_cost
+from research.databento_http import BASE_URL, DATASET
 from research.journal_study import ES_BARS, ES_SYMBOLOGY, OUT
 
 WEEKS = ["2024-06-03", "2024-07-29", "2024-04-08", "2024-09-23", "2024-02-26"]   # Mondays
 
 
 def quote(symbol: str, schema: str, start: str, end: str) -> float:
-    for attempt in range(3):
+    """Free price quote, with a short timeout and retries (some requests hang)."""
+    params = dict(dataset=DATASET, symbols=symbol, schema=schema, start=start, end=end, stype_in="raw_symbol")
+    for attempt in range(5):
         try:
-            return get_cost(symbol, schema, start, end, "raw_symbol")
+            r = requests.get(f"{BASE_URL}/metadata.get_cost", params=params, timeout=20)
+            r.raise_for_status()
+            return float(r.text)
         except Exception as err:                       # network hiccup: try again
-            print("retry", symbol, start, err)
-            time.sleep(3)
+            print("retry", symbol, schema, start, type(err).__name__, flush=True)
+            time.sleep(2)
     raise RuntimeError(f"no quote for {symbol} {start}")
+
+
+def quote_all(jobs: list[tuple]) -> list[float]:
+    with ThreadPoolExecutor(max_workers=6) as pool:
+        return list(pool.map(lambda j: quote(*j), jobs))
 
 
 def utc(day: str, hhmm: str) -> str:
@@ -55,10 +66,12 @@ def main() -> None:
         es = r.mes.replace("MES", "ES")
         look = (pd.Timestamp(r.start) - pd.Timedelta(minutes=30)).strftime("%Y-%m-%dT%H:%M")
         rows.append(dict(day=r.day, es=es, trades=r.trades, start=r.start, end=r.end,
-                         mbo_start=f"{r.day}T00:00", mbp10_start=look,
-                         es_mbo=quote(es, "mbo", f"{r.day}T00:00", r.end),
-                         es_mbp10=quote(es, "mbp-10", look, r.end)))
+                         mbo_start=f"{r.day}T00:00", mbp10_start=look))
     q = pd.DataFrame(rows)
+    q["es_mbo"] = quote_all([(x.es, "mbo", x.mbo_start, x.end) for x in q.itertuples()])
+    print("journal days: full book priced", flush=True)
+    q["es_mbp10"] = quote_all([(x.es, "mbp-10", x.mbp10_start, x.end) for x in q.itertuples()])
+    print("journal days: top 10 levels priced", flush=True)
     q.to_csv(OUT / "es_orderbook_price_plan.csv", index=False)
 
     front = front_contracts()
@@ -69,10 +82,11 @@ def main() -> None:
             if day not in front.index:
                 continue                               # market holiday
             es = front[day]
-            wrows.append(dict(week=monday, day=day, es=es,
-                              es_mbo=quote(es, "mbo", f"{day}T00:00", utc(day, "16:00")),
-                              es_mbp10=quote(es, "mbp-10", utc(day, "09:30"), utc(day, "16:00"))))
+            wrows.append(dict(week=monday, day=day, es=es, mbo_start=f"{day}T00:00",
+                              rth_start=utc(day, "09:30"), rth_end=utc(day, "16:00")))
     w = pd.DataFrame(wrows)
+    w["es_mbo"] = quote_all([(x.es, "mbo", x.mbo_start, x.rth_end) for x in w.itertuples()])
+    w["es_mbp10"] = quote_all([(x.es, "mbp-10", x.rth_start, x.rth_end) for x in w.itertuples()])
     w.to_csv(OUT / "es_week_price_plan.csv", index=False)
 
     busy = pd.read_csv(OUT / "orderbook_price_plan.csv").head(20)["day"]

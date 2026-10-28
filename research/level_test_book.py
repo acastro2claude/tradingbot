@@ -20,7 +20,7 @@ at each moment:
     price arrived (pulled before arrival)
   - during the test (start to entry), in the level area on the holding side:
     contracts filled ("eaten"), added and pulled; more added than pulled = stacking
-  - delta over the 30 seconds before the entry, in the trade's direction
+  - delta over the 10 seconds before the entry, in the trade's direction (owner: "starts to skew")
   - absorption bursts of the fitting colour in the level area, from 1 minute
     before the test to the entry
   - outcome from the entry (market order at the bid/ask): 4 points in favour
@@ -46,10 +46,10 @@ from research.touches import touch_events
 AREA_TICKS = 4            # proposed: "at or around" a level = within 1 point of it (zones: of its edges)
 ARM_TICKS = 20            # a test needs price to have been 5 points away first (level study setting)
 BREAK_TICKS = 12          # 3 points through the level = the test failed (stop buffer)
-TURN_TICKS = 2            # entry once price trades 2 ticks back from the test's extreme (owner: median 0.5 pt)
+TURN_TICKS = 4            # proposed: entry once price trades 1 point back from the test's extreme (2 ticks fired on bid/ask bounce)
 MAX_TEST_S = 300          # the turn must come within 5 minutes of the test start
 LINE_LOOKBACK_S = 300
-DELTA_S = 30
+DELTA_S = 10
 TARGET_TICKS, STOP_TICKS, HORIZON_S = 16, 8, 1800
 OWNER_MATCH_S, OWNER_MATCH_TICKS = 600, 4
 
@@ -159,7 +159,7 @@ class TestReader:
                    eaten=int(filled), added=int(added), pulled=int(pulled),
                    stacking=int(added) - int(pulled),
                    hold_depth_at_entry=int(depth_in.sum()) if depth_in.size else 0,
-                   delta_30s=self.delta(t_in - DELTA_S, t_in) * d,
+                   delta_10s=self.delta(t_in - DELTA_S, t_in) * d,
                    delta_test=self.delta(t0, t_in) * d,
                    absorption_max=int(fit["contracts"].max()) if len(fit) else 0,
                    absorption_count=len(fit),
