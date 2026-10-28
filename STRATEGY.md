@@ -76,10 +76,12 @@ Proposed defaults for the bot (**TBD**, for the owner to confirm):
 - **Low-volume areas:** price is expected to move through these quickly.
 - The long-term POC and value area (the range holding about 70% of the volume) serve as extra levels and targets.
 
-### 1d. Resting-order lines (TBD)
+### 1d. Resting-order lines
 
 - In example 1, the reaction happened at a heatmap line of heavy resting orders (5540). After that day's gap down, the previous days' POCs were likely far above.
-- **TBD:** whether lines of large resting orders should count as levels.
+- **Owner (Oct 2026):** resting orders mean nothing unless they sit at or around a level already marked (POCs, supply and demand zones). Away from marked levels they are usually pulled before price gets there. So a line does not make a level on its own; it confirms a marked level.
+  - The order book data agrees: on the owner's busiest days, big lines anywhere near price did not hold price on their own (`research/results/journal/REPORT.md`).
+- **TBD:** how big an order must be to count as a line (Bookmap shades it dark relative to what's on screen), and how close to the marked level it must sit.
 
 ### 1e. Recent uncovered POCs (level source B: how the owner trades now)
 
@@ -118,6 +120,19 @@ The bot copies the read currently done by eye in Bookmap. That read uses volume 
 - **Delta and CVD:** delta is aggressive buy volume minus aggressive sell volume. CVD (cumulative volume delta) is the running total of delta through the session. The bot compares the CVD highs (or lows) at the first test of a level and at the retest.
 - **Volume at the level on each test:** how much traded at and near the level the first time price reached it, compared with the retest.
 - **Order book:** the size of resting bids and asks at and near the level, and whether they refill after being hit.
+
+### The read in the owner's words (Oct 2026)
+
+Example: a long at a demand zone that has previous days' POCs inside it (a near-perfect setup). Mirror it for a short.
+
+1. The heatmap shows a line of large resting bids (dark) at the marked level.
+2. Price comes down to test it. Watch whether the bids get eaten, or whether even more resting bids join the book at the level.
+3. As the bids are being eaten, the volume delta starts to skew toward buyers. That adds conviction that price may reverse up.
+4. More conviction again with buyer absorption markers at those prices and more resting bids coming in to hold price.
+5. Then look for the long entry.
+
+- In 2024 the owner most likely watched the ES heatmap in Bookmap, even when trading MES.
+- The journal replay shows the entry usually comes once price has already started to turn (median 0.5 points in the trade's direction in the last 5 seconds).
 
 ### Setup (example: short after price rises into a level)
 
