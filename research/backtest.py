@@ -258,18 +258,23 @@ def retest_trigger(sess: Session, d: int, L: int, t_first: float, s: dict, lates
     return float(tt[it]) if weaker else None
 
 
-def run_session(sess: Session, s: dict, v: dict, news: list):
-    """The day's trade for one variant (at most one), as a dict, or None.
+def run_session(sess: Session, s: dict, v: dict, news: list) -> list[dict]:
+    """The day's trades for one variant, as a list of dicts.
 
-    v: a variant from settings [[backtest.variants]] (name, source, entry, start_et,
-    front_only, min_contracts, min_bursts, check_seconds, check_ticks, slippage_ticks).
+    v: a variant from settings [[backtest.variants]] (name, source, entry, start_et, end_et,
+    front_only, min_contracts, min_bursts, check_seconds, check_ticks, slippage_ticks,
+    exits, stop_points, target_points, max_trades).
+    exits = "spec" (default): stop 3 points past the level, first target at the
+    start of the move, runner. exits = "fixed" (journal style): stop and target a
+    fixed distance from the entry, all contracts out at the target.
+    A new trade can only start after the previous one has closed.
     """
     bt, bot = s["backtest"], s["bot"]
     tol = ticks(bt["level_tolerance_points"], s)
     stop_buf = ticks(bot["stop_buffer_points"], s)
     max_risk = ticks(bot["max_entry_distance_points"] + bot["stop_buffer_points"], s)
     start = _hhmm_to_ts(sess.date, v.get("start_et", "09:30"))
-    cutoff = _hhmm_to_ts(sess.date, bt["entry_cutoff_et"])
+    cutoff = _hhmm_to_ts(sess.date, v.get("end_et", bt["entry_cutoff_et"]))
     flatten = _hhmm_to_ts(sess.date, bt["flatten_et"])
     flatten = min([flatten] + [f for _, _, f in news if f > _hhmm_to_ts(sess.date, "09:30")])
     latest = min(cutoff, flatten)
@@ -277,9 +282,14 @@ def run_session(sess: Session, s: dict, v: dict, news: list):
     y, x = v.get("check_seconds", 0), v.get("check_ticks", -1)
     slip = v["slippage_ticks"]
     b = sess.bursts
+    fixed = v.get("exits", "spec") == "fixed"
+    max_trades = v.get("max_trades", bot["max_trades_per_day"])
+    trades, busy_until, day_usd = [], -np.inf, 0.0
     tried = {}                                           # retest mode: level -> time it was last tried
     for r in b.itertuples():
-        if r.contracts < v.get("min_contracts", 100):
+        if len(trades) >= max_trades or day_usd <= -bot["daily_loss_limit_usd"]:
+            break
+        if r.end_time <= busy_until or r.contracts < v.get("min_contracts", 100):
             continue
         d = int(r.direction)
         level = find_level(sess, v["source"], int(r.price), d, r.end_time, tol, v.get("front_only", False))
@@ -310,29 +320,40 @@ def run_session(sess: Session, s: dict, v: dict, news: list):
             continue
         fill_t = ft_arr[j]
         entry = int(fp_arr[j]) + d * slip              # slippage: short sells lower
-        stop = level - d * stop_buf
-        risk = (stop - entry) * -d
-        if risk <= 0 or risk > max_risk:
-            continue
-        tg = targets(sess, d, entry, fill_t)
-        if tg is None:
-            continue
-        ft, rt = tg
-        if (ft - entry) * d < bot["min_reward_to_risk"] * risk:
-            continue
+        if fixed:
+            stop = entry - d * ticks(v["stop_points"], s)
+            ft = rt = entry + d * ticks(v["target_points"], s)
+            risk = ticks(v["stop_points"], s)
+            first_contracts = bot["contracts_per_trade"]
+        else:
+            stop = level - d * stop_buf
+            risk = (stop - entry) * -d
+            if risk <= 0 or risk > max_risk:
+                continue
+            tg = targets(sess, d, entry, fill_t)
+            if tg is None:
+                continue
+            ft, rt = tg
+            if (ft - entry) * d < bot["min_reward_to_risk"] * risk:
+                continue
+            first_contracts = bot["first_target_contracts"]
         i0 = int(np.searchsorted(sess.t, fill_t, "left"))
-        res = simulate_trade(sess.p, sess.t, i0, entry, d, stop, ft, rt, flatten, slip)
+        res = simulate_trade(sess.p, sess.t, i0, entry, d, stop, ft, rt, flatten, slip,
+                             contracts=bot["contracts_per_trade"], first_contracts=first_contracts,
+                             runner_lock=ticks(bot["runner_stop_after_first_target_points"], s))
         cost = bt["commission_per_contract_round_trip"] * bot["contracts_per_trade"]
         usd = res.points * s["market"]["point_value_usd"] - cost
+        busy_until = res.exit_time
+        day_usd += usd
         tk = s["market"]["tick_size"]
-        return dict(session=sess.date, variant=v["name"], source=v["source"], slippage_ticks=slip,
+        trades.append(dict(session=sess.date, variant=v["name"], source=v["source"], slippage_ticks=slip,
                     side="short" if d == -1 else "long", burst_time=r.end_time, burst_contracts=r.contracts,
                     entry_time=fill_t, level=level * tk, entry=entry * tk, stop=stop * tk,
                     first_target=ft * tk, runner_target=rt * tk, risk_points=risk * tk,
                     reward_points=(ft - entry) * d * tk, exit_reason=res.exit_reason,
                     first_target_hit=res.first_target_hit, points=res.points, usd=usd,
-                    exit_time=res.exit_time)
-    return None
+                    exit_time=res.exit_time))
+    return trades
 
 
 # ---------------------------------------------------------------- whole backtest
@@ -408,9 +429,7 @@ def main() -> None:
     rows = []
     for sess in days:
         for v in variants:
-            r = run_session(sess, s, v, news.get(sess.date, []))
-            if r:
-                rows.append(r)
+            rows += run_session(sess, s, v, news.get(sess.date, []))
     trades = pd.DataFrame(rows)
     STEP2_OUT.mkdir(parents=True, exist_ok=True)
     trades.to_csv(STEP2_OUT / "backtest_trades.csv", index=False)

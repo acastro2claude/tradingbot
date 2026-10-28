@@ -173,3 +173,40 @@ entry = "retest"
 front_only = true
 start_et = "10:00"
 min_contracts = 150
+
+# Journal-style exits (the owner's 2024 trades: median loss 2.0 points, median win 4.0,
+# about 3 trades a day, mostly 9:30-11:00 ET). Stop and target measured from the entry.
+[[backtest.variants]]
+name = "8a journal-style exits 2/4, early entry"
+sources = ["your levels (POC or zone)", "no level"]
+exits = "fixed"
+stop_points = 2
+target_points = 4
+max_trades = 3
+
+[[backtest.variants]]
+name = "8b journal-style exits 2/5, early entry"
+sources = ["your levels (POC or zone)", "no level"]
+exits = "fixed"
+stop_points = 2
+target_points = 5
+max_trades = 3
+
+[[backtest.variants]]
+name = "8c journal-style exits 2/4, 09:30-11:30 only"
+sources = ["your levels (POC or zone)", "no level"]
+exits = "fixed"
+stop_points = 2
+target_points = 4
+max_trades = 3
+end_et = "11:30"
+
+[[backtest.variants]]
+name = "8d journal-style exits 2/4, retest entry"
+sources = ["your levels (POC or zone)", "no level"]
+entry = "retest"
+front_only = true
+exits = "fixed"
+stop_points = 2
+target_points = 4
+max_trades = 3
