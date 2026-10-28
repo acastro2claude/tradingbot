@@ -15,3 +15,4 @@ Costs are Databento's quote taken right before each download.
 | 2026-10-27 | MESM6 trades, regular hours, session 2026-05-14: connection dropped mid-download (sandbox proxy restart), file discarded. May have been billed. | trades | 2026-05-14T13:30 to 2026-05-14T20:00 | $0.35 | $111.27 |
 | 2026-10-27 | MES trades, regular hours 09:30-16:00 ET, 84 sessions (step 2 backtest) | trades | sessions 2026-04-27 to 2026-10-23 | $29.94 | $81.33 |
 | 2026-10-27 | MES trades, regular hours 09:30-16:00 ET, 33 sessions (step 2 backtest) | trades | sessions 2026-04-27 to 2026-10-23 | $9.98 | $71.35 |
+| 2026-10-28 | ES 1-min bars, all contracts (checking journal timestamps) | ohlcv-1m | 2024-01-16 to 2025-03-21 | $2.50 | $68.85 |
