@@ -134,6 +134,9 @@ def main() -> None:
         if not f.exists():
             continue
         m = load_day(f, s)
+        if len(m["tt"]) < 100:                      # contract barely traded in this window
+            print(f"skip {f.name}: only {len(m['tt'])} trades")
+            continue
         d = np.where(g["side"] == "long", 1, -1)
         t_in = epoch_seconds(g["entry_time"])
         t_out = epoch_seconds(g["exit_time"])
