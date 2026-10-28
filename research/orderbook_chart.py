@@ -32,7 +32,9 @@ CHARTS = OUT / "orderbook_charts"
 
 
 def draw(book: Book, t_in: float, d: int, entry: float, t_out: float, exit_: float, points: float,
-         title: str, path, before_s: int = 360, after_s: int = 240, half_points: float = 8.0) -> None:
+         title: str, path, before_s: int = 360, after_s: int = 240, half_points: float = 8.0,
+         who: str = "your", level: float | None = None, others: list | None = None) -> None:
+    """others: extra trades to mark, as (entry time, price, direction, label)."""
     r0 = max(book.row(t_in) - before_s, 0)
     r1 = min(book.row(max(t_out, t_in)) + after_s // 2, len(book.bid) - 1)
     r1 = max(r1, min(book.row(t_in) + after_s, len(book.bid) - 1))
@@ -60,11 +62,16 @@ def draw(book: Book, t_in: float, d: int, entry: float, t_out: float, exit_: flo
         g = big[big["side"] == side]
         ax.scatter(g["sec"] + 0.5, g["price"] * 0.25, s=np.clip(g["size"], 20, 600) / 2, c=colour,
                    marker=marker, edgecolors=INK, linewidths=0.4, alpha=0.9, zorder=3, label=label)
+    if level is not None:
+        ax.axhline(level, color=INK, lw=1, ls="--", zorder=2, label=f"marked level {level:.2f}")
     ax.scatter([t_in - x0], [entry], s=120, marker="v" if d == -1 else "^", c=INK, zorder=4,
-               label=f"your {'short' if d == -1 else 'long'} at {entry:.2f}")
+               label=f"{who} {'short' if d == -1 else 'long'} at {entry:.2f}")
+    for t_o, p_o, d_o, lab in others or []:
+        ax.scatter([t_o - x0], [p_o], s=120, marker="v" if d_o == -1 else "^", facecolors=SURFACE,
+                   edgecolors=INK, linewidths=1.5, zorder=4, label=lab)
     ax.scatter([t_out - x0], [exit_], s=90, marker="X", c=INK, zorder=4, label=f"exit {exit_:.2f} ({points:+.2f} pts)")
 
-    ticks = np.arange(0, r1 - r0 + 1, 60)
+    ticks = np.arange((60 - x0 % 60) % 60, r1 - r0 + 1, 60)        # on whole minutes
     ax.set_xticks(ticks)
     ax.set_xticklabels([pd.Timestamp(x0 + k, unit="s", tz="UTC").tz_convert("America/New_York").strftime("%H:%M")
                         for k in ticks], color=MUTED)

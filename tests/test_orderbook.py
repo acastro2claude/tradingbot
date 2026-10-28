@@ -62,3 +62,38 @@ def test_depth_grid_by_second():
     assert f.loc[(2, BID, 399), "pulled"] == 4
     assert check_book(book)["crossed_seconds"] == 0
     assert isinstance(book.trades, pd.DataFrame) and len(book.trades) == 1
+
+
+def _reader(prices, times):
+    """A TestReader over a tiny synthetic day: trades at the given prices (points) and times (s)."""
+    from research.level_test_book import TestReader
+    from research.orderbook import Book
+    tr = pd.DataFrame(dict(t=np.asarray(times, float) + T0, price=(np.asarray(prices) / 0.25).astype(np.int64),
+                           size=1, side="A"))
+    empty = np.zeros((10, 5), dtype=np.int32)
+    book = Book(t0=T0 - 5, lo=390, bid=empty, ask=empty,
+                flows=pd.DataFrame(columns=["sec", "side", "price", "added", "pulled", "filled"]), trades=tr)
+    bursts = pd.DataFrame(columns=["time", "end_time", "side", "price", "contracts", "trades", "colour", "direction"])
+    return TestReader(book, 100.0, bursts)
+
+
+def test_turn_needs_one_point_back_before_breaking():
+    # long test at 100.00: dips to 99.50, then trades back up to 100.50 (1 point off the low)
+    r = _reader([100.00, 99.75, 99.50, 99.75, 100.25, 100.50], [0, 1, 2, 3, 4, 5])
+    t, how = r.turn(T0 + 0, 1, 400)
+    assert how == "turned" and t == T0 + 5
+    # breaks 3 points through the level before turning: no entry
+    r = _reader([100.00, 99.00, 98.00, 97.00, 98.00], [0, 1, 2, 3, 4])
+    assert r.turn(T0 + 0, 1, 400) == (None, "broke first")
+
+
+def test_bot_exit_stop_target_and_slippage():
+    from research.bot_week_study import trade_exit
+    # long filled at 100.00 + 1 tick: target 4 points above the fill
+    r = _reader([100.00, 101.00, 104.25, 105.00], [0, 1, 2, 3])
+    pts, t, how = trade_exit(r, T0 - 1, 400, 1, T0 + 100)
+    assert how == "target" and pts == 4.0 and t == T0 + 2
+    # stop 2 points below the fill, plus 1 tick slippage
+    r = _reader([100.00, 98.75, 98.00, 97.75], [0, 1, 2, 3])
+    pts, t, how = trade_exit(r, T0 - 1, 400, 1, T0 + 100)
+    assert how == "stop" and pts == -2.25 and t == T0 + 2

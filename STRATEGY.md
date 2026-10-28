@@ -283,6 +283,8 @@ Every number below is an adjustable setting. The defaults come from this spec.
 3. **Add the order book:** test the resting-order signals with historical book data.
 
    **First look (Oct 2026, full MES book for the owner's 20 busiest journal days in 2024–2025, 163 trades):** the owner's entries came once price had already started their way. Compared with random moments that had the same move, the orders in the path of the trade were being pulled faster than they were added more often (51% vs 40%). Big resting lines next to the entry were rare, and on their own they did not hold price. None of the book readings tested separated winners from losers. These 20 days were also the owner's losing days (26% win rate, −$6,015), and the journal trades are mostly ES while this book is MES. Details: `research/results/journal/REPORT.md`.
+
+   **ES book, five whole weeks of 2024 (Oct 2026, 23 days):** the owner's read was coded as a bot (marked level, line at the level, eaten and stacking, delta, absorption, entry on a 1-point turn; 2-point stop, 4-point target, 1 tick slippage). Over 221 level tests, no version reached break-even (about 40% wins needed). The best was line + stacking + delta at 32% wins (38 tests). The full read won 24% (25 tests). Over the same days, the owner made 126 trades and lost $1,410. The bot's versions lost between $557 and $2,307. The owner traded only 13 of the 230 tests. The thresholds are proposals awaiting the owner's check on the charts.
 4. **Live bot:** a NinjaScript strategy, tested in this order:
    - Market Replay (past days replayed, order book included)
    - Sim account

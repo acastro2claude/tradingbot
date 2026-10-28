@@ -1,0 +1,56 @@
+week,who,trades,wins,win_rate,points,net_usd,same_as_you
+2024-02-26,you (journal),48,14,0.2916666666666667,-34.875,-2525.0,
+2024-02-26,bot A every level test,15,7,0.4666666666666667,10.0,314.0,2.0
+2024-02-26,bot A every level test (09:30-11:00),15,7,0.4666666666666667,10.0,314.0,2.0
+2024-02-26,bot B line held at the level,13,4,0.3076923076923077,-4.25,-373.70000000000005,1.0
+2024-02-26,bot B line held at the level (09:30-11:00),10,3,0.3,-3.75,-311.5,1.0
+2024-02-26,bot C line held + eaten + stacking,13,4,0.3076923076923077,-4.25,-373.70000000000005,2.0
+2024-02-26,bot C line held + eaten + stacking (09:30-11:00),10,3,0.3,-3.75,-311.5,2.0
+2024-02-26,bot D full read (C + delta + absorption),6,2,0.3333333333333333,-1.0,-124.4,1.0
+2024-02-26,bot D full read (C + delta + absorption) (09:30-11:00),2,1,0.5,1.75,62.7,1.0
+2024-02-26,"bot E eaten + stacking, no line needed",15,7,0.4666666666666667,10.0,314.0,2.0
+2024-02-26,"bot E eaten + stacking, no line needed (09:30-11:00)",15,7,0.4666666666666667,10.0,314.0,2.0
+2024-04-08,you (journal),26,10,0.38461538461538464,6.125,21.639999999999873,
+2024-04-08,bot A every level test,15,4,0.26666666666666666,-8.75,-623.5,2.0
+2024-04-08,bot A every level test (09:30-11:00),12,4,0.3333333333333333,-2.0,-248.8,2.0
+2024-04-08,bot B line held at the level,12,3,0.25,-8.25,-561.3,0.0
+2024-04-08,bot B line held at the level (09:30-11:00),9,2,0.2222222222222222,-7.75,-499.1,0.0
+2024-04-08,bot C line held + eaten + stacking,12,3,0.25,-8.25,-561.3,0.0
+2024-04-08,bot C line held + eaten + stacking (09:30-11:00),9,2,0.2222222222222222,-7.75,-499.1,0.0
+2024-04-08,bot D full read (C + delta + absorption),8,1,0.125,-11.75,-686.7,0.0
+2024-04-08,bot D full read (C + delta + absorption) (09:30-11:00),6,1,0.16666666666666666,-7.25,-436.9,0.0
+2024-04-08,"bot E eaten + stacking, no line needed",15,4,0.26666666666666666,-8.75,-623.5,2.0
+2024-04-08,"bot E eaten + stacking, no line needed (09:30-11:00)",12,4,0.3333333333333333,-2.0,-248.8,2.0
+2024-06-03,you (journal),20,10,0.5,15.25,648.8999999999999,
+2024-06-03,bot A every level test,15,2,0.13333333333333333,-21.25,-1248.5,2.0
+2024-06-03,bot A every level test (09:30-11:00),9,2,0.2222222222222222,-7.75,-499.1,2.0
+2024-06-03,bot B line held at the level,13,3,0.23076923076923078,-10.5,-686.2,0.0
+2024-06-03,bot B line held at the level (09:30-11:00),5,1,0.2,-5.0,-312.0,0.0
+2024-06-03,bot C line held + eaten + stacking,13,3,0.23076923076923078,-10.5,-686.2,0.0
+2024-06-03,bot C line held + eaten + stacking (09:30-11:00),5,1,0.2,-5.0,-312.0,0.0
+2024-06-03,bot D full read (C + delta + absorption),4,1,0.25,-2.75,-187.1,0.0
+2024-06-03,bot D full read (C + delta + absorption) (09:30-11:00),1,0,0.0,-2.25,-124.9,0.0
+2024-06-03,"bot E eaten + stacking, no line needed",14,2,0.14285714285714285,-19.0,-1123.6,1.0
+2024-06-03,"bot E eaten + stacking, no line needed (09:30-11:00)",7,1,0.14285714285714285,-9.5,-561.8,1.0
+2024-07-29,you (journal),12,5,0.4166666666666667,18.25,844.3399999999997,
+2024-07-29,bot A every level test,12,3,0.25,-8.25,-561.3,0.0
+2024-07-29,bot A every level test (09:30-11:00),9,2,0.2222222222222222,-7.75,-499.1,0.0
+2024-07-29,bot B line held at the level,9,3,0.3333333333333333,-1.5,-186.60000000000002,0.0
+2024-07-29,bot B line held at the level (09:30-11:00),7,2,0.2857142857142857,-3.25,-249.3,0.0
+2024-07-29,bot C line held + eaten + stacking,8,2,0.25,-5.5,-374.2,0.0
+2024-07-29,bot C line held + eaten + stacking (09:30-11:00),6,2,0.3333333333333333,-1.0,-124.4,0.0
+2024-07-29,bot D full read (C + delta + absorption),1,0,0.0,-2.25,-124.9,0.0
+2024-07-29,bot D full read (C + delta + absorption) (09:30-11:00),1,0,0.0,-2.25,-124.9,0.0
+2024-07-29,"bot E eaten + stacking, no line needed",12,3,0.25,-8.25,-561.3,0.0
+2024-07-29,"bot E eaten + stacking, no line needed (09:30-11:00)",7,2,0.2857142857142857,-3.25,-249.3,0.0
+2024-09-23,you (journal),20,4,0.2,-5.875,-400.0,
+2024-09-23,bot A every level test,12,6,0.5,10.5,376.2,1.0
+2024-09-23,bot A every level test (09:30-11:00),11,5,0.45454545454545453,6.5,188.6,1.0
+2024-09-23,bot B line held at the level,9,2,0.2222222222222222,-7.75,-499.1,0.0
+2024-09-23,bot B line held at the level (09:30-11:00),2,0,0.0,-4.5,-249.8,0.0
+2024-09-23,bot C line held + eaten + stacking,5,1,0.2,-5.0,-312.0,0.0
+2024-09-23,bot C line held + eaten + stacking (09:30-11:00),1,0,0.0,-2.25,-124.9,0.0
+2024-09-23,bot D full read (C + delta + absorption),3,1,0.3333333333333333,-0.5,-62.2,0.0
+2024-09-23,bot D full read (C + delta + absorption) (09:30-11:00),1,0,0.0,-2.25,-124.9,0.0
+2024-09-23,"bot E eaten + stacking, no line needed",12,6,0.5,10.5,376.2,1.0
+2024-09-23,"bot E eaten + stacking, no line needed (09:30-11:00)",11,5,0.45454545454545453,6.5,188.6,1.0

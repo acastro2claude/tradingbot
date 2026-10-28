@@ -1,0 +1,12 @@
+who,trades,wins,points,net_usd,same_as_you,win_rate
+you (journal),126,43,-1.125,-1410.1200000000006,0.0,0.3412698412698413
+bot A every level test,69,22,-17.75,-1743.1,7.0,0.3188405797101449
+bot A every level test (09:30-11:00),56,20,-1.0,-744.4000000000001,7.0,0.35714285714285715
+bot B line held at the level,56,15,-32.25,-2306.9,1.0,0.26785714285714285
+bot B line held at the level (09:30-11:00),33,8,-24.25,-1621.7,1.0,0.24242424242424243
+bot C line held + eaten + stacking,51,13,-33.5,-2307.4,2.0,0.2549019607843137
+bot C line held + eaten + stacking (09:30-11:00),31,8,-19.75,-1371.9,2.0,0.25806451612903225
+bot D full read (C + delta + absorption),22,5,-18.25,-1185.3,1.0,0.22727272727272727
+bot D full read (C + delta + absorption) (09:30-11:00),11,2,-12.25,-748.9,1.0,0.18181818181818182
+"bot E eaten + stacking, no line needed",68,22,-15.5,-1618.1999999999998,6.0,0.3235294117647059
+"bot E eaten + stacking, no line needed (09:30-11:00)",52,19,1.75,-557.3,6.0,0.36538461538461536

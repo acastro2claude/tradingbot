@@ -19,3 +19,10 @@ Costs are Databento's quote taken right before each download.
 | 2026-10-28 | MES trades, journal replay: 151 day windows around the owner's 2024-2025 trades | trades | 15 min before first entry to 15 min after last exit, each day | $10.80 | $58.05 |
 | 2026-10-28 | MES full order book, journal order book: 2024-03-25 (owner's busiest 2024-2025 journal days) | mbo | 00:00 UTC to 15 min after the last exit, each day | $0.17 | $57.88 |
 | 2026-10-28 | MES full order book, journal order book: 19 days (owner's busiest 2024-2025 journal days) | mbo | 00:00 UTC to 15 min after the last exit, each day | $8.17 | $49.71 |
+| 2026-10-28 | ES order book, 5 weeks: 2024-02-26 (whole regular sessions, bot vs owner comparison) | mbo | 00:00 UTC to 16:00 ET, each day | $0.62 | $49.09 |
+| 2026-10-28 | ES order book, 5 weeks: 3 days (whole regular sessions, bot vs owner comparison) | mbo | 00:00 UTC to 16:00 ET, each day | $3.11 | $45.98 |
+| 2026-10-28 | ES order book, 5 weeks, 2024-08-02: connection dropped mid-download, file discarded. May have been billed. | mbo | 2024-08-02T00:00 to 2024-08-02T20:00 | $2.57 | $43.41 |
+| 2026-10-28 | ES order book, 5 weeks: 6 days (whole regular sessions, bot vs owner comparison) | mbo | 00:00 UTC to 16:00 ET, each day | $8.63 | $34.78 |
+| 2026-10-28 | ES order book, 5 weeks, 2024-09-27: connection dropped mid-download, file discarded. May have been billed. | mbo | 2024-09-27T00:00 to 2024-09-27T20:00 | $0.89 | $33.89 |
+| 2026-10-28 | ES order book, 5 weeks: 9 days (whole regular sessions, bot vs owner comparison) | mbo | 00:00 UTC to 16:00 ET, each day | $8.82 | $25.07 |
+| 2026-10-28 | ES order book, 5 weeks: 4 days (whole regular sessions, bot vs owner comparison) | mbo | 00:00 UTC to 16:00 ET, each day | $2.89 | $22.18 |
