@@ -169,6 +169,51 @@ zones, today's volume profile, buy vs sell volume every 15 seconds, and cumulati
 (aqua for buyers, orange for sellers). The owner marks take or skip, and
 `review/review_key.csv` holds the outcomes for scoring afterwards.
 
+## 6. Blind review and the owner's rules (Oct 2026)
+
+**The review (`review/review_answers.csv`).** The owner marked 12 random test charts that
+stop at the entry. Four were takes (#3, #7, #9, #10) and eight were skips (#1 as "wait").
+What price did next (best and worst point within 30 minutes, in points):
+
+| # | Owner | Best | Worst | Owner's target |
+|---|---|---|---|---|
+| 1 | wait (long) | 3.5 | 5.5 | — |
+| 2 | skip (long) | 3.75 | 6.0 | — |
+| 3 | **take (short)** | 10.0 | 2.75 | 5281: reached in 7 min, 2.75 against first |
+| 4 | skip (long) | 1.25 | 6.5 | — |
+| 5 | skip (short) | 7.25 | 1.0 | — |
+| 6 | skip (long) | 4.0 | 13.25 | — |
+| 7 | **take (short)** | 4.0 | 7.0 | 5460.5: not reached |
+| 8 | skip (short) | 17.0 | 13.75 | — |
+| 9 | **take (short)** | 15.0 | 8.0 | next POC 5500: reached in 16 min, 8 against first |
+| 10 | **take (long, continuation)** | 2.0 | 21.0 | not reached |
+| 11 | skip (short) | 6.0 | 20.75 | — |
+| 12 | skip (long) | 7.0 | 5.75 | — |
+
+- **The skips avoided the trades that ran hard against** (#2, #4, #6, #11: 6–21 points within 30 minutes).
+- #5 was a clean winner that got skipped.
+- Two of the four takes reached the owner's target.
+- 12 charts is too few to measure skill, but the reasons were clear enough to code (STRATEGY.md section 2).
+
+**The reasons as rules (`research/owner_rules.py`, `owner_rules_*.csv`, `[owner_rules]` in
+settings.toml, all proposed).** Results on all 221 tests:
+
+| Rule | Tests | Win 2/4 | $/trade 2/4 |
+|---|---|---|---|
+| Every test (first 1-point turn) | 221 | 23% | −54 |
+| Other side not in control (no new delta extreme against in 30 s) | 59 | 20% | −61 |
+| Retest of the level, push weaker than last time | 47 | **34%** | **−19** |
+| Retest of the level, push not weaker | 40 | 15% | −78 |
+| Absorption spike (2× volume into the level, price ≤ 1 pt past) | 106 | 29% | −34 |
+| Delta divergence at the 30-minute extreme | 27 | 26% | −44 |
+| Patient entry (wait until delta and aggression turn, up to 10 min) | 165 | 22% | −57 |
+
+- **The "other side still in control" checks are true at about 3 in 4 first-turn entries.** In the owner's words, the bot gets in "too soon".
+- **Waiting for control to pass (patient entry) did not help.**
+- With the owner's targets (next POC, 3-point stop), every rule did worse than with 2/4.
+- **The weaker retest is the clearest signal found so far.** It is still not profitable, and the gap between 34% and 15% is borderline on these numbers. It is also the retest rule already in STRATEGY.md section 2, and it uses trade data only, so it can be checked on the 2026 MES trades already downloaded at no cost.
+- On the 12 review charts, the coded filter skipped 11, including three of the owner's takes. In #9, the owner read a buying spike with no progress as absorption, where the coded "aggression" check read it as buyers in control.
+
 ## Caveats
 
 - The read is my translation of the owner's description. Every threshold above is a proposal, and the owner's eye may weigh things differently.

@@ -272,3 +272,30 @@ name = "stop 3 pts past the level, STRATEGY.md targets"
 stop = "past level"
 stop_points = 3
 target = "strategy"
+
+[owner_rules]
+# Rules taken from the owner's reasons on the blind review charts (Oct 2026). All values proposed.
+control_lookback_s = 300         # "delta still making lower lows": the 5-minute delta extreme against the trade...
+control_recent_s = 30            # ...was set in the last 30 seconds before entry
+aggression_window_s = 60         # "buyers still too aggressive": the other side's aggressive volume over the last minute...
+aggression_ratio = 1.2           # ...is at least 1.2x ours
+retest_within_min = 60           # a retest: the same level was tested earlier, at most an hour before
+retest_window_s = 120            # aggressive volume pushing into the level in the 2 minutes before each arrival
+retest_weaker_ratio = 0.8        # weaker retest: at most 80% of the previous attempt's push
+spike_bar_s = 15                 # absorption spike: a 15-second bar of aggressive volume into the level...
+spike_multiple = 2.0             # ...at least 2x the median 15-second bar of the 15 minutes before...
+spike_baseline_min = 15
+spike_max_through_points = 1.0   # ...while price gets no more than 1 point past the level
+divergence_lookback_min = 30     # price at or past the 30-minute high (low), delta below its value at that earlier high (low)
+divergence_near_points = 1.0
+zone_conflict_points = 4.0       # no long with a supply zone this close above (no short with a demand zone below)
+target_min_points = 4.0          # owner's targets: the next POC in the trade's direction, at least 4 points away...
+target_max_points = 20.0         # ...and at most 20 (else 2x the risk)
+stop_points = 3.0
+# Patient entry (owner's review: "wait", "too soon to tell"): after a test starts, enter at the
+# first second, within wait_max_min, when price has turned turn_points off its extreme and is
+# still within near_level_points of the level, delta has made no new extreme against the
+# trade in the last control_recent_s, and our side's aggressive volume over the last
+# aggression_window_s is at least the other side's. No trade if price breaks test_break_points first.
+wait_max_min = 10
+near_level_points = 3.0
