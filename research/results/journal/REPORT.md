@@ -315,6 +315,56 @@ rest by 0.3–2.6 points per contract (95% range from resampling days).
 - **The daily trade cap of 1 in STRATEGY.md would have cut this journal to +$240.** That's a point to weigh, though the bot is not the owner.
 - **Caveat:** several of these rules were found by looking at this same journal. The split-half check helps, but the owner's future trades are the real test.
 
+## 10. What made the owner's later trades better? (`journal_context.csv`, `journal_opening_range.csv`)
+
+Owner's question: if the later trades are the profitable ones, why take the first ones,
+and is it a time of day? Code: `research/journal_context.py`.
+
+**Why not just skip ahead.** The later trades mostly exist because the early ones lost:
+- On days the first trade or two won, the owner stopped. Those days made +$13,193.
+- Skipping the first three trades every day also skips those wins, which is why "first 3 on sim" came out about even.
+
+**Not a clock time.** Net by entry time:
+
+| Entry time | Trades | Net $ |
+|---|---|---|
+| 9:30–9:45 | 42 | −316 (26% wins) |
+| 9:45–11:00 | 422 | +5,592 |
+| 11:00–1:00 pm | 34 | +1,547 |
+| After 1:00 pm | 13 | −1,392 |
+
+The 4th-and-later trades came only about 25 minutes later than the first three (median
+10:29 vs 10:04).
+
+**The market at the time** (medians, first three trades vs later):
+
+| | First 3 | 4th on |
+|---|---|---|
+| Day's range so far | 16.75 pts | 23.25 pts |
+| Distance from the day's high/low | 5.75 pts | 8.75 pts |
+| Entry outside the 09:30–09:45 range | 46% | 63% |
+| Run into the entry, last 15 min | 2.0 pts | 1.25 pts |
+
+**The difference is the opening range.**
+
+| | Trades | Win | Net $ | Points per contract |
+|---|---|---|---|---|
+| First 3 trades, inside the 09:30–09:45 range | 189 | 27% | −4,033 | −0.46 |
+| First 3, fading a breakout of that range | 89 | 38% | +819 | +0.36 |
+| First 3, with the breakout | 66 | 38% | +3,019 | +0.80 |
+| Later trades, inside the range | 62 | 37% | +2,131 | +1.14 |
+| Later trades, outside it | 107 | 43% | +3,374 | +0.9 to +1.15 |
+
+- **Entries inside the 09:30–09:45 range lost in both halves** (−$663 and −$1,239). Outside it, both fading and going with the breakout made money.
+- Outside beats inside by +0.13 to +1.42 points per contract (95% range, resampling days).
+- **Skipping entries inside the opening range:** 262 trades, +$7,211 instead of +$5,309, profit factor 1.38 instead of 1.13. Positive in both halves.
+- "Wait for the first breakout" does not do the same job. The first break comes early (median 9:48), and later returns inside the range still lose early in the day.
+
+**The bot shows none of this.**
+- Its level-test entries win about 23–26% in every hour and whatever the test number.
+- Inside vs outside the opening range: 27% vs 21% in 2024 ES, 25% vs 25% in 2026 MES.
+- The pattern belongs to the owner's own choices. The bot only trades the coded read, which has no edge at any time of day.
+
 ## Caveats
 
 - The read is my translation of the owner's description. Every threshold above is a proposal, and the owner's eye may weigh things differently.
