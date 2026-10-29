@@ -478,6 +478,38 @@ The owner approved the zone charts (Oct 2026). This tests the zones on ES 1-minu
 
 **Next (no new data needed):** read the order book at every zone test on the 23 ES days on hand. Check whether stacking, absorption or delta separate the bounces from the breaks, and compare the bot with the owner on those weeks, using the zones as the levels.
 
+## 15. The order book at the owner-style zones, and an out-of-sample check (Oct 2026)
+
+**ES order book, 23 days of 2024 (`zone_book_reads.csv`, `zone_book_bot_vs_owner_total.csv`).**
+
+Every test of a live zone's near edge, 09:30–15:30 ET: 120 tests, 117 of which turned into an entry (1 point off the test's extreme).
+
+- **2-point stop, 4-point target:** 21% winners vs 27% for random entries on the same days (−$58 vs −$41 per trade).
+- **The book reads don't separate bounces from breaks at zones.** This covers the line at the edge, orders eaten, stacking, delta, absorption, the full read, and the owner's blind-review reasons (other side in control, weaker retest, spike, divergence). Each sits within a few points of the 21% base rate, and the samples are small (13–108 tests each).
+- **One exit looked good:** stop 3 points past the near edge (the owner's normal stop) with the STRATEGY.md targets.
+  - The bot taking every zone test made +$2,835 on 27 trades (+$2,240 in the four disciplined weeks, vs the owner's +$1,115).
+  - But two trades made most of it (+$1,749 and +$849). Without them it is +$238.
+
+**Out-of-sample check: MES, Apr–Oct 2026 (`zone_2026_bot.csv`).** Same zones, same bot, trades only, 116 days, 698 zone entries.
+
+| Exit | Bot trades | Winners | Net | Months up |
+|---|---|---|---|---|
+| 2-pt stop, 4-pt target | 311 | 22% | −$17,906 | 0 of 7 |
+| 3-pt stop, 7-pt target | 306 | 21% | −$21,269 | 1 of 7 |
+| Stop past the test, 2x target | 311 | 23% | −$18,181 | 0 of 7 |
+| Stop past the test, STRATEGY targets | 205 | 13% | −$11,068 | 1 of 7 |
+| Stop 3 past the zone edge, STRATEGY targets | 164 | 16% | −$11,036 | 2 of 7 |
+
+The 2024 result was luck: the version that made money in 2024 lost $11,036 in 2026.
+
+**The bot's tests are not the owner's entries.**
+
+- On the 23 days, the owner had 43 trades near zones, but only 7 of them line up with the bot's 117 zone tests.
+- The bot calls it a test when price comes back to the near edge after being 5 points away, and enters on the first 1-point turn. The owner enters at other moments.
+- The owner's 28 trades at a zone, going its way, made +$820 on these days. Trades away from zones lost −$1,525.
+
+**What it means.** The zones are right for the owner: their trades there do better. But no mechanical entry at the zones works, with any exit, read or year. The difference is in when and how the owner enters, which the bot does not yet copy.
+
 ## Caveats
 
 - The read is my translation of the owner's description. Every threshold above is a proposal, and the owner's eye may weigh things differently.
