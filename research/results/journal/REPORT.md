@@ -79,7 +79,7 @@ rebuilding the books). Results: `level_tests_es_weeks*.csv` and `bot_vs_owner_*.
 - **Eaten:** contracts filled at the level during the test. **Stacking:** more added than pulled during the test.
 - **Delta:** the last 10 seconds, the trade's way.
 - **Absorption:** a fitting burst of 50+ contracts at the level (ES setting TBD; the MES add-on uses 100).
-- **Entry:** once price trades 1 point back off the test's extreme, before going 3 points through the level.
+- **Entry:** once price trades 1 point back off the test's extreme, before going 3 points through the level. The fill is the price of that trade plus 1 tick of slippage. An earlier version took the book price a second before, which flattered fills by 1–2 ticks on fast moves. Fixed 29 Oct; all numbers below are after the fix.
 - **Exits:** stop 2 points and target 4 points from the fill (your median loss and win), with 1 tick slippage on entries and stops, and $12.40 costs (10 MES).
 
 **Every test, traded this way (221 tests, `level_tests_es_weeks_after_costs.csv`).** With
@@ -87,17 +87,17 @@ these exits, break-even needs about a 40% win rate.
 
 | Read at the test | Tests | Win rate | $ per trade (1 ES) |
 |---|---|---|---|
-| Every test of a marked level | 221 | 27% | −41 |
-| Line there and held | 99 | 25% | −46 |
-| Line held + eaten + stacking | 80 | 28% | −39 |
-| Full read (+ delta + absorption) | 25 | 24% | −50 |
-| Eaten + stacking (no line needed) | 179 | 30% | −32 |
-| Line before + stacking + delta | 38 | 32% | −26 |
-| POC tests | 142 | 30% | −30 |
-| Zone tests | 79 | 20% | −62 |
+| Every test of a marked level | 221 | 24% | −51 |
+| Line there and held | 99 | 23% | −52 |
+| Line held + eaten + stacking | 80 | 24% | −51 |
+| Full read (+ delta + absorption) | 25 | 20% | −62 |
+| Eaten + stacking (no line needed) | 179 | 25% | −46 |
+| Line before + stacking + delta | 38 | 24% | −51 |
+| POC tests | 142 | 28% | −37 |
+| Zone tests | 79 | 15% | −77 |
 | Tests you traded | 11 | 18% | −68 |
 
-- Without slippage, the same reads lean your way: line before + stacking + delta reached 4 points before 2 against 37% of the time, vs 30% for the others (`level_tests_es_weeks_summary.csv`). But it is never enough to pay for the stop.
+- Without slippage, the same reads lean your way: line before + stacking + delta reached 4 points before 2 against 34% of the time, vs 28% for the others (`level_tests_es_weeks_summary.csv`). But it is never enough to pay for the stop.
 - A POC and a zone never lined up at the same test in these weeks.
 - **You traded only 13 of these 230 tests.** 115 of your 126 trades on these days were somewhere else. That fits your answer that in 2024 you used these levels only partly.
 
@@ -105,16 +105,16 @@ these exits, break-even needs about a 40% win rate.
 
 | Week (2024) | You: trades, net | Bot, every level test | Bot, eaten + stacking, 9:30–11:00 |
 |---|---|---|---|
-| Feb 26 | 48, −$2,525 | 15, +$314 | 15, +$314 |
+| Feb 26 | 48, −$2,525 | 15, +$2 | 15, +$2 |
 | Apr 8 | 26, +$22 | 15, −$624 | 12, −$249 |
-| Jun 3 | 20, +$649 | 15, −$1,249 | 7, −$562 |
+| Jun 3 | 20, +$649 | 15, −$1,561 | 7, −$562 |
 | Jul 29 (no Aug 2) | 12, +$844 | 12, −$561 | 7, −$249 |
-| Sep 23 (no Sep 27) | 20, −$400 | 12, +$376 | 11, +$189 |
-| **Total** | **126, 34% wins, −$1,410** | **69, 32%, −$1,743** | **52, 37%, −$557** |
+| Sep 23 (no Sep 27) | 20, −$400 | 12, +$64 | 11, −$124 |
+| **Total** | **126, 34% wins, −$1,410** | **69, 28%, −$2,681** | **52, 33%, −$1,182** |
 
-- Every bot version lost over the five weeks. The full read lost $1,185 on 22 trades (23% wins).
+- Every bot version lost over the five weeks. The full read lost $1,498 on 22 trades (18% wins).
 - The bot did better than you in your two losing weeks and worse in your three winning weeks.
-- The bot and you rarely took the same trade (7 of the bot's 69).
+- The bot and you rarely took the same trade (6 of the bot's 69).
 
 **Charts to check by eye:** `orderbook_charts/bot_*.png` show full-read wins and losses,
 and tests you traded, on the rebuilt ES heatmap with your trades nearby.
@@ -127,15 +127,31 @@ Every test that turned was traded with each exit style in `[[book_study.exits]]`
 
 | Exit style | Tests traded | Win rate | Avg win / loss (pts) | $ per trade (1 ES) |
 |---|---|---|---|---|
-| 2-pt stop, 4-pt target | 221 | 25% | +4.0 / −2.25 | −47 |
-| 3-pt stop, 7-pt target (owner) | 221 | 21% | +6.9 / −3.25 | −70 |
-| Stop 1 pt past the test, target 2× the risk | 221 | 25% | +4.1 / −2.45 | −53 |
-| Stop 1 pt past the test, STRATEGY.md targets | 116 | 12% | +9.8 / −2.25 | −52 |
-| Stop 3 pts past the level, STRATEGY.md targets | 76 | 24% | +11.8 / −3.7 | −15 |
+| 2-pt stop, 4-pt target | 221 | 23% | +4.0 / −2.25 | −54 |
+| 3-pt stop, 7-pt target (owner) | 221 | 19% | +6.9 / −3.25 | −79 |
+| Stop 1 pt past the test, target 2× the risk | 221 | 24% | +4.6 / −2.5 | −54 |
+| Stop 1 pt past the test, STRATEGY.md targets | 109 | 11% | +10.4 / −2.5 | −67 |
+| Stop 3 pts past the level, STRATEGY.md targets | 71 | 23% | +12.1 / −4.0 | −30 |
 
 - STRATEGY.md targets: the first target is the top of the last 1-minute chop before the move into the level, and the runner targets the low of that chop and breakout. The trade is skipped when the first target is under 2× the risk, which removed about two thirds of the tests.
-- **No exit style made the read profitable.** The closest was the STRATEGY.md exits with the stop 3 points past the level: −$15 per trade. The bot version (one trade at a time) made +$362 over 42 trades. But two runners (34 and 19 points) carry that result, and 3 of the 5 weeks lost.
+- **No exit style made the read profitable.** The closest was the STRATEGY.md exits with the stop 3 points past the level: −$30 per trade. The bot version (one trade at a time) made +$295 over 40 trades. But a couple of big runners carry that result, and 3 of the 5 weeks lost.
 - **Adding the read's conditions (line held, eaten, stacking, delta, absorption) made results worse under every exit.** The full read was usually the worst. This suggests the coded read is not what the owner does, which is why the blind review below comes next.
+
+**Why the exits lose (`exit_stop_check.csv`, `python -m research.exit_stop_check`).**
+- **Almost every losing trade is a stop-out.** 76–89% of trades end at the stop, depending on the exit style. Only 0–1% are flattened at the close, so the losses are not small end-of-day exits.
+- **The 2-point stop is hit fast.** Median 1.2 minutes after entry. 53% of those trades went 1+ point our way first.
+- **Price often comes back.** 56% of all tests were stopped at 2 points and then traded through the 4-point target later the same day. 79% reached +4 at some point before the close, but usually only after going against the trade first (median 4 points; 47% went 5+ points against).
+- **A wider stop doesn't fix it.** The win rate rises with the stop, but never as fast as break-even. And at every stop size, the level tests won 4–9 points *less* often than random entries on the same days (`exit_stop_check_summary.csv`):
+
+| Stop / target (pts) | Level tests won | Random entries won | Break-even |
+|---|---|---|---|
+| 2 / 4 | 23% | 27% | ~40% |
+| 3 / 7 | 19% | 24% | ~34% |
+| 3 / 4 | 29% | 38% | ~48% |
+| 4 / 4 | 38% | 46% | ~55% |
+| 5 / 4 | 42% | 51% | ~59% |
+
+So the problem is the entry, not the exit. Entering on the first 1-point turn at a marked level, price tends to push further through the level before it reverses.
 
 **Orders that move with price (checked Oct 2026).** On the owner's request, the moving
 "channel" of resting orders (for example 30 Jul 2024, 10:04–10:18) was checked against
@@ -149,7 +165,8 @@ one price, so the two can be compared.
 
 **Blind review (next).** `review/review_*.png` are 12 tests drawn at random. Each chart
 stops at the moment the bot would enter, and shows the heatmap, the marked POCs and
-zones, today's volume profile, and cumulative delta. The owner marks take or skip, and
+zones, today's volume profile, buy vs sell volume every 15 seconds, and cumulative delta
+(aqua for buyers, orange for sellers). The owner marks take or skip, and
 `review/review_key.csv` holds the outcomes for scoring afterwards.
 
 ## Caveats

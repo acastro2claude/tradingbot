@@ -25,7 +25,8 @@ at each moment:
   - delta over the 10 seconds before the entry, in the trade's direction (owner: "starts to skew")
   - absorption bursts of the fitting colour in the level area, from 1 minute
     before the test to the entry
-  - outcome from the entry (market order at the bid/ask): 4 points in favour
+  - outcome from the entry (market order at the price of the trade that triggered
+    it; the book a second earlier flattered fills by 1-2 ticks): 4 points in favour
     before 2 against (the owner's median win and loss), within 30 minutes
   - whether the owner traded it: an owner entry in the same direction within
     10 minutes of the test start, within 1 point of the level area
@@ -139,8 +140,8 @@ class TestReader:
         i, j = np.searchsorted(self.t, [a, b], "left")
         return int(self.cum[j] - self.cum[i])
 
-    def turn(self, t0: float, d: int, edge: int) -> tuple[float | None, str]:
-        """Entry time once price turns TURN_TICKS back from the test extreme, or None if it breaks first."""
+    def turn_trade(self, t0: float, d: int, edge: int) -> tuple[int | None, str]:
+        """Index of the trade where price has turned TURN_TICKS back from the test extreme, or None if it breaks first."""
         i, j = np.searchsorted(self.t, [t0, t0 + MAX_TEST_S], "left")
         p = self.px[i:j]
         if len(p) == 0:
@@ -151,8 +152,13 @@ class TestReader:
         k_b = broke[0] if len(broke) else np.inf
         k_t = turned[0] if len(turned) else np.inf
         if k_t < k_b:
-            return float(self.t[i + k_t]), "turned"
+            return int(i + k_t), "turned"
         return None, "broke first" if k_b < np.inf else "no turn in time"
+
+    def turn(self, t0: float, d: int, edge: int) -> tuple[float | None, str]:
+        """Entry time once price turns TURN_TICKS back from the test extreme, or None if it breaks first."""
+        k, how = self.turn_trade(t0, d, edge)
+        return (float(self.t[k]) if k is not None else None), how
 
     def outcome(self, t: float, entry: int, d: int) -> str:
         i, j = np.searchsorted(self.t, [t, t + HORIZON_S], "right")
@@ -174,15 +180,15 @@ class TestReader:
         out = dict(line_before=line_before / self.typ, line_at_arrival=line_now / self.typ,
                    line_left_share=line_now / line_before if line_before else np.nan,
                    line_sat_s=longest_stay(before >= LINE_MULT * self.typ))
-        t_in, how = self.turn(t0, d, edge)
+        k_in, how = self.turn_trade(t0, d, edge)
+        t_in = float(self.t[k_in]) if k_in is not None else None
         out["turn"] = how
         if t_in is None:
             return out
         r_in = book.row(t_in)
         added, pulled, filled = self.flows(r_start + 1, r_in, side, a_lo, a_hi)
         depth_in = _hold_depth(book, side, r_in, r_in, a_lo, a_hi)
-        bb, ba = book.best(r_in)
-        entry = ba if d == 1 else bb
+        entry = int(self.px[k_in])      # the market order fills around the trade that triggered it (+ slippage later)
         b = self.bursts
         fit = b[(b["direction"] == d) & (b["price"] >= a_lo) & (b["price"] <= a_hi)
                 & (b["end_time"] >= t0 - 60) & (b["end_time"] < t_in)]

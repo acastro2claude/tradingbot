@@ -9,7 +9,10 @@ the POCs and supply/demand zones are.
     live 15-minute supply/demand zones (shaded)
   - right: volume traded at each price today (from the evening open), with
     today's POC so far
-  - bottom: cumulative delta (aggressive buys minus aggressive sells) since 09:30 ET
+  - below: buy vs sell volume every 15 seconds (aggressive buys up in aqua,
+    aggressive sells down in orange), so the stronger side shows at a glance
+  - bottom: cumulative delta (aggressive buys minus aggressive sells) since 09:30 ET,
+    aqua while buyers push it up, orange while sellers push it down (owner, Oct 2026)
 
 A random sample of tests (fixed seed) is drawn from level_tests_es_weeks.csv.
 Charts go to research/results/journal/review/, numbered; the outcomes are kept
@@ -28,6 +31,8 @@ import pandas as pd
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
+import matplotlib.ticker  # noqa: E402
+from matplotlib.collections import LineCollection  # noqa: E402
 
 from research.bot_week_study import BOOK_DIR, TRADES_DIR, et  # noqa: E402
 from research.journal_replay import es_context  # noqa: E402
@@ -42,6 +47,7 @@ REVIEW = OUT / "review"
 DEMAND, SUPPLY = "#1baf7a", "#eb6834"
 BEFORE_S = 900                     # 15 minutes of context before the decision
 HALF_POINTS = 10.0
+BAR_S = 15                         # buy/sell volume bars
 
 
 def draw_review(book: Book, trades: pd.DataFrame, levels: pd.DataFrame, t_dec: float, d: int, price: float,
@@ -54,12 +60,13 @@ def draw_review(book: Book, trades: pd.DataFrame, levels: pd.DataFrame, t_dec: f
     depth = book.bid[r0:r1 + 1, p0 - book.lo:p1 - book.lo + 1] + book.ask[r0:r1 + 1, p0 - book.lo:p1 - book.lo + 1]
     vmax = np.percentile(depth[depth > 0], 98) if (depth > 0).any() else 1
 
-    fig = plt.figure(figsize=(12, 7.5), dpi=110, facecolor=SURFACE)
-    gs = fig.add_gridspec(2, 2, width_ratios=[6, 1], height_ratios=[3, 1], wspace=0.03, hspace=0.06)
+    fig = plt.figure(figsize=(12, 9), dpi=110, facecolor=SURFACE)
+    gs = fig.add_gridspec(3, 2, width_ratios=[6, 1], height_ratios=[3, 0.9, 0.9], wspace=0.03, hspace=0.14)
     ax = fig.add_subplot(gs[0, 0])
     axv = fig.add_subplot(gs[0, 1], sharey=ax)
-    axc = fig.add_subplot(gs[1, 0], sharex=ax)
-    for a in (ax, axv, axc):
+    axb = fig.add_subplot(gs[1, 0], sharex=ax)
+    axc = fig.add_subplot(gs[2, 0], sharex=ax)
+    for a in (ax, axv, axb, axc):
         a.set_facecolor(SURFACE)
         a.tick_params(colors=MUTED, labelsize=8)
         for sp in a.spines.values():
@@ -88,10 +95,12 @@ def draw_review(book: Book, trades: pd.DataFrame, levels: pd.DataFrame, t_dec: f
     w = w[(w["price"] >= p0) & (w["price"] <= p1)].assign(sec=lambda f: np.floor(f["t"] - x0))
     agg = w.groupby(["sec", "price", "side"], as_index=False)["size"].sum()
     agg = agg[agg["size"] >= 20]
-    for side, colour, marker in (("B", BUY, "^"), ("A", SELL, "v")):
+    for side, colour, marker, label in (("B", BUY, "^", "aggressive buys (20+ in a second)"),
+                                        ("A", SELL, "v", "aggressive sells (20+ in a second)")):
         g = agg[agg["side"] == side]
         ax.scatter(g["sec"] + 0.5, g["price"] * 0.25, s=np.clip(g["size"], 20, 600) / 2, c=colour, marker=marker,
-                   edgecolors=INK, linewidths=0.4, alpha=0.9, zorder=4)
+                   edgecolors=INK, linewidths=0.4, alpha=0.9, zorder=4, label=label)
+    ax.legend(loc="lower left", fontsize=8, frameon=True, facecolor=SURFACE, edgecolor=MUTED, labelcolor=INK)
     ax.annotate(f"bot would go {'long' if d == 1 else 'short'} here", xy=(r1 - r0, price),
                 xytext=(r1 - r0 - 240, price + (3 if d == -1 else -3)), color=INK, fontsize=9,
                 arrowprops=dict(arrowstyle="->", color=INK), zorder=6)
@@ -115,16 +124,38 @@ def draw_review(book: Book, trades: pd.DataFrame, levels: pd.DataFrame, t_dec: f
     axv.set_xlabel("today's volume", color=MUTED, fontsize=8)
     plt.setp(axv.get_yticklabels(), visible=False)
 
-    # cumulative delta since 09:30 ET
+    # buy vs sell volume every BAR_S seconds: buyers up (aqua), sellers down (orange)
+    win = trades[(trades["t"] >= x0) & (trades["t"] < t_dec)]
+    k = ((win["t"] - x0) // BAR_S).astype(int)
+    buys = win["size"].where(win["side"] == "B", 0).groupby(k).sum()
+    sells = win["size"].where(win["side"] == "A", 0).groupby(k).sum()
+    left = buys.index.to_numpy() * BAR_S
+    axb.bar(left, buys.to_numpy(), width=BAR_S * 0.85, align="edge", color=BUY, label="aggressive buys")
+    axb.bar(left, -sells.to_numpy(), width=BAR_S * 0.85, align="edge", color=SELL, label="aggressive sells")
+    axb.axhline(0, color=MUTED, lw=0.6)
+    top = max(buys.max() if len(buys) else 1, sells.max() if len(sells) else 1)
+    axb.set_ylim(-top * 1.1, top * 1.1)
+    axb.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, _: f"{abs(v):,.0f}"))
+    axb.set_ylabel(f"volume per {BAR_S} s\nbuys up, sells down", color=MUTED, fontsize=8)
+    axb.legend(loc="upper left", fontsize=8, frameon=True, facecolor=SURFACE, edgecolor=MUTED, labelcolor=INK)
+    plt.setp(axb.get_xticklabels(), visible=False)
+
+    # cumulative delta since 09:30 ET, aqua while buyers push it up, orange while sellers push it down
     open_t = et(pd.Timestamp(t_dec, unit="s", tz="UTC").tz_convert("America/New_York").date().isoformat(), "09:30")
     rth = trades[(trades["t"] >= open_t) & (trades["t"] < t_dec)]
     signed = np.where(rth["side"] == "B", rth["size"], np.where(rth["side"] == "A", -rth["size"], 0))
     cvd = pd.Series(np.cumsum(signed), index=rth["t"].to_numpy())
     cw = cvd[cvd.index >= x0]
-    axc.plot(cw.index - x0, cw.to_numpy(), color=INK, lw=1.2)
-    if len(cw) and cw.min() < 0 < cw.max():                 # zero line only when delta crosses it
-        axc.axhline(0, color=MUTED, lw=0.6)
-    axc.set_ylabel("cum. delta\nsince 09:30", color=MUTED, fontsize=8)
+    if len(cw) > 1:
+        x, y = cw.index.to_numpy() - x0, cw.to_numpy()
+        net = (buys - sells).reindex(np.arange(int(x.max() // BAR_S) + 1), fill_value=0).to_numpy()
+        up = net[(x[1:] // BAR_S).astype(int)] >= 0
+        segs = np.stack([np.column_stack([x[:-1], y[:-1]]), np.column_stack([x[1:], y[1:]])], axis=1)
+        axc.add_collection(LineCollection(segs, colors=np.where(up, BUY, SELL), linewidths=1.6))
+        axc.set_ylim(y.min() - 0.05 * (np.ptp(y) + 1), y.max() + 0.05 * (np.ptp(y) + 1))
+        if y.min() < 0 < y.max():                     # zero line only when delta crosses it
+            axc.axhline(0, color=MUTED, lw=0.6)
+    axc.set_ylabel("cum. delta since 09:30\naqua rising, orange falling", color=MUTED, fontsize=8)
     ticks = np.arange((60 - x0 % 60) % 60, r1 - r0 + 1, 120)
     axc.set_xticks(ticks)
     axc.set_xticklabels([pd.Timestamp(x0 + k, unit="s", tz="UTC").tz_convert("America/New_York").strftime("%H:%M")
