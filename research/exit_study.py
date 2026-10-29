@@ -54,8 +54,10 @@ def minute_candles(tr: pd.DataFrame, day: str) -> pd.DataFrame:
     return c.drop(columns="minute")
 
 
-def day_context(es: str, day: str, s: dict) -> SimpleNamespace:
-    tr = pd.read_parquet(TRADES_DIR / f"{es}_{day}.parquet").sort_values("t", kind="stable")
+def day_context(es: str | None, day: str, s: dict, trades: pd.DataFrame | None = None) -> SimpleNamespace:
+    """Trade path and 1-minute chops for one day: the saved ES trades, or a trades table passed in."""
+    tr = trades if trades is not None else pd.read_parquet(TRADES_DIR / f"{es}_{day}.parquet")
+    tr = tr.sort_values("t", kind="stable")
     p, t = trade_path(tr["price"].to_numpy(), tr["t"].to_numpy())
     c = minute_candles(tr, day)
     bot = s["bot"]

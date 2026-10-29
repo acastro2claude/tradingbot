@@ -12,7 +12,8 @@ supply/demand zones, here from the MES 1-minute bars, shifted onto the session's
 contract), tests between 09:30 and 15:30 ET, entry on the first 1-point turn, fill at
 the trigger trade + 1 tick, 2-point stop / 4-point target (and the owner's next-POC
 target with a 3-point stop), flat at 15:59, $12.40 costs for 10 MES. Plus random
-entries on the same days with the same exits.
+entries on the same days with the same exits, and every exit style from the exit study
+(research.exit_study) on every test and as the bot (retest_2026_exits.csv).
 
 Writes research/results/journal/retest_2026_tests.csv and retest_2026_summary.csv.
 Run from the repo root:   python -m research.retest_2026
@@ -26,7 +27,8 @@ import numpy as np
 import pandas as pd
 
 from research.absorption_study import session_files
-from research.bot_week_study import CONTRACTS, ES_POINT, FLAT_ET, SLIP_TICKS, et
+from research.bot_week_study import CONTRACTS, ES_POINT, FLAT_ET, RULES, SLIP_TICKS, bot_trades, et
+from research.exit_study import day_context, one_exit
 from research.journal_study import OUT
 from research.level_study import prepare
 from research.level_test_book import TestReader, find_tests, marked_levels
@@ -77,6 +79,7 @@ def main() -> None:
         levels = marked_levels(sessions, zones, day, off, start, end, lookback)
         pocs = levels.loc[levels["source"] == "POC", "edge"].to_numpy() if len(levels) else np.array([])
         tests = find_tests(SimpleNamespace(trades=trades), levels, start, end)
+        ctx = day_context(None, d_str, s, trades)                       # chops for the STRATEGY.md targets
 
         for t0 in np.sort(rng.uniform(start, end, RANDOM_PER_DAY)):            # random entries, same exits
             d = int(rng.choice([-1, 1]))
@@ -96,14 +99,18 @@ def main() -> None:
                             & (tests["time"] >= x.time - R["retest_within_min"] * 60)]
             prev = float(earlier["time"].max()) if len(earlier) else None
             r = SimpleNamespace(direction=d, time=x.time, edge=int(x.edge), entry_time=float(dt.t[k]),
-                                entry_price=int(dt.px[k]), test_extreme=int(seg.min() if d == 1 else seg.max()))
+                                entry_price=int(dt.px[k]), test_extreme=int(seg.min() if d == 1 else seg.max()),
+                                lo=int(x.lo), hi=int(x.hi))
             lv_now = marked_levels(sessions, zones, day, off, r.entry_time, r.entry_time, lookback)
             zones_now = lv_now[lv_now["source"] == "zone"] if len(lv_now) else lv_now
             feat = features(dt, r, prev, zones_now)
             rows.append(dict(day=d_str, contract=contract, time=x.time, entry_time=r.entry_time, direction=d,
                              sources=x.sources, edge=x.edge, **feat,
+                             entry_price=r.entry_price, lo=r.lo, hi=r.hi, test_extreme=r.test_extreme,
                              pts_2_4=trade(dt, r, pocs, flat, 2, "fixed 4"),
-                             pts_poc=trade(dt, r, pocs, flat, R["stop_points"], "next POC")))
+                             pts_poc=trade(dt, r, pocs, flat, R["stop_points"], "next POC"),
+                             **{f"{k} | {ex['name']}": v for ex in s["book_study"]["exits"]
+                                for k, v in one_exit(ctx, r, ex, s, flat).items() if k in ("taken", "points", "exit_time")}))
         print(f"{d_str} {contract}: {len(levels)} levels, {len(tests)} tests", flush=True)
 
     x = pd.DataFrame(rows)
@@ -130,6 +137,22 @@ def main() -> None:
     out.append(dict(group="random entries, same days", tests=len(rnd), win_2_4=rnd["won"].mean()))
     table = pd.DataFrame(out)
 
+    # every exit style from the exit study, on every test and as the bot (one at a time, up to 3 a day)
+    ex_rows = []
+    for ex in s["book_study"]["exits"]:
+        n = ex["name"]
+        taken = x[f"taken | {n}"].fillna(False).astype(bool)
+        g = x[taken]
+        te = x.assign(turn=np.where(taken, "turned", "skipped by the exit rule"),
+                      points=x[f"points | {n}"], exit_time=x[f"exit_time | {n}"])
+        b = bot_trades(te, RULES["A every level test"], False)
+        ex_rows.append(dict(exit=n, tests_traded=len(g), win=(g[f"points | {n}"] > 0).mean(),
+                            usd_per_trade=g[f"points | {n}"].mean() * ES_POINT - cost,
+                            bot_trades=len(b), bot_win=(b["points"] > 0).mean() if len(b) else np.nan,
+                            bot_net_usd=b["points"].sum() * ES_POINT - cost * len(b)))
+    exits = pd.DataFrame(ex_rows)
+    exits.to_csv(OUT / "retest_2026_exits.csv", index=False)
+
     # 95% range for (weaker - not weaker) win rate, resampling whole days
     w, nw = x[x["weaker_retest"]], x[x["retest"] & ~x["weaker_retest"]]
     days = x["day"].unique()
@@ -146,6 +169,7 @@ def main() -> None:
     table.to_csv(OUT / "retest_2026_summary.csv", index=False)
     pd.set_option("display.width", 250)
     print(table.round(3).to_string())
+    print(exits.round(2).to_string())
     print(f"weaker minus not weaker (2/4 win rate): {w['pts_2_4'].gt(0).mean() - nw['pts_2_4'].gt(0).mean():+.1%}, "
           f"95% range {lo:+.1%} to {hi:+.1%}")
 

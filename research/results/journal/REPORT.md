@@ -385,6 +385,43 @@ Code: `research/journal_periods.py`.
 - **That near-level edge is not proven.** The difference has a 95% range of −0.24 to +3.48 points, three runners of 12.75–23 points carry part of it (+0.66 without them), and in Q1 2024 near-level trades did worse (−0.42).
 - **What this means:** treat Q2 2024 onward as the reference for how the owner trades. That is fewer trades, more of them at marked levels, outside the opening range early in the day, and letting winners run. This matches STRATEGY.md's levels and runner targets. The six days of 2025 are too few to judge on their own.
 
+## 12. The main comparisons again, disciplined period only (Apr 2024 – Mar 2025)
+
+`[journal_rules] reference_start` = 2024-04-01. Code: `python -m research.journal_day_rules
+--from 2024-04-01` (`journal_day_rules_from_2024-04-01.csv`) and `research/reference_period.py`
+(`reference_*.csv`).
+
+**Day rules on the owner's trades** (373 trades, halves split at 2024-07-25):
+
+| Rule | Trades | Net $ | Change | First half | Second half | Profit factor | Max drawdown |
+|---|---|---|---|---|---|---|---|
+| as traded | 373 | +6,833 | +0 | +0 | +0 | 1.22 | 1,862 |
+| at most 3 trades a day | 261 | +181 | -6,652 | -3,359 | -3,292 | 1.01 | 3,592 |
+| stop after 2 losing trades | 219 | -872 | -7,705 | -4,225 | -3,480 | 0.95 | 3,573 |
+| daily loss limit $250 | 262 | -464 | -7,296 | -2,577 | -4,719 | 0.98 | 3,686 |
+| no entries in the first 30 min | 272 | +7,567 | +734 | +178 | +556 | 1.34 | 2,025 |
+| no entries 10 min after a news spike | 353 | +7,917 | +1,084 | +47 | +1,038 | 1.28 | 1,862 |
+| no entries inside the 09:30-09:45 range | 205 | +8,176 | +1,343 | +382 | +962 | 1.54 | 1,345 |
+| **inside-range + news filters together** | 188 | +8,898 | +2,065 | +428 | +1,637 | 1.66 | 1,345 |
+| first 3 trades of the day on sim (left out) | 112 | +6,652 | -181 | +115 | -296 | 1.84 | 946 |
+
+- **Caps and loss stops still cut the profit.**
+- **The two filters together turn +$6,833 into +$8,898** on half the trades: 188 trades, $47 per trade, profit factor 1.66. They are positive in both halves.
+
+**Bot vs owner, the four ES weeks inside the period** (Apr 8, Jun 3, Jul 29, Sep 23; 18 days):
+- **The owner:** 78 trades, +$1,115.
+- **The best bot version:** every level test with the STRATEGY.md exits (stop 3 points past the level), +$832 on 37 trades.
+- **Every other version lost.** With 2/4 exits the same entries lost $2,995.
+- **Adding the owner's two filters did not help the bot:** +$199.
+
+**Checked on 2026 MES** (`retest_2026_exits.csv`, 1,359 level tests, 6 months): that best version lost $18,436 (163 trades, 13% wins). Every exit style lost about $16,000–$18,500 for the bot over the six months. **The 2024 result was luck.**
+
+**Order book on the busiest days inside the period** (12 of the 20 days, 91 owner trades): same picture as before.
+- At the owner's entries, orders in the path were being pulled more often than at matched random moments (47% vs 35%).
+- These busy days were still poor days (24% wins).
+
+**Bottom line.** The bot as built (marked levels plus a coded order-flow read, any exit) has no edge, in 2024 or 2026. The owner's own trading in the disciplined period does, and two simple filters improve it.
+
 ## Caveats
 
 - The read is my translation of the owner's description. Every threshold above is a proposal, and the owner's eye may weigh things differently.

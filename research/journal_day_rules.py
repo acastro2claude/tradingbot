@@ -118,10 +118,18 @@ def metrics(t: pd.DataFrame, keep: np.ndarray) -> dict:
                 winning_days=(daily > 0).mean() if len(daily) else np.nan)
 
 
-def main() -> None:
-    t = load_journal()
-    spikes = news_spikes()
-    spikes.to_csv(OUT / "news_spikes_es.csv", index=False)
+def inside_opening_range(t: pd.DataFrame) -> np.ndarray:
+    """Entry inside the 09:30-09:45 range of that ES contract (journal section 10)."""
+    from research.journal_periods import opening_range
+    es = "ES" + t["contract"].str.extract(r"([HMUZ])\d(\d)$").agg("".join, axis=1)
+    o = opening_range()
+    key = pd.MultiIndex.from_arrays([t["day"], es])
+    orh, orl = o["orh"].reindex(key).to_numpy(), o["orl"].reindex(key).to_numpy()
+    return (t["entry"].to_numpy() <= orh) & (t["entry"].to_numpy() >= orl)
+
+
+def evaluate(t: pd.DataFrame, spikes: pd.DataFrame, split: str) -> pd.DataFrame:
+    """Every rule on this set of trades (index 0..n-1, entry order), with half-by-half changes."""
     sp = spikes[spikes["spike"]]
     after = {}
     for m_after in J["skip_after_news_minutes"]:
@@ -131,6 +139,7 @@ def main() -> None:
         after[m_after] = np.array([any(a <= x < b for a, b in windows.get(d, []))
                                    for d, x in zip(t["day"], t["minute_of_day"])])
     open_m = minutes(S["market"]["rth_start_et"])
+    inside = inside_opening_range(t)
 
     rules = {"as traded": np.ones(len(t), bool)}
     for n in J["max_trades"]:
@@ -147,6 +156,8 @@ def main() -> None:
         rules[f"no entries {m} min after a news spike"] = ~after[m]
     rules["mornings only (09:30-11:00)"] = ((t["minute_of_day"] >= open_m)
                                            & (t["minute_of_day"] < minutes(J["morning_end_et"]))).to_numpy()
+    rules["no entries inside the 09:30-09:45 range"] = ~inside
+    rules["no entries inside the 09:30-09:45 range + 10 min after news"] = ~inside & ~after[10]
     base = keep_by_day(t, lambda g: (np.arange(len(g)) < 3) & stop_after_losses(2)(g))
     rules["combo: at most 3 a day + stop after 2 losses"] = base
     rules["combo: + no entries 10 min after news, none in first 5 min"] = (
@@ -168,10 +179,8 @@ def main() -> None:
     weights = {f"first {J['observe_first_trades']} trades of the day at half size":
                np.where(n_in_day <= J["observe_first_trades"], 0.5, 1.0)}
 
-    split = J["split_date"]
     first, second = (t["day"] < split).to_numpy(), (t["day"] >= split).to_numpy()
     rng = np.random.default_rng(S["level_study"]["random_seed"])
-    days = t["day"].unique()
     by_day_all = t.groupby("day")["net_usd"].sum()
     out = []
     for name, keep in rules.items():
@@ -191,12 +200,32 @@ def main() -> None:
         row["change_first_half"] = tw.loc[first, "net_usd"].sum() - t.loc[first, "net_usd"].sum()
         row["change_second_half"] = tw.loc[second, "net_usd"].sum() - t.loc[second, "net_usd"].sum()
         out.append(row)
-    res = pd.DataFrame(out)
-    res.to_csv(OUT / "journal_day_rules.csv", index=False)
+    return pd.DataFrame(out)
+
+
+def main() -> None:
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--from", dest="start", default="",
+                    help="only trades from this day on (e.g. the reference period, [journal_rules] reference_start)")
+    args = ap.parse_args()
+    t = load_journal()
+    spikes = news_spikes()
+    spikes.to_csv(OUT / "news_spikes_es.csv", index=False)
+    if args.start:
+        t = t[t["day"] >= args.start].reset_index(drop=True)
+        days = sorted(t["day"].unique())
+        split = days[len(days) // 2]                   # halves of the period by trading days
+        name = "journal_day_rules_from_" + args.start + ".csv"
+    else:
+        split, name = J["split_date"], "journal_day_rules.csv"
+    res = evaluate(t, spikes, split)
+    res.to_csv(OUT / name, index=False)
     pd.set_option("display.width", 260)
     pd.set_option("display.max_columns", 30)
+    sp = spikes[spikes["spike"]]
     print(f"news spikes found: {sp.groupby('minute').size().to_dict()} (of {spikes['day'].nunique()} days)")
-    print(f"journal trades in the {J['skip_after_news_minutes'][0]} min after a spike: {int(after[10].sum())}")
+    print(f"{len(t)} trades, {t['day'].nunique()} days, halves split at {split}")
     print(res.round(2).to_string())
 
 

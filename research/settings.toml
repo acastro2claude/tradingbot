@@ -314,3 +314,4 @@ skip_after_news_minutes = [10, 15]
 morning_end_et = "11:00"
 split_date = "2024-07-01"        # robustness: first half vs second half of the journal
 observe_first_trades = 3         # what-if: the first trades of each day on sim, or at half size
+reference_start = "2024-04-01"   # the owner's disciplined period (owner, Oct 2026: early 2024 lacked discipline)
