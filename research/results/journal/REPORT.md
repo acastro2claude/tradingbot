@@ -237,6 +237,36 @@ cost. Code: `research/retest_2026.py`.
 - **Level tests as a whole did no better than random entries** (25% vs 27%). Nothing came close to break-even (about 40% with these exits).
 - POC tests beat zone tests in 2024. In 2026 it was the other way round, so neither holds.
 
+## 8. Blind review, second round (`review/batch2/`, `review_score*.csv`, Oct 2026)
+
+**Setup.** 40 new random level tests from the five 2024 ES weeks were shown on a review
+page (Take / Skip / Wait, a reason, an optional target). The owner took 19 and skipped 21,
+with a reason for each (`review/batch2/answers.csv`). Scoring starts from the bot's fill
+at the chart's last moment (`research/review_score.py`).
+
+| | Charts | 2-pt stop, 4-pt target | 3-pt stop, 6-pt target | 3-pt stop, owner's target | Median best / worst, 30 min |
+|---|---|---|---|---|---|
+| Takes (round 2) | 19 | 16% win, −$76/trade | 16%, −$102 | 16%, −$89 | +4.75 / −7.75 pts |
+| Skips (round 2) | 21 | 24% win, −$50/trade | 29%, −$43 | 29%, −$43 | +4.0 / −6.75 pts |
+| Takes, both rounds | 23 | 13% | 17% | 17% | |
+| Skips, both rounds | 29 | 24% | 28% | 28% | |
+
+- **The takes did not beat the skips.** The gap goes the other way, but it is within chance (Fisher p ≈ 0.7 for round 2, 0.5 for both rounds).
+- Three takes worked well: #9, #10 and #23, which went +16, +18 and +37 points within 30 minutes. Several went 13–20 points against: #6, #12, #16, #20 and #26.
+- **New rules from the reasons:**
+  - no trades in the minutes after news, including the 10:00 ET reports (#2, #6, #11, #13, #30)
+  - nothing too soon after the open (#38)
+  - short into supply when big buying volume fails to lift price (#4, #17)
+  - delta divergence at a zone (#15, #25, #27, #33)
+  - a weaker retest (#18)
+
+  These were added to STRATEGY.md where they are rules.
+
+**Caveats.**
+- A static chart is not live Bookmap. The owner noted they can't see the book move ("since it's not live I can't tell exactly").
+- The entry moment and the stop were the bot's. Several answers said the entry was premature.
+- The levels are the bot's, which the owner used only partly in 2024.
+
 ## Caveats
 
 - The read is my translation of the owner's description. Every threshold above is a proposal, and the owner's eye may weigh things differently.
