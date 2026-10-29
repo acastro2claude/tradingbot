@@ -87,7 +87,7 @@ kbd { font: 0.78rem var(--mono); border: 1px solid var(--line); border-radius: 4
       <ul>
         <li>Heatmap: resting orders per price, brighter = bigger compared with the day's typical size. Bid below price, ask above.</li>
         <li>White line: last price. Green bubbles: aggressive buying. Red bubbles: aggressive selling. Bigger = more contracts in 2 seconds.</li>
-        <li>Diamonds: absorption bursts like your add-on (50+ ES or 100+ MES contracts within 0.01 s), with the size.</li>
+        <li>Diamonds: absorption bursts like your add-on (50+ ES or 100+ MES contracts within 0.01 s). The size is written next to the bigger ones.</li>
         <li>Shaded band: the zone being tested (its timeframe and test number are on the right). Bottom panel: delta every 10 seconds and cumulative delta.</li>
         <li>The small chart on the right: 15-minute candles of the last sessions up to the start of the clip, with the zone.</li>
         <li>Your entry is recorded at the time and price shown when you press. Results are scored later with your risk structure; you won't see them here.</li>
@@ -164,8 +164,8 @@ function keep() { try { localStorage.setItem("zone-replay-decisions", JSON.strin
 try { Object.assign(decisions, JSON.parse(localStorage.getItem("zone-replay-decisions") || "{}")); } catch (e) {}
 // Bookmap-like colours: dark -> blue -> cyan -> yellow -> white
 const STOPS = [[11, 15, 20], [20, 40, 110], [30, 110, 200], [60, 200, 220], [240, 220, 60], [255, 255, 255]];
-function heatColour(q) {           // q 0..127
-  const x = (q / 127) * (STOPS.length - 1), i = Math.min(Math.floor(x), STOPS.length - 2), f = x - i;
+function heatColour(q) {           // q 0..127; gamma keeps the day's typical size dark, so big orders stand out
+  const x = Math.pow(q / 127, 1.5) * (STOPS.length - 1), i = Math.min(Math.floor(x), STOPS.length - 2), f = x - i;
   return STOPS[i].map((c, k) => Math.round(c + (STOPS[i + 1][k] - c) * f));
 }
 
@@ -226,7 +226,7 @@ function drawHeat() {
   const t0 = clip.start_epoch, t1 = t0 + n * clip.frame_seconds, every = pw > 700 ? 60 : 120;
   for (let m = Math.ceil(t0 / 60) * 60; m < t1; m += 60) {
     const x = sx((m - t0) / clip.frame_seconds); g.strokeStyle = css("--screen-grid"); g.beginPath(); g.moveTo(x, 0); g.lineTo(x, h); g.stroke();
-    if (m % every === 0) { g.fillStyle = css("--screen-muted"); g.fillText(etHm.format(new Date(m * 1000)), x + 2, h - 14); } }
+    if (m % every === 0 && x < pw - 44) { g.fillStyle = css("--screen-muted"); g.fillText(etHm.format(new Date(m * 1000)), x + 2, h - 14); } }
   // price: high-low ticks and the last-price line
   g.strokeStyle = "rgba(220,230,240,0.35)"; g.lineWidth = 1;
   for (let k = 0; k <= p; k++) { if (clip.high[k] < 0) continue; const x = sx(k + 0.5);
@@ -244,7 +244,8 @@ function drawHeat() {
   g.font = `600 10px ${css("--mono") || "monospace"}`; g.textBaseline = "middle";
   for (const [f, j, c, dir] of clip.bursts) { if (f > p) continue; const x = sx(f + 0.5), y = sy(j), r = 6;
     g.beginPath(); g.moveTo(x, y - r); g.lineTo(x + r, y); g.lineTo(x, y + r); g.lineTo(x - r, y); g.closePath();
-    g.fillStyle = dir < 0 ? "#b65cff" : "#ffd23f"; g.fill(); g.fillStyle = "#ffffff"; g.fillText(String(c), x + r + 2, y); }
+    g.fillStyle = dir < 0 ? "#b65cff" : "#ffd23f"; g.fill();
+    if (c >= 2 * (clip.market === "ES" ? 50 : 100)) { g.fillStyle = "#ffffff"; g.fillText(String(c), x + r + 2, y); } }
   // decision marker and playhead
   const d = decisions[INDEX[cur].id];
   if (d && (d.decision === "long" || d.decision === "short") && d.frame != null) {
@@ -268,7 +269,7 @@ function drawDelta() {
   for (let k = 0; k <= p; k++) { const x = ((k + 0.5) / n) * pw, y = h - 6 - ((clip.cvd[k] - lo) / span) * (h - 12); if (k === 0) g.moveTo(x, y); else g.lineTo(x, y); }
   g.stroke();
   g.fillStyle = css("--screen-muted"); g.font = `11px ${css("--mono") || "monospace"}`; g.textBaseline = "top";
-  g.fillText("delta / 10 s", pw + 6, 4); g.fillText(`CVD ${clip.cvd[p] >= 0 ? "+" : ""}${clip.cvd[p]}`, pw + 6, h - 18);
+  g.fillText("Δ 10 s", pw + 6, 4); g.fillText(`CVD ${clip.cvd[p] >= 0 ? "+" : ""}${clip.cvd[p]}`, pw + 6, h - 18);
 }
 function drawCtx() {
   const [g, w, h] = fit(C), c = clip.context, n = c.o.length;
