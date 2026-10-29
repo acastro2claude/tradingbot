@@ -430,9 +430,14 @@ The owner shared the supply and demand course they follow (rally-base-rally, dro
   - The bot finds it at 5472.50–5490.00 in the Sep contract, which is 5533.25–5550.75 on the owner's back-adjusted thinkorswim chart. The zone top is the open of the red base candle, where the owner put the cursor.
   - First return: 5 Sep at 12:16 ET, to exactly 5490.00. Price bounced 37 points, came back overnight and bounced 20 more, then broke on the 6 Sep jobs report.
 - **The owner's timeframes and overlap rule:** 4h, 2h, 1h, 30m and 15m. Where zones overlap, the higher timeframe wins.
-- **On 2024 ES data:** about 40 zones a week after overlaps.
-  - Per week: 3 four-hour, 3 two-hour, 4.5 one-hour, 11.5 thirty-minute and 18 fifteen-minute.
-  - Almost every zone gets its first return within the month; 1 in 8 four-hour zones expires untested.
+- **The owner's verdicts on the Aug–Sep 2024 4-hour zones led to two more rules.**
+  - Rule 1: the base needs an opposite-colour basing candle. That removes the rejected 5368 and 5431 zones.
+  - Rule 2 (proposed): price must move 1.5× the zone's height away before it comes back. That removes the chop zones at the top of the late-August range and keeps 5636.
+- **Retests:** zones now stay valid through retests, which are numbered.
+- **On 2024 ES data:** about 14 zones a week after overlaps (40 before these rules).
+  - Per week: 1.6 four-hour, 1.2 two-hour, 1.7 one-hour, 3.8 thirty-minute and 5.8 fifteen-minute.
+  - A zone gets 2 tests on average; 1 in 7 reaches 4 or more.
+- **Review page:** an interactive page (`review/zones/index.html`) lets the owner mark each zone valid or noise.
 - **Not tested yet:** how often first returns hold. That waits until the owner confirms the zones look right on the charts.
 
 ## Caveats

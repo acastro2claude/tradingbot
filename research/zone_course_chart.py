@@ -1,10 +1,11 @@
 """Draw the bot's course-style supply/demand zones (research.zones) on candles, for the owner to check.
 
-Each zone is shaded lightly from its base until the move away finished (the bot only
-knows the zone from then on), then fully until price first came back to its near edge. The first return is circled, as in the course. Zones that expired untested
-(older than max_age_days) are not drawn past their expiry. Zones a higher-timeframe zone
-later formed over are left off: the chart shows the zones as marked in hindsight.
-Prices are in the contract of the chart's last day; times are Eastern.
+Each zone is shaded lightly from its base until the bot knew it (price had moved far enough
+away), then fully until it stopped counting (broken, chopped in, expired). Every test is
+circled and numbered; from the 4th test on (weak_from_test) the circle is dashed: the zone
+is on its way out. Zones a higher-timeframe zone later formed over are left off: the chart
+shows the zones as marked in hindsight. Prices are in the contract of the chart's last day;
+times are Eastern.
 
 Overlapping zones are already resolved (research.zones.resolve_overlaps): the higher
 timeframe wins, and a lower-timeframe zone that a higher one formed over just stops.
@@ -62,8 +63,9 @@ def draw(first: str, last: str, tf: int, zone_tfs: list[int], s: dict, sessions,
         return i - 0.5 + min(max((t - starts[i]) / (tf * 60), 0), 1)
 
     lo_view, hi_view = px(c["low"].min()) - 10, px(c["high"].max()) + 10
-    live = z[z["timeframe"].isin(zone_tfs) & (z["created"] < t1) & (z["fresh_until"] > t0)
-             & (z["ended"] != "replaced by a higher timeframe")]
+    live = z[z["timeframe"].isin(zone_tfs) & (z["created"] < t1) & (z["dies"] > t0)
+             & (z["why"] != "replaced by a higher timeframe")]
+    weak = s["zones"]["weak_from_test"]
     live = live[(px(live["high"]) >= lo_view) & (px(live["low"]) <= hi_view)]
 
     fig, ax = plt.subplots(figsize=(17, 8.5), dpi=100, facecolor=SURFACE)
@@ -72,14 +74,17 @@ def draw(first: str, last: str, tf: int, zone_tfs: list[int], s: dict, sessions,
         colour = DEMAND if r.kind == "demand" else SUPPLY
         zl, zh = px(r.low), px(r.high)
         a = xi(max(r.base_start, t0))
-        b = xi(min(r.fresh_until, t1))
+        b = xi(min(r.dies, t1))
         rank = sorted(zone_tfs).index(r.timeframe) / max(len(zone_tfs) - 1, 1)   # 0 = lowest timeframe
         strong = 0.12 + 0.22 * rank
         m = xi(min(max(r.created, t0), t1))                                   # the move away finished here
         ax.add_patch(Rectangle((a, zl), m - a, zh - zl, color=colour, alpha=strong * 0.35, lw=0, zorder=1))
         ax.add_patch(Rectangle((m, zl), b - m, zh - zl, color=colour, alpha=strong, lw=0, zorder=1))
-        if r.ended == "tested" and r.first_touch < t1:
-            ax.plot(xi(r.first_touch), px(r.near), "o", ms=13, mfc="none", mec=INK, mew=1.4, zorder=5)
+        for n, tt in enumerate(r.tests, 1):
+            if t0 <= tt < t1:
+                ax.plot(xi(tt), px(r.near), "o", ms=12, mfc=SURFACE, mec=INK, mew=1.2, zorder=5,
+                        ls="none", alpha=1 if n < weak else 0.55)
+                ax.text(xi(tt), px(r.near), str(n), fontsize=6.5, ha="center", va="center", color=INK, zorder=6)
         mine = highlight is not None and abs(zl - highlight[0]) < 1 and abs(zh - highlight[1]) < 1
         label = f"{NAMES.get(r.timeframe, r.timeframe)} {r.pattern} {zl:.2f}-{zh:.2f}" + ("  <- your example" if mine else "")
         y = min(zh + 0.3, hi_view - 2) if r.kind == "supply" else max(zl - 0.3, lo_view + 2)
@@ -107,9 +112,9 @@ def draw(first: str, last: str, tf: int, zone_tfs: list[int], s: dict, sessions,
     ax.yaxis.tick_right()
     for sp in ax.spines.values():
         sp.set_visible(False)
-    handles = [Patch(color=DEMAND, alpha=0.3, label="demand zone, fresh"),
-               Patch(color=SUPPLY, alpha=0.3, label="supply zone, fresh"),
-               Line2D([], [], marker="o", ls="none", mfc="none", mec=INK, ms=10, label="first return to the zone"),
+    handles = [Patch(color=DEMAND, alpha=0.3, label="demand zone"),
+               Patch(color=SUPPLY, alpha=0.3, label="supply zone"),
+               Line2D([], [], marker="o", ls="none", mfc="none", mec=INK, ms=10, label="test number (faint from the 4th)"),
                Patch(color=MUTED, alpha=0.3, label="darker = higher timeframe"),
                Patch(color=MUTED, alpha=0.1, label="light = still forming (move away not finished)")]
     ax.legend(handles=handles[:3] + (handles[3:] if len(zone_tfs) > 1 else []), loc="upper center",

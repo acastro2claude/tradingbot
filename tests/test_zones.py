@@ -40,7 +40,7 @@ def test_rally_base_rally_demand_zone():
     assert len(z) == 1
     r = z.iloc[0]
     assert (r.kind, r.pattern, r.base_candles) == ("demand", "RBR", 1)
-    assert (r.near, r.far) == (108, 105)           # top of the base body, bottom of the base wick
+    assert (r.near, r.far) == (108, 105)           # top of the base body, bottom of the wicks
 
 
 def test_drop_base_drop_supply_zone_is_the_mirror():
@@ -71,7 +71,7 @@ def test_owner_example_4h_demand_zone_aug_2024():
     r = own.iloc[0]
     assert r.pattern == "RBR"
     assert r.near * 0.25 == 5490.00 and r.near * 0.25 + 60.75 == 5550.75
-    assert r.far * 0.25 == 5472.50
+    assert r.far * 0.25 == 5471.75                 # the rally candle's low wick
     assert c.loc[c["start"] == r.base_start, "label"].item() == "2024-08-14 16:00"   # Chicago = 14:00 PT
     assert c.loc[c["start"] == r.leg_out_start, "label"].item() == "2024-08-15 04:00"
 
@@ -86,23 +86,51 @@ def test_candles_start_at_chicago_midnight():
     assert c["start"].iat[0] == pd.Timestamp("2024-08-15 05:00", tz="UTC").timestamp()
 
 
-def _zone(tf, low, high, created, fresh_until):
-    return dict(timeframe=tf, low=low, high=high, created=created, fresh_until=fresh_until,
-                first_touch=fresh_until, broken=np.inf, expires=np.inf)
+def _zone(tf, low, high, created, dies):
+    return dict(timeframe=tf, low=low, high=high, created=created, dies=dies, why="broken",
+                tests=[created + 1.0, dies - 1.0])
 
 
 def test_overlapping_zones_keep_the_higher_timeframe():
     from research.zones import resolve_overlaps
     z = pd.DataFrame([
-        _zone(240, 10, 20, 100, 500),     # 4h zone, fresh from 100 to 500
-        _zone(60, 15, 18, 200, 450),      # forms inside the fresh 4h zone: not marked
-        _zone(60, 12, 14, 50, 400),       # fresh 1h zone the 4h zone forms over at 100: ends there
-        _zone(60, 16, 19, 600, 700),      # forms after the 4h zone was used: kept
+        _zone(240, 10, 20, 100, 500),     # 4h zone, counts from 100 to 500
+        _zone(60, 15, 18, 200, 450),      # forms inside the live 4h zone: not marked
+        _zone(60, 12, 14, 50, 400),       # live 1h zone the 4h zone forms over at 100: ends there
+        _zone(60, 16, 19, 600, 700),      # forms after the 4h zone ended: kept
         _zone(60, 30, 35, 10, 300),       # elsewhere: kept
-        _zone(60, 33, 40, 50, 310),       # same timeframe, over the earlier fresh zone: not marked
+        _zone(60, 33, 40, 50, 310),       # same timeframe, over the earlier live zone: not marked
     ])
     out = resolve_overlaps(z).set_index(["timeframe", "low"])
     assert sorted(out.index) == [(60, 12), (60, 16), (60, 30), (240, 10)]
-    assert out.loc[(60, 12), "fresh_until"] == 100
-    assert out.loc[(60, 12), "ended"] == "replaced by a higher timeframe"
-    assert out.loc[(60, 16), "ended"] == "tested"
+    assert out.loc[(60, 12), "dies"] == 100
+    assert out.loc[(60, 12), "why"] == "replaced by a higher timeframe"
+    assert out.loc[(60, 12), "n_tests"] == 1          # its test at 399 came after it was replaced
+    assert out.loc[(60, 16), "why"] == "broken"
+
+
+def test_demand_base_needs_a_red_candle():
+    green_base = _candles(QUIET + RALLY + [(107, 111, 105, 108)] + LEG_OUT)    # small green candle, then the rally
+    assert _zone_at_leg_out(green_base, find_zones(green_base, 60, _settings())).empty
+    assert not _zone_at_leg_out(green_base, find_zones(green_base, 60, _settings(base_needs_opposite_candle=False))).empty
+
+
+def _bars(prices, step=60):
+    ts = pd.to_datetime(np.arange(len(prices)) * step, unit="s", utc=True)
+    p = np.asarray(prices)
+    return pd.DataFrame(dict(ts=ts, low_adj=p, high_adj=p, close_adj=p))
+
+
+def test_zone_life_counts_retests_and_skips_chop():
+    from research.zones import zone_life
+    zone = pd.DataFrame([dict(kind="demand", near=100, far=90, low=90, high=100, leg_out_start=0.0, created=60.0,
+                              timeframe=15)])
+    # leg-out bar, away 1.5x the 10-tick height (115+), back to 100 (test 1), away 20 ticks (5 points) again,
+    # back (test 2), a bounce of only 1 tick (no new test), away, back (test 3), then a 15m close below 90
+    bars = _bars([130, 120, 116, 105, 100, 110, 121, 115, 99, 101, 100, 125, 100, 95, 85])
+    candles = {15: pd.DataFrame(dict(start=[780.0], end=[840.0], close=[85]))}
+    life = zone_life(zone, bars, candles, _settings(), 0.25).iloc[0]
+    assert life.tests == [240.0, 480.0, 720.0]
+    assert (life.created, life.dies, life.why) == (60.0, 840.0, "broken")
+    chop = _bars([112, 110, 104, 100, 108, 112])           # never gets 15 ticks away before coming back
+    assert zone_life(zone, chop, candles, _settings(), 0.25).empty

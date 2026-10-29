@@ -1,0 +1,486 @@
+<title>ES Zone Review</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a chart desk. Controls on top, one big zoomable chart, then the zones in view as a marking list. */
+:root {
+  --bg: #f3f5f8; --surface: #ffffff; --ink: #121820; --muted: #566270; --line: #dce2e9; --grid: #e8ecf1;
+  --accent: #1c5cab; --demand: #12976a; --supply: #e0612a; --valid: #13845b; --noise: #c4501f; --unsure: #5d6672;
+  --warn-bg: #fff4e5; --warn-ink: #7a3e00;
+  --display: "Barlow Condensed", "Arial Narrow", system-ui, sans-serif;
+  --body: "Barlow", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0e1217; --surface: #161c23; --ink: #e5ebf1; --muted: #9aa7b4; --line: #29323c; --grid: #1f262e;
+  --accent: #6aa6ec; --demand: #34c48f; --supply: #f08356; --valid: #34c48f; --noise: #f08356; --unsure: #a3adb8;
+  --warn-bg: #3a2a12; --warn-ink: #ffd8a8; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0e1217; --surface: #161c23; --ink: #e5ebf1; --muted: #9aa7b4; --line: #29323c; --grid: #1f262e;
+  --accent: #6aa6ec; --demand: #34c48f; --supply: #f08356; --valid: #34c48f; --noise: #f08356; --unsure: #a3adb8;
+  --warn-bg: #3a2a12; --warn-ink: #ffd8a8; color-scheme: dark; }
+body { background: var(--bg); color: var(--ink); font: 16px/1.5 var(--body); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.wrap { max-width: 1280px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 24px 64px; display: grid; gap: 18px; }
+header.intro { display: grid; gap: 8px; }
+.eyebrow { font: 600 0.8rem/1 var(--display); letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); }
+h1 { font: 700 2.1rem/1.1 var(--display); letter-spacing: 0.01em; margin: 0; text-wrap: balance; }
+h2 { font: 700 1.35rem/1.2 var(--display); letter-spacing: 0.01em; margin: 0; }
+.intro p { margin: 0; max-width: 72ch; color: var(--muted); }
+details.rules { max-width: 80ch; color: var(--muted); font-size: 0.95rem; }
+details.rules summary { cursor: pointer; color: var(--ink); font-weight: 500; }
+details.rules ul { margin: 8px 0 0; padding-left: 20px; display: grid; gap: 4px; }
+.banner { background: var(--warn-bg); color: var(--warn-ink); border-radius: 8px; padding: 10px 14px; }
+.controls { display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: end; }
+.ctl { display: grid; gap: 4px; }
+.ctl > span { font: 600 0.75rem/1 var(--display); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+button, select { font: 500 0.92rem var(--body); color: var(--ink); background: var(--surface); border: 1px solid var(--line);
+  border-radius: 6px; padding: 6px 10px; cursor: pointer; }
+button:hover, select:hover { border-color: var(--muted); }
+button:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+button[aria-pressed="true"] { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+select { padding-right: 6px; max-width: 100%; }
+.chartbox { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.chartbox .top { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; padding: 10px 12px 0;
+  font-size: 0.9rem; color: var(--muted); }
+.chartbox .top b { color: var(--ink); font-weight: 600; }
+canvas { display: block; width: 100%; height: clamp(380px, 62vh, 720px); touch-action: none; cursor: crosshair; }
+.tip { position: absolute; pointer-events: none; background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
+  padding: 6px 9px; font: 0.82rem/1.4 var(--mono); font-variant-numeric: tabular-nums; color: var(--ink); max-width: 300px;
+  box-shadow: 0 2px 10px rgb(0 0 0 / 0.12); }
+.key { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 0.88rem; color: var(--muted); padding: 0 12px 10px; }
+.sw { display: inline-block; width: 14px; height: 10px; border-radius: 2px; vertical-align: -1px; margin-right: 5px; }
+.list-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px 16px; }
+.count { font: 500 0.92rem var(--mono); font-variant-numeric: tabular-nums; color: var(--muted); }
+.zones { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 360px), 1fr)); gap: 12px; }
+.zone { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: grid; gap: 8px; min-width: 0; }
+.zone.sel { border-color: var(--ink); box-shadow: 0 0 0 1px var(--ink); }
+.zone h3 { margin: 0; font: 600 1.05rem/1.25 var(--body); display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: baseline; cursor: pointer; }
+.zone h3 .px { font: 500 0.92rem var(--mono); font-variant-numeric: tabular-nums; color: var(--muted); }
+.tag { font: 600 0.72rem/1 var(--display); letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 6px; border-radius: 4px;
+  border: 1px solid currentColor; }
+.tag.demand { color: var(--demand); } .tag.supply { color: var(--supply); } .tag.mine { color: var(--accent); }
+.facts { margin: 0; font-size: 0.9rem; color: var(--muted); display: grid; gap: 2px; }
+.facts b { color: var(--ink); font-weight: 500; }
+.verdict { display: flex; flex-wrap: wrap; gap: 6px; }
+.verdict button[data-v="valid"][aria-pressed="true"] { background: var(--valid); border-color: var(--valid); color: var(--surface); }
+.verdict button[data-v="noise"][aria-pressed="true"] { background: var(--noise); border-color: var(--noise); color: var(--surface); }
+.verdict button[data-v="unsure"][aria-pressed="true"] { background: var(--unsure); border-color: var(--unsure); color: var(--surface); }
+textarea { width: 100%; box-sizing: border-box; min-height: 2.6em; resize: vertical; font: 0.92rem/1.4 var(--body); color: var(--ink);
+  background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; }
+.status { font-size: 0.82rem; color: var(--muted); min-height: 1.2em; }
+.status.err { color: var(--noise); }
+.empty { color: var(--muted); padding: 12px 0; }
+.missing { display: grid; gap: 8px; max-width: 80ch; }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+
+<div class="wrap">
+  <header class="intro">
+    <div class="eyebrow">ES · supply and demand · the bot's course rules</div>
+    <h1>ES Zone Review</h1>
+    <p>Every zone the bot marks, on the five timeframes you trade. Scroll or pinch to zoom, drag to pan, double-click to reset. Click a zone on the chart or in the list, then mark it <b>Valid</b> or <b>Noise</b> and say why. Your marks save for both of us.</p>
+    <details class="rules">
+      <summary>How the bot marks zones right now</summary>
+      <ul>
+        <li>Base: 1 to 3 candles at about the same price, with a red candle in a demand base (a green one in a supply base).</li>
+        <li>Move away: one candle with a body at least double each base candle, a range at least 1.5× the last 20 candles' average, closing beyond the whole base.</li>
+        <li>Price must move away 1.5× the zone's height before it first comes back. If it comes straight back, it was chop and there is no zone.</li>
+        <li>Top of a demand zone = base candle bodies; bottom = the wicks (base and move-away candle). Supply is the reverse.</li>
+        <li>Tests are numbered. A new test needs price to move away by the zone's height (at least 5 points) first. From the 4th test the circle is faint: probably on its way out.</li>
+        <li>A zone ends when a candle on its timeframe closes beyond the far edge, when price sits inside it for 4 candles of its timeframe, or after 31 days.</li>
+        <li>No overlaps: the higher timeframe wins. A lower-timeframe zone that a higher one later formed over is not shown.</li>
+        <li>Candles start at midnight Chicago time, like thinkorswim. Prices are in the contract shown above the chart.</li>
+      </ul>
+    </details>
+    <div class="banner" id="nostore" hidden>Your marks can't reach the shared store from this view, so they stay in this browser only. Open the page signed in to claude.ai to save them for Claude.</div>
+  </header>
+
+  <section class="controls" aria-label="Chart controls">
+    <label class="ctl"><span>Week</span>
+      <div class="row">
+        <button id="prev" type="button" aria-label="Previous week">◀</button>
+        <select id="week"></select>
+        <button id="next" type="button" aria-label="Next week">▶</button>
+      </div>
+    </label>
+    <label class="ctl"><span>Show</span>
+      <select id="span">
+        <option value="1">1 week</option><option value="2">2 weeks</option>
+        <option value="4">4 weeks</option><option value="8">8 weeks</option>
+      </select>
+    </label>
+    <div class="ctl"><span>Candles</span><div class="row" id="tfs" role="group" aria-label="Candle timeframe"></div></div>
+    <div class="ctl"><span>Zones from</span><div class="row" id="ztfs" role="group" aria-label="Zone timeframes"></div></div>
+    <div class="ctl"><span>Times</span><div class="row" id="tzs" role="group" aria-label="Time zone"></div></div>
+    <div class="ctl"><span>Zoom</span><div class="row">
+      <button id="zin" type="button">+</button><button id="zout" type="button">−</button><button id="zreset" type="button">Reset</button>
+    </div></div>
+  </section>
+
+  <section class="chartbox" aria-label="Price chart with zones">
+    <div class="top"><span id="viewinfo"></span><span id="hoverinfo">Hover a candle or a zone</span></div>
+    <canvas id="chart"></canvas>
+    <div class="tip" id="tip" hidden></div>
+    <div class="key">
+      <span><i class="sw" style="background: var(--demand); opacity: .55"></i>demand</span>
+      <span><i class="sw" style="background: var(--supply); opacity: .55"></i>supply</span>
+      <span>darker = higher timeframe</span>
+      <span>light = still forming</span>
+      <span>① ② ③ = tests</span>
+      <span>filled candle = red (down), hollow = green (up)</span>
+    </div>
+  </section>
+
+  <section class="list-head">
+    <h2>Zones in this view</h2>
+    <span class="count" id="count"></span>
+  </section>
+  <div class="zones" id="zones"></div>
+
+  <section class="missing">
+    <h2>Zones the bot missed</h2>
+    <p class="intro" style="margin:0;color:var(--muted)">For the week picked above. Example: "4h demand 5440–5452 from Mon 12 Aug, it held three times."</p>
+    <textarea id="missing" rows="3" placeholder="Timeframe, demand or supply, rough prices, when it formed"></textarea>
+    <span class="status" id="missing-status"></span>
+  </section>
+</div>
+
+<script type="application/json" id="data">__DATA__</script>
+<script>
+"use strict";
+const RAW = JSON.parse(document.getElementById("data").textContent);
+const TICK = RAW.tick, WEAK = RAW.weak_from_test, TFS = RAW.tfs;          // TFS: highest first
+const NAMES = { 15: "15m", 30: "30m", 60: "1h", 120: "2h", 240: "4h" };
+const WHY = { "broken": "broken", "chopped in": "price sat inside it", "expired": "31 days old",
+  "data ended": "still live at the end of the data", "replaced by a higher timeframe": "a higher timeframe formed over it" };
+
+// ---- decode candles (stored as differences) ----
+const CANDLES = {};
+for (const tf of TFS) {
+  const r = RAW.candles[tf], n = r.dt.length, t = new Float64Array(n), o = new Int32Array(n), h = new Int32Array(n),
+    l = new Int32Array(n), c = new Int32Array(n);
+  let pt = 0, pc = 0;
+  for (let i = 0; i < n; i++) {
+    t[i] = pt += r.dt[i]; o[i] = pc + r.o[i]; h[i] = o[i] + r.h[i]; l[i] = o[i] - r.l[i]; c[i] = pc = o[i] + r.c[i];
+  }
+  CANDLES[tf] = { t, o, h, l, c, s: r.s };
+}
+const ZONES = RAW.zones.map(z => ({ ...z, dies: z.dies == null ? Infinity : z.dies }));
+const WEEKS = RAW.weeks;
+
+// ---- state ----
+const S = { week: Math.max(0, WEEKS.findIndex(w => w.monday === RAW.start_week)), span: 2, tf: 60,
+  ztfs: new Set(TFS), tz: "America/New_York", sel: null };
+try { const saved = JSON.parse(localStorage.getItem("zone-review-view") || "null");
+  if (saved) { if (WEEKS[saved.week]) S.week = saved.week; S.span = saved.span || S.span; S.tf = saved.tf || S.tf;
+    S.tz = saved.tz || S.tz; if (Array.isArray(saved.ztfs)) S.ztfs = new Set(saved.ztfs); } } catch (e) {}
+function keepView() { try { localStorage.setItem("zone-review-view", JSON.stringify({ week: S.week, span: S.span, tf: S.tf,
+  tz: S.tz, ztfs: [...S.ztfs] })); } catch (e) {} }
+
+const marks = {};            // zone id -> {verdict, note}
+let db = null, V = null;     // V: the current view
+
+// ---- helpers ----
+function lower(a, x, lo = 0, hi = a.length) { while (lo < hi) { const m = (lo + hi) >> 1; if (a[m] < x) lo = m + 1; else hi = m; } return lo; }
+function upper(a, x, lo = 0, hi = a.length) { while (lo < hi) { const m = (lo + hi) >> 1; if (a[m] <= x) lo = m + 1; else hi = m; } return lo; }
+const fmtCache = {};
+function fmt(t, kind) {
+  const key = S.tz + kind;
+  if (!fmtCache[key]) fmtCache[key] = new Intl.DateTimeFormat("en-US", kind === "day"
+    ? { timeZone: S.tz, weekday: "short", day: "numeric", month: "short" }
+    : kind === "hm" ? { timeZone: S.tz, hour: "2-digit", minute: "2-digit", hourCycle: "h23" }
+    : { timeZone: S.tz, weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", hourCycle: "h23" });
+  return fmtCache[key].format(new Date(t * 1000));
+}
+const tzName = () => S.tz === "America/New_York" ? "ET" : "PT";
+const dayFmt = new Intl.DateTimeFormat("en-US", { timeZone: "UTC", weekday: "short", day: "numeric", month: "short" });
+const sessionLabel = k => dayFmt.format(new Date(RAW.sessions[k] + "T12:00:00Z"));     // the trading day, not the clock day
+const px = adj => (adj - V.off) * TICK;
+const p2 = v => v.toFixed(2);
+function css(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+function rgba(hex, a) { const m = hex.replace("#", ""); const n = parseInt(m.length === 3 ? m.split("").map(x => x + x).join("") : m, 16);
+  return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`; }
+function zoneName(z) { return `${NAMES[z.tf]} ${z.pat}`; }
+
+// ---- view ----
+function buildView() {
+  const w0 = WEEKS[S.week], w1 = WEEKS[Math.min(S.week + S.span - 1, WEEKS.length - 1)];
+  const C = CANDLES[S.tf], i0 = lower(C.t, w0.t0), i1 = lower(C.t, w1.t1);
+  V = { C, i0, i1, N: i1 - i0, t0: w0.t0, t1: w1.t1, off: w1.off, contract: w1.contract, vx0: -0.5, vx1: i1 - i0 - 0.5 };
+  V.zones = ZONES.filter(z => S.ztfs.has(z.tf) && z.base < V.t1 && z.dies > V.t0)
+    .sort((a, b) => a.tf - b.tf || a.known - b.known);
+  document.getElementById("viewinfo").innerHTML = `<b>ES ${V.contract}</b> · ${NAMES[S.tf]} candles · sessions ${w0.label} to ${WEEKS[Math.min(S.week + S.span - 1, WEEKS.length - 1)].last} · times ${tzName()}`;
+  keepView();
+}
+function tx(t) {                               // time -> fractional candle index in the view
+  const C = V.C, k = upper(C.t, t, V.i0, V.i1) - 1;
+  if (k < V.i0) return -0.5;
+  return k - V.i0 - 0.5 + Math.min(Math.max((t - C.t[k]) / (S.tf * 60), 0), 1);
+}
+
+// ---- drawing ----
+const cv = document.getElementById("chart"), ctx = cv.getContext("2d"), tip = document.getElementById("tip");
+const PAD = { l: 8, r: 70, t: 10, b: 30 };
+let G = null;                                  // geometry of the last draw
+function draw() {
+  const dpr = window.devicePixelRatio || 1, W = cv.clientWidth, H = cv.clientHeight;
+  if (cv.width !== Math.round(W * dpr) || cv.height !== Math.round(H * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const col = { ink: css("--ink"), muted: css("--muted"), grid: css("--grid"), surface: css("--surface"),
+    demand: css("--demand"), supply: css("--supply"), valid: css("--valid"), noise: css("--noise") };
+  ctx.fillStyle = col.surface; ctx.fillRect(0, 0, W, H);
+  const pw = W - PAD.l - PAD.r, ph = H - PAD.t - PAD.b, C = V.C;
+  const a = Math.max(0, Math.ceil(V.vx0)), b = Math.min(V.N - 1, Math.floor(V.vx1));
+  let lo = Infinity, hi = -Infinity;
+  for (let k = a; k <= b; k++) { lo = Math.min(lo, C.l[V.i0 + k]); hi = Math.max(hi, C.h[V.i0 + k]); }
+  if (!isFinite(lo)) { lo = 0; hi = 1; }
+  let ylo = px(lo), yhi = px(hi); const pad = Math.max((yhi - ylo) * 0.06, 1); ylo -= pad; yhi += pad;
+  const sx = x => PAD.l + (x - V.vx0) / (V.vx1 - V.vx0) * pw;
+  const sy = p => PAD.t + (yhi - p) / (yhi - ylo) * ph;
+  G = { sx, sy, pw, ph, ylo, yhi, W, H };
+
+  // price grid
+  const raw = (yhi - ylo) / 7, steps = [0.25, 0.5, 1, 2, 2.5, 5, 10, 20, 25, 50, 100, 200];
+  const step = steps.find(s => s >= raw) || 500;
+  ctx.font = `12px ${css("--mono") || "monospace"}`; ctx.textBaseline = "middle";
+  for (let p = Math.ceil(ylo / step) * step; p <= yhi; p += step) {
+    const y = Math.round(sy(p)) + 0.5;
+    ctx.strokeStyle = col.grid; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(PAD.l, y); ctx.lineTo(PAD.l + pw, y); ctx.stroke();
+    ctx.fillStyle = col.muted; ctx.textAlign = "left"; ctx.fillText(p2(p), PAD.l + pw + 8, y);
+  }
+  // day lines and time labels
+  const cw = pw / (V.vx1 - V.vx0);
+  ctx.textBaseline = "top"; ctx.textAlign = "left";
+  let lastLabelX = -1e9;
+  for (let k = Math.max(0, a - 1); k <= b; k++) {
+    const i = V.i0 + k, x = sx(k - 0.5);
+    if (k === 0 || C.s[i] !== C.s[i - 1]) {
+      ctx.strokeStyle = col.grid; ctx.setLineDash([3, 4]); ctx.beginPath(); ctx.moveTo(Math.round(x) + 0.5, PAD.t);
+      ctx.lineTo(Math.round(x) + 0.5, PAD.t + ph); ctx.stroke(); ctx.setLineDash([]);
+      if (x - lastLabelX > 74 && x >= PAD.l - 2) { ctx.fillStyle = col.muted; ctx.fillText(sessionLabel(C.s[i]), x + 3, PAD.t + ph + 8); lastLabelX = x; }
+    } else if (cw > 26 && x - lastLabelX > 60 && x >= PAD.l) {
+      ctx.fillStyle = col.muted; ctx.fillText(fmt(C.t[i], "hm"), x + 3, PAD.t + ph + 8); lastLabelX = x;
+    }
+  }
+  // zones
+  ctx.save(); ctx.beginPath(); ctx.rect(PAD.l, PAD.t, pw, ph); ctx.clip();
+  const rankOf = tf => (TFS.length - 1 - TFS.indexOf(tf)) / Math.max(TFS.length - 1, 1);   // 0 lowest .. 1 highest
+  for (const z of V.zones) {
+    const c0 = z.kind === "demand" ? col.demand : col.supply, al = 0.12 + 0.24 * rankOf(z.tf);
+    const xa = sx(tx(Math.max(z.base, V.t0))), xk = sx(tx(Math.min(Math.max(z.known, V.t0), V.t1))),
+      xb = sx(tx(Math.min(z.dies, V.t1))), yt = sy(px(z.hi)), yb = sy(px(z.lo));
+    const hgt = Math.max(yb - yt, 2);
+    ctx.fillStyle = rgba(c0, al * 0.35); ctx.fillRect(xa, yt, Math.max(xk - xa, 0), hgt);
+    ctx.fillStyle = rgba(c0, al); ctx.fillRect(xk, yt, Math.max(xb - xk, 0), hgt);
+    z._r = [xa, yt, xb, yt + hgt];
+    if (S.sel === z.id) { ctx.strokeStyle = col.ink; ctx.lineWidth = 2; ctx.strokeRect(xa, yt, xb - xa, hgt); }
+  }
+  // candles
+  const bw = Math.max(1, Math.min(14, cw * 0.66));
+  for (let k = a; k <= b; k++) {
+    const i = V.i0 + k, x = sx(k), o = sy(px(C.o[i])), c = sy(px(C.c[i]));
+    ctx.strokeStyle = col.ink; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(Math.round(x) + 0.5, sy(px(C.h[i]))); ctx.lineTo(Math.round(x) + 0.5, sy(px(C.l[i]))); ctx.stroke();
+    const top = Math.min(o, c), h = Math.max(Math.abs(c - o), 1);
+    if (C.c[i] < C.o[i]) { ctx.fillStyle = col.ink; ctx.fillRect(x - bw / 2, top, bw, h); }
+    else { ctx.fillStyle = col.surface; ctx.fillRect(x - bw / 2, top, bw, h); if (bw > 2) ctx.strokeRect(x - bw / 2 + 0.5, top + 0.5, bw - 1, Math.max(h - 1, 0)); }
+  }
+  // labels and tests
+  ctx.font = `600 11px ${css("--body") || "sans-serif"}`; ctx.textAlign = "left"; ctx.textBaseline = "alphabetic";
+  for (const z of V.zones) {
+    const [xa, yt, xb, ybot] = z._r, m = marks[z.id];
+    if (xb - xa > 80) {
+      const lab = `${zoneName(z)} ${p2(px(z.lo))}–${p2(px(z.hi))}${z.mine ? " · your example" : ""}${m && m.verdict ? " · " + (m.verdict === "valid" ? "✓ valid" : m.verdict === "noise" ? "✗ noise" : "? not sure") : ""}`;
+      const x = Math.max(xa, PAD.l) + 4, y = z.kind === "supply" ? yt - 4 : ybot + 13;
+      ctx.fillStyle = col.surface; const w = ctx.measureText(lab).width; ctx.globalAlpha = 0.75; ctx.fillRect(x - 2, y - 11, w + 4, 14); ctx.globalAlpha = 1;
+      ctx.fillStyle = m && m.verdict === "valid" ? col.valid : m && m.verdict === "noise" ? col.noise : col.ink; ctx.fillText(lab, x, y);
+    }
+  }
+  ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.font = `600 10px ${css("--mono") || "monospace"}`;
+  for (const z of V.zones) {
+    z.tests.forEach((t, n) => {
+      if (t < V.t0 || t >= V.t1) return;
+      const x = sx(tx(t)), y = sy(px(z.near));
+      ctx.globalAlpha = n + 1 >= WEAK ? 0.45 : 1;
+      ctx.beginPath(); ctx.arc(x, y, 8, 0, Math.PI * 2); ctx.fillStyle = col.surface; ctx.fill();
+      ctx.strokeStyle = col.ink; ctx.lineWidth = 1.3; ctx.stroke(); ctx.fillStyle = col.ink; ctx.fillText(String(n + 1), x, y + 0.5);
+      ctx.globalAlpha = 1;
+    });
+  }
+  ctx.restore();
+}
+
+// ---- hover, zoom, pan, click ----
+function zoneAt(mx, my) {
+  let best = null;
+  for (const z of V.zones) { const r = z._r; if (r && mx >= r[0] && mx <= r[2] && my >= r[1] && my <= r[3] && (!best || z.tf > best.tf)) best = z; }
+  return best;
+}
+function describe(z) {
+  const tests = z.tests.length ? z.tests.map((t, n) => `${n + 1}: ${fmt(t, "full")}`).join("<br>") : "none yet";
+  return `<b>${zoneName(z)}</b> ${z.kind} ${p2(px(z.lo))}–${p2(px(z.hi))}<br>known ${fmt(z.known, "full")}<br>tests:<br>${tests}<br>ends: ${isFinite(z.dies) ? WHY[z.why] + ", " + fmt(z.dies, "full") : "still live"}`;
+}
+function hover(mx, my) {
+  if (!G || mx < PAD.l || mx > PAD.l + G.pw) { tip.hidden = true; return; }
+  const z = zoneAt(mx, my), x = V.vx0 + (mx - PAD.l) / G.pw * (V.vx1 - V.vx0), k = Math.round(x);
+  const info = document.getElementById("hoverinfo");
+  if (k >= 0 && k < V.N) { const i = V.i0 + k, C = V.C;
+    info.textContent = `${fmt(C.t[i], "full")} ${tzName()}  O ${p2(px(C.o[i]))}  H ${p2(px(C.h[i]))}  L ${p2(px(C.l[i]))}  C ${p2(px(C.c[i]))}`; }
+  if (z) { tip.innerHTML = describe(z); tip.hidden = false;
+    const bw = cv.clientWidth, left = mx + 16 + 300 > bw ? mx - 16 - tip.offsetWidth : mx + 16;
+    tip.style.left = Math.max(4, left) + "px"; tip.style.top = Math.max(4, my + 40) + "px"; }
+  else tip.hidden = true;
+}
+function zoom(f, cx) {
+  const r = V.vx1 - V.vx0, nr = Math.min(Math.max(r * f, 8), V.N + 10), c = cx == null ? (V.vx0 + V.vx1) / 2 : cx;
+  V.vx0 = c - (c - V.vx0) * nr / r; V.vx1 = V.vx0 + nr; clampView(); draw();
+}
+function clampView() { const r = V.vx1 - V.vx0, lo = -0.5 - 4, hi = V.N - 0.5 + 4;
+  if (V.vx0 < lo) { V.vx0 = lo; V.vx1 = lo + r; } if (V.vx1 > hi) { V.vx1 = hi; V.vx0 = hi - r; } }
+const ptrs = new Map(); let drag = null, pinch = null;
+function local(e) { const b = cv.getBoundingClientRect(); return [e.clientX - b.left, e.clientY - b.top]; }
+cv.addEventListener("pointerdown", e => { cv.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, local(e));
+  if (ptrs.size === 1) drag = { x: local(e)[0], vx0: V.vx0, vx1: V.vx1, moved: 0 };
+  if (ptrs.size === 2) { const [p, q] = [...ptrs.values()]; pinch = { d: Math.hypot(p[0] - q[0], p[1] - q[1]), r: V.vx1 - V.vx0 }; drag = null; } });
+cv.addEventListener("pointermove", e => {
+  const [mx, my] = local(e);
+  if (ptrs.has(e.pointerId)) ptrs.set(e.pointerId, [mx, my]);
+  if (pinch && ptrs.size === 2) { const [p, q] = [...ptrs.values()], d = Math.hypot(p[0] - q[0], p[1] - q[1]);
+    const c = V.vx0 + ((p[0] + q[0]) / 2 - PAD.l) / G.pw * (V.vx1 - V.vx0); zoom((pinch.r * pinch.d / Math.max(d, 1)) / (V.vx1 - V.vx0), c); return; }
+  if (drag) { const dx = mx - drag.x; drag.moved = Math.max(drag.moved, Math.abs(dx));
+    const sh = -dx / G.pw * (drag.vx1 - drag.vx0); V.vx0 = drag.vx0 + sh; V.vx1 = drag.vx1 + sh; clampView(); draw(); tip.hidden = true; return; }
+  hover(mx, my);
+});
+function endPtr(e) {
+  const [mx, my] = local(e);
+  if (drag && drag.moved < 4 && ptrs.size === 1) { const z = zoneAt(mx, my); select(z ? z.id : null, true); }
+  ptrs.delete(e.pointerId); if (ptrs.size < 2) pinch = null; if (!ptrs.size) drag = null;
+}
+cv.addEventListener("pointerup", endPtr); cv.addEventListener("pointercancel", endPtr);
+cv.addEventListener("pointerleave", () => { if (!drag) tip.hidden = true; });
+cv.addEventListener("wheel", e => { e.preventDefault(); const [mx] = local(e);
+  zoom(Math.exp(e.deltaY * 0.0015), V.vx0 + (mx - PAD.l) / G.pw * (V.vx1 - V.vx0)); }, { passive: false });
+cv.addEventListener("dblclick", () => { V.vx0 = -0.5; V.vx1 = V.N - 0.5; draw(); });
+document.getElementById("zin").onclick = () => zoom(0.6);
+document.getElementById("zout").onclick = () => zoom(1 / 0.6);
+document.getElementById("zreset").onclick = () => { V.vx0 = -0.5; V.vx1 = V.N - 0.5; draw(); };
+
+// ---- zone list and marks ----
+function select(id, fromChart) {
+  S.sel = id; draw();
+  document.querySelectorAll(".zone").forEach(el => el.classList.toggle("sel", el.dataset.id === id));
+  if (id && fromChart) { const el = document.querySelector(`.zone[data-id="${CSS.escape(id)}"]`); if (el) el.scrollIntoView({ block: "nearest" }); }
+}
+function card(z) {
+  const el = document.createElement("article"); el.className = "zone"; el.dataset.id = z.id;
+  const tests = z.tests.length ? z.tests.map((t, n) => `${n + 1}) ${fmt(t, "full")}`).join(" · ") : "none";
+  el.innerHTML = `<h3 tabindex="0"><span class="tag ${z.kind}">${z.kind}</span>${zoneName(z)}<span class="px">${p2(px(z.lo))}–${p2(px(z.hi))}</span>${z.mine ? '<span class="tag mine">your example</span>' : ""}</h3>
+    <p class="facts"><span>Known from <b>${fmt(z.known, "full")}</b> ${tzName()}</span>
+    <span>Tests (${z.tests.length}): ${tests}</span>
+    <span>Ends: <b>${isFinite(z.dies) ? WHY[z.why] + ", " + fmt(z.dies, "full") : "still live at the end of the data"}</b></span></p>
+    <div class="verdict" role="group" aria-label="Your verdict">
+      <button type="button" data-v="valid">Valid</button><button type="button" data-v="noise">Noise</button><button type="button" data-v="unsure">Not sure</button></div>
+    <textarea id="note-${z.id}" rows="2" placeholder="Why? (optional)"></textarea>
+    <span class="status"></span>`;
+  const h = el.querySelector("h3"); h.onclick = () => select(z.id, false);
+  h.onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); select(z.id, false); } };
+  el.querySelectorAll(".verdict button").forEach(btn => btn.onclick = () => {
+    const m = marks[z.id] || {}; m.verdict = m.verdict === btn.dataset.v ? "" : btn.dataset.v; marks[z.id] = m; paintCard(z); draw(); save(z); });
+  const ta = el.querySelector("textarea"); let timer = null;
+  ta.oninput = () => { (marks[z.id] = marks[z.id] || {}).note = ta.value; clearTimeout(timer); timer = setTimeout(() => save(z), 900); };
+  ta.onblur = () => { if (timer) { clearTimeout(timer); timer = null; save(z); } };
+  return el;
+}
+function paintCard(z) {
+  const el = document.querySelector(`.zone[data-id="${CSS.escape(z.id)}"]`); if (!el) return;
+  const m = marks[z.id] || {};
+  el.querySelectorAll(".verdict button").forEach(b => b.setAttribute("aria-pressed", String(m.verdict === b.dataset.v)));
+  const ta = el.querySelector("textarea"); if (document.activeElement !== ta) ta.value = m.note || "";
+}
+function renderList() {
+  const box = document.getElementById("zones"); box.textContent = "";
+  const list = [...V.zones].sort((a, b) => b.tf - a.tf || a.known - b.known);
+  if (!list.length) { box.innerHTML = '<p class="empty">No zones in this view. Turn on more zone timeframes or pick another week.</p>'; }
+  list.forEach(z => { box.appendChild(card(z)); paintCard(z); });
+  const done = list.filter(z => marks[z.id] && marks[z.id].verdict).length;
+  document.getElementById("count").textContent = `${list.length} zones · ${done} marked`;
+  select(S.sel && list.some(z => z.id === S.sel) ? S.sel : null, false);
+}
+const busy = {}, again = {};
+async function save(z) {
+  const m = marks[z.id] || {}; localKeep();
+  const st = document.querySelector(`.zone[data-id="${CSS.escape(z.id)}"] .status`);
+  renderCount();
+  if (!db) { if (st) st.textContent = "Kept in this browser only"; return; }
+  if (busy[z.id]) { again[z.id] = true; return; }
+  busy[z.id] = true; if (st) { st.className = "status"; st.textContent = "Saving…"; }
+  try {
+    await db.collection("zone_verdicts").doc(z.id).set({ zone_id: z.id, verdict: m.verdict || "", note: m.note || "",
+      timeframe: NAMES[z.tf], kind: z.kind, pattern: z.pat, low: px(z.lo), high: px(z.hi), contract: V.contract,
+      formed: new Date(z.formed * 1000).toISOString(), rules: RAW.rules_version, saved_at: new Date().toISOString() });
+    if (st) st.textContent = "Saved";
+  } catch (e) { if (st) { st.className = "status err"; st.textContent = "Not saved yet. It will retry on your next change."; } }
+  finally { busy[z.id] = false; if (again[z.id]) { again[z.id] = false; save(z); } }
+}
+function renderCount() { if (!V) return; const n = V.zones.length, done = V.zones.filter(z => marks[z.id] && marks[z.id].verdict).length;
+  document.getElementById("count").textContent = `${n} zones · ${done} marked`; }
+function localKeep() { try { localStorage.setItem("zone-review-marks", JSON.stringify(marks)); } catch (e) {} }
+try { Object.assign(marks, JSON.parse(localStorage.getItem("zone-review-marks") || "{}")); } catch (e) {}
+
+// ---- missed zones note (per week) ----
+const missing = {}; let missTimer = null;
+const missBox = document.getElementById("missing"), missSt = document.getElementById("missing-status");
+function paintMissing() { if (document.activeElement !== missBox) missBox.value = missing[WEEKS[S.week].monday] || ""; }
+missBox.oninput = () => { missing[WEEKS[S.week].monday] = missBox.value; clearTimeout(missTimer); missTimer = setTimeout(saveMissing, 900); };
+async function saveMissing() {
+  const wk = WEEKS[S.week].monday;
+  if (!db) { missSt.textContent = "Kept in this browser only"; return; }
+  missSt.className = "status"; missSt.textContent = "Saving…";
+  try { await db.collection("missing_zones").doc(wk).set({ week: wk, note: missing[wk] || "", contract: WEEKS[S.week].contract,
+      saved_at: new Date().toISOString() }); missSt.textContent = "Saved"; }
+  catch (e) { missSt.className = "status err"; missSt.textContent = "Not saved yet. It will retry on your next change."; }
+}
+
+// ---- controls ----
+const weekSel = document.getElementById("week");
+WEEKS.forEach((w, i) => { const o = document.createElement("option"); o.value = i; o.textContent = `Week of ${w.label} (${w.contract})`; weekSel.appendChild(o); });
+function seg(boxId, items, isOn, onClick) {
+  const box = document.getElementById(boxId); box.textContent = "";
+  items.forEach(([val, label]) => { const b = document.createElement("button"); b.type = "button"; b.textContent = label;
+    b.setAttribute("aria-pressed", String(isOn(val))); b.onclick = () => onClick(val); box.appendChild(b); });
+}
+function paintControls() {
+  weekSel.value = S.week; document.getElementById("span").value = S.span;
+  seg("tfs", [240, 120, 60, 30, 15].map(t => [t, NAMES[t]]), v => v === S.tf, v => { S.tf = v; refresh(); });
+  seg("ztfs", [240, 120, 60, 30, 15].map(t => [t, NAMES[t]]), v => S.ztfs.has(v), v => { S.ztfs.has(v) ? S.ztfs.delete(v) : S.ztfs.add(v); refresh(); });
+  seg("tzs", [["America/New_York", "Eastern"], ["America/Los_Angeles", "Pacific"]], v => v === S.tz, v => { S.tz = v; refresh(); });
+}
+function refresh() { buildView(); paintControls(); draw(); renderList(); paintMissing(); }
+weekSel.onchange = () => { S.week = +weekSel.value; refresh(); };
+document.getElementById("span").onchange = e => { S.span = +e.target.value; refresh(); };
+document.getElementById("prev").onclick = () => { if (S.week > 0) { S.week--; refresh(); } };
+document.getElementById("next").onclick = () => { if (S.week < WEEKS.length - 1) { S.week++; refresh(); } };
+new ResizeObserver(() => { if (V) draw(); }).observe(cv);
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => draw());
+new MutationObserver(() => draw()).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+refresh();
+
+// ---- shared store ----
+(async () => {
+  db = window.claude && window.claude.use ? await window.claude.use("db") : null;
+  if (!db) { document.getElementById("nostore").hidden = false; return; }
+  db.collection("zone_verdicts").onSnapshot(snap => {
+    snap.docs.forEach(d => { const v = d.data(); if (!v || !v.zone_id) return;
+      const m = marks[v.zone_id] || {}; marks[v.zone_id] = { verdict: v.verdict ?? m.verdict, note: v.note ?? m.note }; });
+    localKeep(); V.zones.forEach(paintCard); renderCount(); draw();
+  }, () => { document.getElementById("nostore").hidden = false; });
+  db.collection("missing_zones").onSnapshot(snap => {
+    snap.docs.forEach(d => { const v = d.data(); if (v && v.week) missing[v.week] = v.note || ""; }); paintMissing();
+  }, () => {});
+})();
+</script>

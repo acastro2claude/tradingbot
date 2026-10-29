@@ -52,48 +52,65 @@ Source A and source B (1e, the owner's current method) are both tested. The data
 - **The four patterns.** The move into the base gives the name; the move away gives the side:
   - Rally-base-rally (continuation, forms in uptrends) and drop-base-rally (reversal) leave a **demand zone**. Buy the first pullback into it.
   - Drop-base-drop (continuation, forms in downtrends) and rally-base-drop (reversal) leave a **supply zone**. Sell the first rally into it.
+- **Basing candle (owner, Oct 2026):** a demand base needs a red candle; a supply base needs a green one. A base of only green candles under a rally is not a demand zone.
 - **Strong move away:** there's no set size. Roughly, it's at least double the size of the last candle in the base.
+- **Not every candle that moves away makes a zone (owner, Oct 2026).** When price is chopping in a range, those candles are chop, not zones.
 - **Fresh zones:** the best zones are fresh and untested: price has not been back since it left. They hold the most waiting orders. Look from right to left on the chart to find them.
-- **Timeframes (owner, Oct 2026):** 4-hour, 2-hour, 1-hour, 30-minute and 15-minute. A zone that shows on a higher timeframe is usually stronger. The course also trades a higher-timeframe zone from a lower-timeframe chart (for example a 1-hour supply zone on a 15-minute chart). The owner's example below is a 4-hour zone.
+- **Timeframes (owner, Oct 2026):** 4-hour, 2-hour, 1-hour, 30-minute and 15-minute. A zone that shows on a higher timeframe is usually stronger. No daily zones: they are too big. The course also trades a higher-timeframe zone from a lower-timeframe chart (for example a 1-hour supply zone on a 15-minute chart). The owner's example below is a 4-hour zone.
 - **No overlapping zones (owner, Oct 2026):** avoid them. If a zone can be marked on both a lower-timeframe and a higher-timeframe chart, the higher-timeframe zone is the one that counts.
 - **Lookback:** zones from up to about a month back. Untested zones from earlier days and weeks count (owner, Oct 2026). Looking only at zones made within the day misses most of them.
-- **Stop and target (course):** the stop goes just past the zone ("proper risk above the zone" for a short). Take profits at the opposite zone (a long from demand takes profit at supply).
+- **Retests (owner, Oct 2026):** a zone is still valid on retests, but like a level, the more retests, the less valid it gets. At 4 or more retests it is probably on its way out, unless the order book shows heavy pressure from the zone's side.
+  - **TBD:** what counts as "heavy pressure" on the order book.
+  - The bot counts the first return as test 1, so "on its way out" starts at test 4 (proposed reading).
+- **Stop (owner, Oct 2026):** the normal stop rules (section 3), even when the zone is big. The course puts the stop just past the zone; the owner does not.
+- **Target (course):** take profits at the opposite zone (a long from demand takes profit at supply).
 - **When a zone stops counting:**
   - price blows past it, or
   - price starts chopping in it.
   - Price can come back, hang around the zone for a little while and then retest. But if it hangs around too long (over about an hour), the zone is probably no longer valid.
-  - **TBD:** whether a zone is done after its first test, or after how many.
 
 **The owner's example (Oct 2026): a new 4-hour demand zone on ES, 14–15 Aug 2024.**
 
 - Price rallied in small 4-hour candles on 14 Aug. It paused with a small red candle (Wed 14 Aug, 22:00–02:00 Pacific), then rallied 45 and 30 points in the next two candles.
 - The zone top is the open of that red candle: 5550.75 on the owner's thinkorswim chart, 5490.00 in the Sep 2024 contract. The owner's chart is back-adjusted, 60.75 points above the Sep contract. It shows Pacific time, with 4-hour candles starting at midnight Chicago time.
-- The bot's rules (below) find this zone at 5472.50–5490.00 (Sep contract). It is a test case in `tests/test_zones.py`.
+- The bot's rules (below) find this zone at 5471.75–5490.00 (Sep contract). It is a test case in `tests/test_zones.py`.
 - First return: Thu 5 Sep 2024 at 12:16 ET, to exactly 5490.00. Price bounced 37 points in about 1.5 hours. It came back overnight and bounced 20 points again, then broke the zone on the 6 Sep jobs report.
 
-**How the bot draws them (proposed, TBD until the owner checks them on charts).** Code: `research/zones.py`. Settings: `[zones]`.
+**The owner's verdicts on the bot's 4-hour zones, Aug–Sep 2024 (Oct 2026):**
+
+- 5368 demand: no basing candle (the base was green candles under a rally). It did bounce on a retest, "so maybe there is some merit".
+- 5431 supply: no basing candle.
+- The zones at the top of the late-August range: chop, not zones.
+- 5636 supply: the only one that is valid, because it held multiple retests.
+
+**How the bot draws them (proposed, TBD until the owner checks them).** Code: `research/zones.py`. Settings: `[zones]`.
 
 - **Candles:** the owner's five timeframes, starting at midnight Chicago time like the owner's thinkorswim charts. A candle never spans two sessions.
-- **Base:** 1 to 3 candles in a row that all trade through one common price.
+- **Base:** 1 to 3 candles in a row that all trade through one common price, with at least one candle of the opposite colour (the owner's basing-candle rule).
 - **Move away:** one candle that:
   - has a body at least double every base candle's body (the owner's rule above),
   - has a range at least 1.5× the average of the last 20 candles (the owner's example: 2.7×), and
   - closes beyond the whole base.
+- **Not chop (proposed):** price must move at least **1.5× the zone's height** away from it before it first comes back; otherwise there is no zone. The bot only knows the zone from that moment.
+  - This fits the owner's verdicts: 5636 moved 1.8× its height away; the chop zone at 5594 in the same range only 1.0×.
 - **Edges:** this matches the course charts and the owner's example.
   - The near edge is the base bodies: for demand, the highest open or close in the base; for supply, the lowest.
-  - The far edge is the base wicks: for demand, the lowest low in the base; for supply, the highest high.
-  - The move-away candle's wick is left out, because on a news candle it can be huge.
-- **Fresh:** until price first trades back to the near edge. A zone expires untested after 31 days.
-- **Broken:** a candle on the zone's timeframe closes beyond the far edge.
-- **Overlaps (the owner's rule):** two zones overlap when their price ranges share a tick while both are fresh.
+  - The far edge is the wicks of the base and the move-away candle: for demand, the lowest low; for supply, the highest high. (The owner judged 5636 drawn up to the move-away candle's wick, 5665.25.)
+- **Tests:** price trades back to the near edge. A new test needs price to move away again by the zone's height (at least 5 points) first (proposed). From the 4th test, the zone is "on its way out".
+- **Ends:** whichever comes first:
+  - **Broken:** a candle on the zone's timeframe closes beyond the far edge.
+  - **Chopped in (proposed):** price closes inside the zone on every 1-minute bar for 4 candles of the zone's timeframe, counting trading minutes only. That is the owner's hour on 15-minute zones and 16 trading hours on 4-hour zones.
+    - **TBD:** the owner's 5636 zone ends this way on 26 Aug 2024, after price sat inside it from 23 to 26 Aug. The owner counted it as valid with multiple retests. Does chopping end a big 4-hour zone at all?
+  - **Expired:** 31 days after it formed.
+- **Overlaps (the owner's rule):** two zones overlap when their price ranges share a tick while both still count.
   - The higher timeframe wins. On the same timeframe, the earlier zone wins.
-  - A zone that would form over a winning fresh zone is not marked.
-  - A fresh lower-timeframe zone stops counting when a higher-timeframe zone forms over it. The lower one usually shows up first, while the higher one's base is still forming.
-- **On 2024 ES data:** about 40 zones a week across the five timeframes, after overlaps.
-  - Per week: 3 four-hour, 3 two-hour, 4.5 one-hour, 11.5 thirty-minute and 18 fifteen-minute.
-  - Median height in points: 16.5 (4-hour), 11.25 (2-hour), 8.5 (1-hour), 4.75 (30-minute), 3.25 (15-minute).
-  - About 1 in 5 four-hour zones is taller than 30 points, usually because a news candle is in the base.
-- **Charts for the owner to check:** `research/results/journal/zone_charts/course_zones_*.png`.
+  - A zone that would form over a winning zone is not marked.
+  - A lower-timeframe zone stops counting when a higher-timeframe zone forms over it. The lower one usually shows up first, while the higher one's base is still forming.
+- **On 2024 ES data:** about 14 zones a week across the five timeframes, after overlaps (down from 40 before the basing-candle and chop rules).
+  - Per week: 1.6 four-hour, 1.2 two-hour, 1.7 one-hour, 3.8 thirty-minute and 5.8 fifteen-minute.
+  - Median height in points: 17 (4-hour), 12 (2-hour), 7.75 (1-hour), 5 (30-minute), 3 (15-minute). About 1 in 6 four-hour zones is taller than 30 points.
+  - A zone gets 2 tests on average; 1 in 7 reaches 4 or more. Most zones end by breaking (87%).
+- **For the owner to check:** the interactive review page `research/results/journal/review/zones/index.html` (published as an artifact). Mark each zone valid or noise and note the missed ones. Static charts: `research/results/journal/zone_charts/course_zones_*.png`.
 
 **Rejected (Oct 2026):** the owner would not use any of the bot's earlier zones, which did not match how the owner marks zones. Those used 15-minute candles and a chop of 3 or more candles; the zone was the body of the last chop candle, and it was dead after an hour of chop. The code is kept in `research/supply_demand.py` for the earlier studies.
 
@@ -286,15 +303,18 @@ Every number below is an adjustable setting. The defaults come from this spec.
 | Recent POC lookback (1e) | 5 sessions | |
 | Covered POC rule (1e) | Next session's value area | A POC inside it no longer counts |
 | Value area | 70% of the session's volume | |
-| Supply/demand timeframes (1b) | 4h, 2h, 1h, 30m, 15m | Owner. Candles start at midnight Chicago time |
+| Supply/demand timeframes (1b) | 4h, 2h, 1h, 30m, 15m | Owner. No daily (too big). Candles start at midnight Chicago time |
 | Overlapping zones | The higher timeframe wins | Owner. Same timeframe: the earlier zone wins |
 | Supply/demand lookback | 1 month | An untested zone expires after 31 days |
 | Base | 1–3 candles through one common price | Proposed, TBD |
 | Strong move away | Body at least 2× every base candle's body | Plus a range at least 1.5× the last 20 candles' average (proposed, TBD) |
 | Zone edges | Near edge = base bodies, far edge = base wicks | Course charts and the owner's example |
-| Zone used up | At the first return to the near edge | Course: fresh zones. Whether second tests count is TBD |
+| Zone base | Must include a red candle (demand) or a green one (supply) | Owner |
+| Not chop | Price moves 1.5× the zone's height away before it first comes back | Proposed, TBD |
+| Zone tests | Valid on retests; from the 4th test only with heavy order-book pressure | Owner. "Heavy pressure" TBD |
 | Zone broken | A candle on its timeframe closes beyond the far edge | Proposed |
-| Zone invalid after chopping in it | 60 minutes | Only matters if second tests count |
+| Zone invalid after chopping in it | 4 candles of the zone's timeframe | Owner said about an hour (= 4 on 15m). Proposed, TBD for big zones |
+| Stop at a zone | Normal stop rules (section 3) | Owner: even when the zone is big |
 | Long-term profile window | 3 months | Backtest compares 1, 3 and 6 months |
 | Absorption burst | 100 contracts in 0.01 s | Matches the Bookmap add-on |
 | Absorption hold check | TBD | Price stays within X ticks for Y seconds |

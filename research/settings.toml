@@ -329,6 +329,11 @@ leg_out_range_vs_average = 1.5    # proposed: and its high-low range is at least
 average_candles = 20              # candles in that average
 leg_in_candles = 3                # candles before the base that name the pattern (rally or drop into it)
 max_age_days = 31                 # owner (STRATEGY 1b): zones from up to about a month back
-# Edges (course): near edge = base bodies, far edge = the base candles' wicks.
-# Fresh until price first trades back to the near edge; broken when a candle on the zone's
-# timeframe closes beyond the far edge (proposed). Whether a tested zone still counts: TBD.
+base_needs_opposite_candle = true # owner: a demand base needs a red (basing) candle, a supply base a green one
+departure_min_heights = 1.5       # proposed: price moves 1.5x the zone's height away before it first comes back, else chop
+rearm_min_points = 5.0            # proposed: a new test needs price to move away by the zone's height (at least this) first
+weak_from_test = 4                # owner: from about the 4th test a zone is on its way out, unless heavy order-book pressure
+chop_invalid_candles = 4          # proposed: inside for 4 candles of the zone's timeframe ends it (owner: about an hour, = 4 on 15m)
+# Edges (course): near edge = base bodies, far edge = the wicks of the base and the move-away candle.
+# Broken when a candle on the zone's timeframe closes beyond the far edge (proposed).
+# Stop: the normal stop rules (owner: even when the zone is big), not past the zone.
