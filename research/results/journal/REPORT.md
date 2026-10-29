@@ -267,6 +267,54 @@ at the chart's last moment (`research/review_score.py`).
 - The entry moment and the stop were the bot's. Several answers said the entry was premature.
 - The levels are the bot's, which the owner used only partly in 2024.
 
+## 9. Day rules replayed on the owner's journal (`journal_day_rules.csv`, Oct 2026)
+
+All 513 journal trades were replayed under day rules (`research/journal_day_rules.py`,
+grids in `[journal_rules]`). Each rule only decides which trades would have been taken;
+each trade keeps its real result after costs. News minutes come from the ES data itself: a
+volume spike at 08:30, 10:00 or 14:00 ET, at least 3× the 10 minutes before. The detector
+fired on every CPI and jobs-report day at 08:30 (11–32×, against a typical 2×) and on
+Fed days at 14:00. 36 days had a 10:00 spike.
+
+| Rule | Trades | Net $ | Change | First half | Second half | Profit factor | Max drawdown |
+|---|---|---|---|---|---|---|---|
+| As traded | 513 | +5,309 | | | | 1.13 | 2,888 |
+| At most 1 trade a day | 150 | +240 | −5,069 | −625 | −4,444 | 1.02 | 2,685 |
+| At most 3 trades a day | 344 | −196 | −5,505 | −1,914 | −3,591 | 0.99 | 3,592 |
+| Stop after 2 losing trades | 296 | −856 | −6,165 | −2,447 | −3,718 | 0.96 | 3,595 |
+| Daily loss limit $250 | 364 | −937 | −6,247 | −892 | −5,354 | 0.97 | 3,686 |
+| Daily loss limit $800 | 496 | +3,989 | −1,320 | −776 | −544 | 1.11 | 2,939 |
+| Stop once up $150 on the day | 491 | +5,251 | −58 | −163 | +105 | 1.14 | 2,763 |
+| No entries in the first 5 min | 505 | +5,584 | +275 | +148 | +128 | 1.14 | 2,938 |
+| No entries in the first 15 min | 469 | +5,746 | +437 | −50 | +488 | 1.16 | 3,039 |
+| **No entries 10 min after a news spike** | 491 | **+6,618** | **+1,309** | +272 | +1,038 | 1.18 | 2,663 |
+| Mornings only (09:30–11:00) | 464 | +5,276 | −33 | +509 | −542 | 1.15 | 2,009 |
+| **First 3 trades of each day on sim** | 169 | +5,505 | +196 | +124 | +72 | **1.46** | **2,331** |
+| First 3 trades of each day at half size | 513 | +5,407 | +98 | +62 | +36 | 1.21 | 2,319 |
+
+**Why caps and loss stops hurt.** How many trades the owner took on a day mostly
+reflects how the first ones went:
+- **Days with 1–2 trades (won early, stopped): 70 days, +$13,193.**
+- **Days with 4+ trades: 61 days, −$8,679.**
+- On days with 6+ trades, the first three trades lost $6,429.
+- **Trades 4–10 made +$7,015** on 154 trades (41% wins, +1.0 to +1.6 points per contract). Without the 5 biggest winners it's still +$3,307.
+
+So a cap keeps the early losers and cuts the later trades that recovered. The pattern
+holds in both halves of the period:
+- **Trades after the first three:** +$1,914 and +$3,591.
+- **The first three:** −$124 and −$72.
+
+It holds within the same time windows too. It's not size (about 1 ES throughout), and not
+coming back to the same price. Trades taken when the day was already down $300+ beat the
+rest by 0.3–2.6 points per contract (95% range from resampling days).
+
+**What it means.**
+- **The owner's first ~3 trades of a day had no edge** (344 trades, −$196). The edge came after (169 trades, +$5,505).
+- **Taking the first three at half size or on sim leaves the money about the same, with less risk.** On sim, the profit factor goes 1.13 → 1.46 and the drawdown $2,888 → $2,331, with a third of the trades.
+- **Of the rules here, only the news filter clearly adds money:** +$1,309, in both halves.
+- **The daily trade cap of 1 in STRATEGY.md would have cut this journal to +$240.** That's a point to weigh, though the bot is not the owner.
+- **Caveat:** several of these rules were found by looking at this same journal. The split-half check helps, but the owner's future trades are the real test.
+
 ## Caveats
 
 - The read is my translation of the owner's description. Every threshold above is a proposal, and the owner's eye may weigh things differently.

@@ -299,3 +299,18 @@ stop_points = 3.0
 # aggression_window_s is at least the other side's. No trade if price breaks test_break_points first.
 wait_max_min = 10
 near_level_points = 3.0
+
+[journal_rules]
+# Day-level rules replayed on the owner's journal (research/journal_day_rules.py). Analysis grids, not bot settings.
+news_minutes = ["08:30", "10:00", "14:00"]   # release minutes checked for a volume spike (ES 1-minute bars)
+news_spike_ratio = 3.0           # spike: that minute's volume >= 3x the median of the 10 minutes before
+news_spike_baseline_min = 10
+max_trades = [1, 2, 3, 4, 5]
+stop_after_losses = [1, 2, 3]
+daily_loss_limit_usd = [150, 250, 400, 800]
+daily_profit_stop_usd = [150, 250, 500]
+skip_first_minutes = [5, 15, 30]
+skip_after_news_minutes = [10, 15]
+morning_end_et = "11:00"
+split_date = "2024-07-01"        # robustness: first half vs second half of the journal
+observe_first_trades = 3         # what-if: the first trades of each day on sim, or at half size
