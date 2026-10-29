@@ -214,6 +214,29 @@ settings.toml, all proposed).** Results on all 221 tests:
 - **The weaker retest is the clearest signal found so far.** It is still not profitable, and the gap between 34% and 15% is borderline on these numbers. It is also the retest rule already in STRATEGY.md section 2, and it uses trade data only, so it can be checked on the 2026 MES trades already downloaded at no cost.
 - On the 12 review charts, the coded filter skipped 11, including three of the owner's takes. In #9, the owner read a buying spike with no progress as absorption, where the coded "aggression" check read it as buyers in control.
 
+## 7. Check on 2026: does the weaker retest hold up? (`retest_2026_*.csv`, Oct 2026)
+
+The same tests, with the same levels, entries and exits, were run on the MES trades
+already downloaded for step 2. That's regular hours, late Apr to late Oct 2026, 126
+sessions and 1,359 level tests. Levels come from the MES 1-minute bars. There was no
+cost. Code: `research/retest_2026.py`.
+
+| Group | Tests | Win 2/4 | $/trade 2/4 | Win, 3-pt stop + next POC | $/trade |
+|---|---|---|---|---|---|
+| Every test (first 1-point turn) | 1,359 | 25% | −47 | 25% | −50 |
+| First test of the level that session | 593 | 23% | −54 | 24% | −54 |
+| Retest, push weaker than last time | 333 | 29% | −35 | 27% | −41 |
+| Retest, push not weaker | 433 | 25% | −46 | 26% | −50 |
+| Absorption spike | 690 | 25% | −47 | 25% | −49 |
+| Delta divergence | 105 | 27% | −42 | 22% | −67 |
+| POC tests | 859 | 23% | −53 | 24% | −59 |
+| Zone tests | 497 | 28% | −36 | 28% | −34 |
+| Random entries, same days | 12,600 | 27% | | | |
+
+- **The weaker retest still leads, but by much less.** In 2026 it won 29% against 25% for retests that were not weaker, a gap of +4 points (95% range −3 to +11). In 2024 the gap was 19 points. The 2024 gap was mostly luck of a small sample.
+- **Level tests as a whole did no better than random entries** (25% vs 27%). Nothing came close to break-even (about 40% with these exits).
+- POC tests beat zone tests in 2024. In 2026 it was the other way round, so neither holds.
+
 ## Caveats
 
 - The read is my translation of the owner's description. Every threshold above is a proposal, and the owner's eye may weigh things differently.

@@ -48,8 +48,14 @@ def tk(points: float) -> int:
 
 
 class DayTrades:
-    def __init__(self, es: str, day: str):
-        tr = pd.read_parquet(TRADES_DIR / f"{es}_{day}.parquet").sort_values("t", kind="stable")
+    """One day's trades (t seconds, price ticks, size, side) with running delta and a tick path.
+
+    Either the saved ES trades for (es, day), or a trades table passed in.
+    """
+
+    def __init__(self, es: str | None = None, day: str | None = None, trades: pd.DataFrame | None = None):
+        tr = trades if trades is not None else pd.read_parquet(TRADES_DIR / f"{es}_{day}.parquet")
+        tr = tr.sort_values("t", kind="stable")
         self.t = tr["t"].to_numpy()
         self.px = tr["price"].to_numpy().astype(np.int64)
         size = tr["size"].to_numpy()
