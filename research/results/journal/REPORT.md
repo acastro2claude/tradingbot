@@ -438,6 +438,11 @@ The owner shared the supply and demand course they follow (rally-base-rally, dro
   - Per week: 1.6 four-hour, 1.2 two-hour, 1.7 one-hour, 3.8 thirty-minute and 5.8 fifteen-minute.
   - A zone gets 2 tests on average; 1 in 7 reaches 4 or more.
 - **Review page:** an interactive page (`review/zones/index.html`) lets the owner mark each zone valid or noise.
+- **The owner's first review on the page (12–23 Aug 2024):**
+  - The basing candle is the candle right before the move, red before a rally and green before a drop.
+  - The move away must be clearly bigger than it: the bot uses 1.5×, versus "roughly double" from the owner.
+  - The zone is drawn from the basing candle's body to the wick.
+  - With these rules the bot matches all 9 of the owner's verdicts so far: 2 valid and 7 rejected zones. About 16 zones a week.
 - **Not tested yet:** how often first returns hold. That waits until the owner confirms the zones look right on the charts.
 
 ## Caveats

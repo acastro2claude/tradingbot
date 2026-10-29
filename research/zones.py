@@ -1,20 +1,20 @@
 """Supply and demand zones the way the owner's course draws them (STRATEGY.md 1b, Oct 2026).
 
-A zone is the base (1 to 3 candles where price paused) right before a strong move away
-(the leg-out). The move into the base only names the pattern:
+A zone is a basing candle (where price paused) right before a strong move away. The move into
+the basing candle only names the pattern:
   rally-base-rally (continuation) and drop-base-rally (reversal)  -> demand below
   drop-base-drop  (continuation) and rally-base-drop (reversal)  -> supply above
 
-Edges (as in the course charts and the owner's 14-15 Aug 2024 example):
-  near edge = the base candles' bodies: demand top = highest open/close in the base,
-              supply bottom = lowest open/close in the base
-  far edge  = the wicks: demand bottom = lowest low of the base and the leg-out candle,
-              supply top = highest high of the base and the leg-out candle (the owner judged
-              the 22 Aug 2024 supply zone drawn up to the leg-out candle's wick, 5665.25)
+Edges, as the owner draws them (22 Aug 2024 supply 5645.50-5665.25, 15 Aug 2024 demand):
+  near edge = the basing candle's open: the top of a red basing candle's body (demand),
+              the bottom of a green one's (supply), so its whole body is inside the zone
+  far edge  = the wick: demand bottom = lowest low of the basing and move-away candles,
+              supply top = highest high of the two
 
 Owner's rules (Oct 2026):
-  - the base needs a basing candle of the opposite colour: a red candle in a demand base,
-    a green one in a supply base (a base of only green candles under a rally is not demand)
+  - the basing candle is the candle right before the move away, red before a rally and
+    green before a drop (a doji also counts, proposed)
+  - the move away is roughly double the basing candle (owner); the bot uses 1.5x its range
   - not every candle that moves away makes a zone; in chop price comes straight back. The
     bot counts a zone only once price has moved departure_min_heights x the zone's height
     away from it without coming back (proposed rule); that is when the bot knows the zone
@@ -67,7 +67,14 @@ def make_candles(bars: pd.DataFrame, minutes: int, tz: str) -> pd.DataFrame:
 
 
 def find_zones(c: pd.DataFrame, minutes: int, z: dict) -> pd.DataFrame:
-    """Every base + leg-out on one timeframe's candles. `z` is the [zones] settings table."""
+    """Every basing candle + move away on one timeframe's candles. `z` is the [zones] settings table.
+
+    Basing candle: the candle right before the move away, of the opposite colour (red before a
+    rally, green before a drop) or a doji. Move away: range at least leg_out_vs_basing_range x
+    the basing candle's and leg_out_range_vs_average x the recent average, closing beyond the
+    basing candle. Zone (the owner's drawing): from the basing candle's body (its open; for a doji
+    the edge price comes back to first) to the wick of the basing and move-away candles.
+    """
     o, h, lo, cl = (c[k].to_numpy() for k in ("open", "high", "low", "close"))
     body = np.abs(cl - o)
     rng = h - lo
@@ -77,32 +84,22 @@ def find_zones(c: pd.DataFrame, minutes: int, z: dict) -> pd.DataFrame:
         d = int(np.sign(cl[i] - o[i]))
         if d == 0 or not np.isfinite(avg[i]) or rng[i] < z["leg_out_range_vs_average"] * avg[i]:
             continue
-        top, bottom, j = np.inf, -np.inf, i          # base: walk back over small candles sharing a price
-        while j > 0 and i - (j - 1) <= z["base_max_candles"]:
-            k = j - 1
-            if body[k] * z["leg_out_body_ratio"] > body[i]:
-                break
-            nt, nb = min(top, h[k]), max(bottom, lo[k])
-            if nb > nt:
-                break
-            top, bottom, j = nt, nb, k
-        if j == i:
-            continue
-        if z["base_needs_opposite_candle"] and not (np.sign(cl[j:i] - o[j:i]) == -d).any():
-            continue                                  # no basing candle: a demand base needs a red candle
-        base_hi, base_lo = h[j:i].max(), lo[j:i].min()
-        if (d == 1 and cl[i] <= base_hi) or (d == -1 and cl[i] >= base_lo):
-            continue                                  # the leg-out must close beyond the whole base
-        if d == 1:
-            near, far = np.maximum(o[j:i], cl[j:i]).max(), min(base_lo, lo[i])
-        else:
-            near, far = np.minimum(o[j:i], cl[j:i]).min(), max(base_hi, h[i])
-        k0 = max(0, j - z["leg_in_candles"])
-        leg_in = cl[j - 1] - o[k0] if j > 0 else 0
+        k = i - 1                                     # the basing candle
+        doji = body[k] <= z["doji_body_share"] * max(rng[k], 1)
+        if not (np.sign(cl[k] - o[k]) == -d or doji):
+            continue                                  # no basing candle: a rally needs a red (or doji) candle before it
+        if rng[i] < z["leg_out_vs_basing_range"] * max(rng[k], 1):
+            continue                                  # the move away is not big enough next to the basing candle
+        if (d == 1 and cl[i] <= h[k]) or (d == -1 and cl[i] >= lo[k]):
+            continue                                  # the move away must close beyond the basing candle
+        near = max(o[k], cl[k]) if d == 1 else min(o[k], cl[k])                   # the open, unless it is a doji
+        far = min(lo[k], lo[i]) if d == 1 else max(h[k], h[i])
+        k0 = max(0, k - z["leg_in_candles"])
+        leg_in = cl[k - 1] - o[k0] if k > 0 else 0
         rows.append(dict(timeframe=minutes, kind="demand" if d == 1 else "supply",
                          pattern=("R" if leg_in > 0 else "D") + "B" + ("R" if d == 1 else "D"),
                          near=int(near), far=int(far), low=int(min(near, far)), high=int(max(near, far)),
-                         base_candles=i - j, base_start=c["start"].iat[j], leg_out_start=c["start"].iat[i],
+                         base_candles=1, base_start=c["start"].iat[k], leg_out_start=c["start"].iat[i],
                          created=c["end"].iat[i], created_session=c["session"].iat[i],
                          leg_out_ticks=int(cl[i] - o[i])))
     return pd.DataFrame(rows, columns=COLUMNS)

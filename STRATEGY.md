@@ -52,8 +52,10 @@ Source A and source B (1e, the owner's current method) are both tested. The data
 - **The four patterns.** The move into the base gives the name; the move away gives the side:
   - Rally-base-rally (continuation, forms in uptrends) and drop-base-rally (reversal) leave a **demand zone**. Buy the first pullback into it.
   - Drop-base-drop (continuation, forms in downtrends) and rally-base-drop (reversal) leave a **supply zone**. Sell the first rally into it.
-- **Basing candle (owner, Oct 2026):** a demand base needs a red candle; a supply base needs a green one. A base of only green candles under a rally is not a demand zone.
-- **Strong move away:** there's no set size. Roughly, it's at least double the size of the last candle in the base.
+- **Basing candle (owner, Oct 2026):** the candle right before the move away. It is red before a rally (demand) and green before a drop (supply). If the candle right before the rally is green, there is no basing candle and no zone.
+- **How the owner draws a zone (Oct 2026):** from the body of the basing candle to the wick. For supply, from the bottom of the green basing candle's body up to the upper wick (of the basing candle or the drop candle). For demand, from the top of the red basing candle's body down to the low wick. All zones are drawn this way.
+  - Example: the 22 Aug 2024 4-hour supply zone is 5645.50–5665.25 (Sep contract). 5645.50 is where the green basing candle opened (the candle before it closed there). 5665.25 is the drop candle's upper wick.
+- **Strong move away:** there's no set size. Roughly, it's at least double the size of the basing candle. If the basing candle's wicks are big and the next candle doesn't move much past it, it is not a zone (owner on the 19 Aug 2024 1-hour zone at 5593).
 - **Not every candle that moves away makes a zone (owner, Oct 2026).** When price is chopping in a range, those candles are chop, not zones.
 - **Fresh zones:** the best zones are fresh and untested: price has not been back since it left. They hold the most waiting orders. Look from right to left on the chart to find them.
 - **Timeframes (owner, Oct 2026):** 4-hour, 2-hour, 1-hour, 30-minute and 15-minute. A zone that shows on a higher timeframe is usually stronger. No daily zones: they are too big. The course also trades a higher-timeframe zone from a lower-timeframe chart (for example a 1-hour supply zone on a 15-minute chart). The owner's example below is a 4-hour zone.
@@ -81,35 +83,46 @@ Source A and source B (1e, the owner's current method) are both tested. The data
 - 5368 demand: no basing candle (the base was green candles under a rally). It did bounce on a retest, "so maybe there is some merit".
 - 5431 supply: no basing candle.
 - The zones at the top of the late-August range: chop, not zones.
-- 5636 supply: the only one that is valid, because it held multiple retests.
+- 5636 supply: the only one that is valid, because it held multiple retests. It should be drawn the owner's way: 5645.50–5665.25.
+
+**The owner's verdicts on the review page, week of 12–23 Aug 2024 (Oct 2026):**
+
+- 4-hour 5565 demand (19 Aug): no basing candle. The candle before the rally was green.
+- 2-hour 5630 supply (20 Aug): no base, then drop. The candle before the drop was red.
+- 1-hour 5593 demand (19 Aug): the basing candle's wick is too big, and the next candle didn't move enough (only 1.3× the basing candle).
+- 30-minute 5377 demand (13 Aug): no real rally (only 1.4× the basing candle).
+- 15-minute 5377 demand (13 Aug): no basing candle, no rally.
+- The other 30-minute and 15-minute zones looked good (a quick look, not zone by zone).
 
 **How the bot draws them (proposed, TBD until the owner checks them).** Code: `research/zones.py`. Settings: `[zones]`.
 
 - **Candles:** the owner's five timeframes, starting at midnight Chicago time like the owner's thinkorswim charts. A candle never spans two sessions.
-- **Base:** 1 to 3 candles in a row that all trade through one common price, with at least one candle of the opposite colour (the owner's basing-candle rule).
+- **Basing candle:** the candle right before the move away: red before a rally, green before a drop (the owner's rule).
+  - A doji (body at most 10% of its high-low range) also counts (proposed: 3 doji zones the owner glanced at and approved).
 - **Move away:** one candle that:
-  - has a body at least double every base candle's body (the owner's rule above),
+  - is at least **1.5×** the basing candle's size, high to low. The owner said "roughly double"; 1.5× drops the two zones the owner said didn't move enough (1.3×, 1.4×) and keeps the 30m/15m zones they approved, several of which were 1.7–1.9× (proposed),
   - has a range at least 1.5× the average of the last 20 candles (the owner's example: 2.7×), and
-  - closes beyond the whole base.
+  - closes beyond the basing candle.
 - **Not chop (proposed):** price must move at least **1.5× the zone's height** away from it before it first comes back; otherwise there is no zone. The bot only knows the zone from that moment.
-  - This fits the owner's verdicts: 5636 moved 1.8× its height away; the chop zone at 5594 in the same range only 1.0×.
-- **Edges:** this matches the course charts and the owner's example.
-  - The near edge is the base bodies: for demand, the highest open or close in the base; for supply, the lowest.
-  - The far edge is the wicks of the base and the move-away candle: for demand, the lowest low; for supply, the highest high. (The owner judged 5636 drawn up to the move-away candle's wick, 5665.25.)
+  - Under the earlier drawing, this rule separated the owner's verdicts: 5636 moved 1.8× its height away, and the chop zone at 5594 only 1.0×. Drawn the owner's way, 5636 moves 3.2×. 5594 no longer has a basing candle.
+- **Edges (the owner's drawing):**
+  - The near edge is the basing candle's body: its open (for a doji, the body edge price comes back to first).
+  - The far edge is the wick: for demand, the lowest low of the basing and move-away candles; for supply, the highest high.
+  - These rules reproduce all 9 of the owner's verdicts so far (2 valid, 7 rejected). They are test cases in `tests/test_zones.py`.
 - **Tests:** price trades back to the near edge. A new test needs price to move away again by the zone's height (at least 5 points) first (proposed). From the 4th test, the zone is "on its way out".
 - **Ends:** whichever comes first:
   - **Broken:** a candle on the zone's timeframe closes beyond the far edge.
   - **Chopped in (proposed):** price closes inside the zone on every 1-minute bar for 4 candles of the zone's timeframe, counting trading minutes only. That is the owner's hour on 15-minute zones and 16 trading hours on 4-hour zones.
-    - **TBD:** the owner's 5636 zone ends this way on 26 Aug 2024, after price sat inside it from 23 to 26 Aug. The owner counted it as valid with multiple retests. Does chopping end a big 4-hour zone at all?
+    - Drawn the owner's way, the 5636 zone is 5645.50–5665.25. It no longer ends this way: it lives through its retests until a 4-hour candle closes above it on 19 Sep 2024.
   - **Expired:** 31 days after it formed.
 - **Overlaps (the owner's rule):** two zones overlap when their price ranges share a tick while both still count.
   - The higher timeframe wins. On the same timeframe, the earlier zone wins.
   - A zone that would form over a winning zone is not marked.
   - A lower-timeframe zone stops counting when a higher-timeframe zone forms over it. The lower one usually shows up first, while the higher one's base is still forming.
-- **On 2024 ES data:** about 14 zones a week across the five timeframes, after overlaps (down from 40 before the basing-candle and chop rules).
-  - Per week: 1.6 four-hour, 1.2 two-hour, 1.7 one-hour, 3.8 thirty-minute and 5.8 fifteen-minute.
-  - Median height in points: 17 (4-hour), 12 (2-hour), 7.75 (1-hour), 5 (30-minute), 3 (15-minute). About 1 in 6 four-hour zones is taller than 30 points.
-  - A zone gets 2 tests on average; 1 in 7 reaches 4 or more. Most zones end by breaking (87%).
+- **On 2024 ES data:** about 16 zones a week across the five timeframes, after overlaps (40 before the basing-candle and chop rules).
+  - Per week: 1.3 four-hour, 1.2 two-hour, 1.6 one-hour, 4.6 thirty-minute and 7 fifteen-minute.
+  - Median height in points: 10.5 (4-hour), 10 (2-hour), 5.5 (1-hour), 3.75 (30-minute), 2.25 (15-minute).
+  - A zone gets 2 tests on average; 1 in 6 reaches 4 or more. Most zones end by breaking (89%).
 - **For the owner to check:** the interactive review page `research/results/journal/review/zones/index.html` (published as an artifact). Mark each zone valid or noise and note the missed ones. Static charts: `research/results/journal/zone_charts/course_zones_*.png`.
 
 **Rejected (Oct 2026):** the owner would not use any of the bot's earlier zones, which did not match how the owner marks zones. Those used 15-minute candles and a chop of 3 or more candles; the zone was the body of the last chop candle, and it was dead after an hour of chop. The code is kept in `research/supply_demand.py` for the earlier studies.
@@ -309,7 +322,9 @@ Every number below is an adjustable setting. The defaults come from this spec.
 | Base | 1–3 candles through one common price | Proposed, TBD |
 | Strong move away | Body at least 2× every base candle's body | Plus a range at least 1.5× the last 20 candles' average (proposed, TBD) |
 | Zone edges | Near edge = base bodies, far edge = base wicks | Course charts and the owner's example |
-| Zone base | Must include a red candle (demand) or a green one (supply) | Owner |
+| Basing candle | The candle right before the move: red (demand) or green (supply) | Owner. A doji also counts (proposed) |
+| Move-away size | At least 1.5× the basing candle, high to low | Owner said roughly double. 1.5× proposed |
+| Zone drawn | Basing candle's body (its open) to the wick | Owner |
 | Not chop | Price moves 1.5× the zone's height away before it first comes back | Proposed, TBD |
 | Zone tests | Valid on retests; from the 4th test only with heavy order-book pressure | Owner. "Heavy pressure" TBD |
 | Zone broken | A candle on its timeframe closes beyond the far edge | Proposed |

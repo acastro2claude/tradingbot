@@ -87,10 +87,10 @@ textarea { width: 100%; box-sizing: border-box; min-height: 2.6em; resize: verti
     <details class="rules">
       <summary>How the bot marks zones right now</summary>
       <ul>
-        <li>Base: 1 to 3 candles at about the same price, with a red candle in a demand base (a green one in a supply base).</li>
-        <li>Move away: one candle with a body at least double each base candle, a range at least 1.5× the last 20 candles' average, closing beyond the whole base.</li>
+        <li>Basing candle: the candle right before the move away. Red before a rally, green before a drop. A doji (open and close almost the same) also counts.</li>
+        <li>Move away: one candle at least 1.5× the basing candle's size (high to low) and 1.5× the last 20 candles' average, closing beyond the basing candle.</li>
         <li>Price must move away 1.5× the zone's height before it first comes back. If it comes straight back, it was chop and there is no zone.</li>
-        <li>Top of a demand zone = base candle bodies; bottom = the wicks (base and move-away candle). Supply is the reverse.</li>
+        <li>Drawn your way: from the basing candle's body (its open) to the wick. For supply, the upper wick of the basing or drop candle; for demand, the low wick of the basing or rally candle.</li>
         <li>Tests are numbered. A new test needs price to move away by the zone's height (at least 5 points) first. From the 4th test the circle is faint: probably on its way out.</li>
         <li>A zone ends when a candle on its timeframe closes beyond the far edge, when price sits inside it for 4 candles of its timeframe, or after 31 days.</li>
         <li>No overlaps: the higher timeframe wins. A lower-timeframe zone that a higher one later formed over is not shown.</li>

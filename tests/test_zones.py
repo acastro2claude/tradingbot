@@ -8,7 +8,7 @@ import pandas as pd
 from research.settings import load_settings
 from research.zones import find_zones, make_candles
 
-FIXTURE = Path(__file__).parent / "fixtures" / "es_4h_2024-08-08_16.csv"   # ESU4 4-hour candles, contract ticks
+FIXTURE = Path(__file__).parent / "fixtures" / "es_4h_2024-07-25_08-23.csv"   # ESU4 4-hour candles, contract ticks
 
 
 def _settings(**kw) -> dict:
@@ -23,7 +23,7 @@ def _candles(rows) -> pd.DataFrame:
     return c
 
 
-# 20 quiet candles, a rally of two strong candles, a one-candle red base, then the leg-out
+# 20 quiet candles, a rally of two strong candles, a red basing candle, then the move away
 QUIET = [(80, 84, 76, 80)] * 20
 RALLY = [(80, 95, 79, 94), (94, 109, 93, 108)]
 BASE = [(108, 111, 105, 107)]
@@ -40,7 +40,7 @@ def test_rally_base_rally_demand_zone():
     assert len(z) == 1
     r = z.iloc[0]
     assert (r.kind, r.pattern, r.base_candles) == ("demand", "RBR", 1)
-    assert (r.near, r.far) == (108, 105)           # top of the base body, bottom of the wicks
+    assert (r.near, r.far) == (108, 105)           # the basing candle's open (top of its body), bottom of the wicks
 
 
 def test_drop_base_drop_supply_zone_is_the_mirror():
@@ -49,15 +49,15 @@ def test_drop_base_drop_supply_zone_is_the_mirror():
     z = _zone_at_leg_out(c, find_zones(c, 60, _settings()))
     r = z.iloc[0]
     assert (r.kind, r.pattern) == ("supply", "DBD")
-    assert (r.near, r.far) == (92, 95)             # bottom of the base body, top of the base wick
+    assert (r.near, r.far) == (92, 95)             # the basing candle's open (bottom of its body), top of the wicks
 
 
 def test_no_zone_when_the_move_away_is_weak_or_stays_in_the_base():
     weak = _candles(QUIET + RALLY + BASE + [(107, 112, 106, 110)])     # closes inside the base's wick
     assert _zone_at_leg_out(weak, find_zones(weak, 60, _settings())).empty
-    small = _candles(QUIET + RALLY + [(108, 111, 100, 104)] + [(104, 125, 103, 112)])  # base body 4, move-away body 8
-    assert not _zone_at_leg_out(small, find_zones(small, 60, _settings(leg_out_body_ratio=2.0))).empty
-    assert _zone_at_leg_out(small, find_zones(small, 60, _settings(leg_out_body_ratio=3.0))).empty
+    small = _candles(QUIET + RALLY + [(108, 111, 100, 104)] + [(104, 125, 103, 112)])  # basing range 11, move 22
+    assert not _zone_at_leg_out(small, find_zones(small, 60, _settings(leg_out_vs_basing_range=2.0))).empty
+    assert _zone_at_leg_out(small, find_zones(small, 60, _settings(leg_out_vs_basing_range=2.5))).empty
 
 
 def test_owner_example_4h_demand_zone_aug_2024():
@@ -72,8 +72,22 @@ def test_owner_example_4h_demand_zone_aug_2024():
     assert r.pattern == "RBR"
     assert r.near * 0.25 == 5490.00 and r.near * 0.25 + 60.75 == 5550.75
     assert r.far * 0.25 == 5471.75                 # the rally candle's low wick
-    assert c.loc[c["start"] == r.base_start, "label"].item() == "2024-08-14 16:00"   # Chicago = 14:00 PT
+    assert c.loc[c["start"] == r.base_start, "label"].item() == "2024-08-15 00:00"   # Chicago = Wed 22:00 PT
     assert c.loc[c["start"] == r.leg_out_start, "label"].item() == "2024-08-15 04:00"
+
+
+def test_owner_verdicts_4h_aug_2024():
+    """Owner (Oct 2026): the 22 Aug 2024 supply zone is drawn from the green basing candle's open
+    (5645.50) to the drop candle's upper wick (5665.25); the 19 Aug demand zone has no basing
+    candle (the candle before the rally is green), so it is not a zone."""
+    c = pd.read_csv(FIXTURE)
+    z = find_zones(c, 240, _settings())
+    sup = z[(z["kind"] == "supply") & (z["created_session"] == "2024-08-22")]
+    assert len(sup) == 1 and (sup.iloc[0].near * 0.25, sup.iloc[0].far * 0.25) == (5645.50, 5665.25)
+    assert z[(z["kind"] == "demand") & (z["created_session"] == "2024-08-19")].empty
+    # earlier verdicts: 5431 supply (2 Aug) and 5368 demand (13 Aug) have no basing candle
+    assert z[(z["kind"] == "supply") & ((z["low"] * 0.25 - 5431.50).abs() < 1)].empty
+    assert z[(z["kind"] == "demand") & ((z["low"] * 0.25 - 5368.50).abs() < 1)].empty
 
 
 def test_candles_start_at_chicago_midnight():
@@ -109,10 +123,11 @@ def test_overlapping_zones_keep_the_higher_timeframe():
     assert out.loc[(60, 16), "why"] == "broken"
 
 
-def test_demand_base_needs_a_red_candle():
-    green_base = _candles(QUIET + RALLY + [(107, 111, 105, 108)] + LEG_OUT)    # small green candle, then the rally
+def test_demand_basing_candle_is_red_or_a_doji():
+    green_base = _candles(QUIET + RALLY + [(105, 111, 104, 110)] + LEG_OUT)    # green candle, then the rally
     assert _zone_at_leg_out(green_base, find_zones(green_base, 60, _settings())).empty
-    assert not _zone_at_leg_out(green_base, find_zones(green_base, 60, _settings(base_needs_opposite_candle=False))).empty
+    doji = _candles(QUIET + RALLY + [(108, 111, 105, 108)] + LEG_OUT)          # a doji counts as a basing candle
+    assert not _zone_at_leg_out(doji, find_zones(doji, 60, _settings())).empty
 
 
 def _bars(prices, step=60):

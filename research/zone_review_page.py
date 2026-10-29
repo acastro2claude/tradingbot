@@ -28,7 +28,7 @@ from research.zone_course_chart import es_zones
 
 TEMPLATE = Path(__file__).with_name("templates") / "zone_review.html"
 START_WEEK = "2024-08-12"                  # the owner's 14-15 Aug 2024 example
-RULES_VERSION = "course rules, Oct 2026 (opposite basing candle, 1.5x move away, retests)"
+RULES_VERSION = "owner rules, Oct 2026 (basing candle right before the move, owner drawing, retests)"
 
 
 def encode(c: pd.DataFrame, session_index: dict) -> dict:
