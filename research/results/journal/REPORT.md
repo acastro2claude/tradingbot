@@ -422,6 +422,18 @@ Code: `research/journal_periods.py`.
 
 **Bottom line.** The bot as built (marked levels plus a coded order-flow read, any exit) has no edge, in 2024 or 2026. The owner's own trading in the disciplined period does, and two simple filters improve it.
 
+## 13. Supply and demand zones the owner's way (`zone_charts/course_zones_*.png`, Oct 2026)
+
+The owner shared the supply and demand course they follow (rally-base-rally, drop-base-rally, drop-base-drop, rally-base-drop) and one zone of their own. The bot now draws zones that way (`research/zones.py`, STRATEGY.md 1b).
+
+- **The owner's example:** a 4-hour demand zone on ES, 14–15 Aug 2024.
+  - The bot finds it at 5472.50–5490.00 in the Sep contract, which is 5533.25–5550.75 on the owner's back-adjusted thinkorswim chart. The zone top is the open of the red base candle, where the owner put the cursor.
+  - First return: 5 Sep at 12:16 ET, to exactly 5490.00. Price bounced 37 points, came back overnight and bounced 20 more, then broke on the 6 Sep jobs report.
+- **On 2024 ES data:** about 3 four-hour and 9 one-hour zones a week.
+  - Median height is 16.5 points (4-hour) and 10 points (1-hour).
+  - Almost every zone gets its first return within the month; 1 in 8 four-hour zones expires untested.
+- **Not tested yet:** how often first returns hold. That waits until the owner confirms the zones look right on the charts.
+
 ## Caveats
 
 - The read is my translation of the owner's description. Every threshold above is a proposal, and the owner's eye may weigh things differently.

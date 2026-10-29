@@ -29,7 +29,8 @@ pocs_for_strong_level = 3
 recent_poc_lookback_sessions = 5           # level source B (STRATEGY.md 1e)
 covered_poc_rule = "next session's value area"   # a POC inside it no longer counts
 value_area_share = 0.70
-# Supply and demand zones (STRATEGY.md 1b). Values marked proposed are TBD.
+# The bot's earlier supply and demand zones: rejected by the owner (Oct 2026), kept for the earlier
+# studies. The course-style zones the owner uses are in [zones] below (STRATEGY.md 1b).
 # sd_timeframe_minutes = TBD     (the study tests the list in [level_study])
 sd_lookback_months = 1
 sd_base_min_candles = 3          # proposed: candles in the chop, all through one common price
@@ -315,3 +316,18 @@ morning_end_et = "11:00"
 split_date = "2024-07-01"        # robustness: first half vs second half of the journal
 observe_first_trades = 3         # what-if: the first trades of each day on sim, or at half size
 reference_start = "2024-04-01"   # the owner's disciplined period (owner, Oct 2026: early 2024 lacked discipline)
+
+[zones]
+# Supply and demand zones as the owner's course draws them (STRATEGY.md 1b, Oct 2026; research/zones.py).
+# Values marked proposed are TBD until the owner confirms them on charts.
+timeframes_minutes = [60, 240]    # proposed: 1-hour and 4-hour zones (course examples: 15-min charts trading 1-hour zones, 1h, 4h, daily, weekly)
+candle_clock_tz = "America/Chicago"   # candles start at midnight Chicago time, like the owner's thinkorswim charts
+base_max_candles = 3              # proposed: a base is 1 to 3 candles sharing a common price (course examples: 1-2)
+leg_out_body_ratio = 2.0          # owner (STRATEGY 1b): the move-away candle's body is at least double every base candle's body
+leg_out_range_vs_average = 1.5    # proposed: and its high-low range is at least 1.5x the average of the last candles (owner example: 2.7x)
+average_candles = 20              # candles in that average
+leg_in_candles = 3                # candles before the base that name the pattern (rally or drop into it)
+max_age_days = 31                 # owner (STRATEGY 1b): zones from up to about a month back
+# Edges (course): near edge = base bodies, far edge = the base candles' wicks.
+# Fresh until price first trades back to the near edge; broken when a candle on the zone's
+# timeframe closes beyond the far edge (proposed). Whether a tested zone still counts: TBD.
