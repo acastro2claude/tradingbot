@@ -369,3 +369,18 @@ lock_points_when_extended = 8.0  # proposed: when the trade is held past 10, the
 delta_window_seconds = 60        # proposed: "delta continuing" = delta over the last 60 s is our way...
 aggressor_ratio = 1.0            # ...and our side's aggressive volume over that minute is at least the other side's
 random_per_day = 50
+
+[replay]
+# Zone replay page (research/replay_export.py, research/replay_page.py). Display settings, not bot settings.
+before_seconds = 600             # the replay starts 10 minutes before the zone test
+after_seconds = 300              # and stops 5 minutes after it (the bot's longest wait for a turn)
+frame_seconds = 2                # heatmap and tape in 2-second frames
+half_range_points = 10           # heatmap covers the zone edge +/- 10 points
+depth_full_colour_x_typical = 8  # resting size at 8x the day's typical size per price shows at full colour
+bubble_top_share = 0.05          # trade bubbles: the biggest 5% of the day's per-frame volume at a price
+max_bubbles = 600
+burst_seconds = 0.01             # absorption markers like the owner's add-on: contracts in 0.01 s...
+burst_min_es = 50                # ...at least this many on ES ([book_study] burst_contracts_es)
+burst_min_mes = 100              # ...and on MES (the owner's setting)
+context_minutes = 15             # context chart: 15-minute candles...
+context_sessions = 2             # ...for the 2 sessions before the test's session, up to the replay start

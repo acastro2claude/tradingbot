@@ -1,0 +1,388 @@
+<title>Zone Replay</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a trading desk. Context chart and decision panel beside one dark replay screen, like Bookmap next to a chart. */
+:root {
+  --bg: #f3f5f8; --surface: #ffffff; --ink: #121820; --muted: #566270; --line: #dce2e9;
+  --accent: #1c5cab; --long: #13845b; --short: #c4501f; --skip: #5d6672;
+  --demand: #12976a; --supply: #e0612a; --warn-bg: #fff4e5; --warn-ink: #7a3e00;
+  --screen: #0b0f14; --screen-ink: #d9e2ea; --screen-muted: #7f8c99; --screen-grid: #1a222c;
+  --display: "Barlow Condensed", "Arial Narrow", system-ui, sans-serif;
+  --body: "Barlow", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0e1217; --surface: #161c23; --ink: #e5ebf1; --muted: #9aa7b4; --line: #29323c;
+  --accent: #6aa6ec; --long: #34c48f; --short: #f08356; --skip: #a3adb8;
+  --demand: #34c48f; --supply: #f08356; --warn-bg: #3a2a12; --warn-ink: #ffd8a8; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0e1217; --surface: #161c23; --ink: #e5ebf1; --muted: #9aa7b4; --line: #29323c;
+  --accent: #6aa6ec; --long: #34c48f; --short: #f08356; --skip: #a3adb8;
+  --demand: #34c48f; --supply: #f08356; --warn-bg: #3a2a12; --warn-ink: #ffd8a8; color-scheme: dark; }
+body { background: var(--bg); color: var(--ink); font: 16px/1.5 var(--body); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.wrap { max-width: 1400px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 20px 56px; display: grid; gap: 16px; }
+header.intro { display: grid; gap: 6px; }
+.eyebrow { font: 600 0.8rem/1 var(--display); letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); }
+h1 { font: 700 2rem/1.1 var(--display); margin: 0; text-wrap: balance; }
+.intro p { margin: 0; max-width: 78ch; color: var(--muted); }
+details.how { max-width: 80ch; color: var(--muted); font-size: 0.95rem; }
+details.how summary { cursor: pointer; color: var(--ink); font-weight: 500; }
+details.how ul { margin: 8px 0 0; padding-left: 20px; display: grid; gap: 4px; }
+.banner { background: var(--warn-bg); color: var(--warn-ink); border-radius: 8px; padding: 10px 14px; }
+.bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; justify-content: space-between; }
+.count { font: 500 0.95rem var(--mono); font-variant-numeric: tabular-nums; color: var(--muted); }
+.meter { flex: 1 1 200px; height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; min-width: 120px; max-width: 420px; }
+.meter i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .3s; }
+.desk { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 16px; align-items: start; }
+@media (max-width: 960px) { .desk { grid-template-columns: minmax(0, 1fr); } }
+.screen { background: var(--screen); color: var(--screen-ink); border-radius: 10px; overflow: hidden; min-width: 0; }
+.screen .top { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 14px; padding: 10px 12px 4px;
+  font: 0.85rem/1.4 var(--mono); font-variant-numeric: tabular-nums; color: var(--screen-muted); }
+.screen .top b { color: var(--screen-ink); font-weight: 500; }
+canvas { display: block; width: 100%; touch-action: none; }
+#heat { height: clamp(320px, 52vh, 600px); }
+#delta { height: 96px; }
+.controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 10px 12px 12px; }
+.controls label { display: inline-flex; align-items: center; gap: 6px; font-size: 0.9rem; color: var(--screen-muted); }
+.screen button, .screen select { font: 500 0.9rem var(--body); color: var(--screen-ink); background: #18212b; border: 1px solid #2a3542;
+  border-radius: 6px; padding: 6px 10px; cursor: pointer; }
+.screen button:hover { border-color: #4a5868; }
+.side { display: grid; gap: 12px; min-width: 0; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: grid; gap: 10px; min-width: 0; }
+.card h2 { font: 700 1.2rem/1.2 var(--display); margin: 0; }
+.facts { margin: 0; font-size: 0.92rem; color: var(--muted); display: grid; gap: 2px; }
+.facts b { color: var(--ink); font-weight: 500; }
+#ctx { height: 220px; border-radius: 6px; background: var(--screen); }
+.decide { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.decide button { font: 600 1rem var(--body); padding: 10px 8px; border-radius: 8px; cursor: pointer; border: 1px solid var(--line);
+  background: var(--surface); color: var(--ink); }
+.decide button[data-d="long"] { border-color: var(--long); color: var(--long); }
+.decide button[data-d="short"] { border-color: var(--short); color: var(--short); }
+.decide button[aria-pressed="true"][data-d="long"] { background: var(--long); color: var(--surface); }
+.decide button[aria-pressed="true"][data-d="short"] { background: var(--short); color: var(--surface); }
+.decide button[aria-pressed="true"][data-d="skip"], .decide button[aria-pressed="true"][data-d="unsure"] { background: var(--skip); color: var(--surface); border-color: var(--skip); }
+button:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+textarea { width: 100%; box-sizing: border-box; min-height: 3em; resize: vertical; font: 0.92rem/1.4 var(--body); color: var(--ink);
+  background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; }
+.status { font-size: 0.85rem; color: var(--muted); min-height: 1.2em; }
+.status.err { color: var(--short); }
+.nav { display: flex; gap: 8px; flex-wrap: wrap; }
+.nav button { font: 500 0.92rem var(--body); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; cursor: pointer; }
+.keys { font-size: 0.82rem; color: var(--muted); }
+kbd { font: 0.78rem var(--mono); border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; }
+</style>
+
+<div class="wrap">
+  <header class="intro">
+    <div class="eyebrow">Zone replay · your decisions, blind</div>
+    <h1>Zone Replay</h1>
+    <p>Each clip replays the 10 minutes before price tests one of your zones, with the order book heatmap, the tape, delta and absorption, and then up to 5 more minutes. Trade it like you would live: press <b>Long here</b> or <b>Short here</b> at the moment you would enter, or <b>Skip</b>. The date is hidden and nothing after the clip is shown.</p>
+    <details class="how">
+      <summary>What's on the screen</summary>
+      <ul>
+        <li>Heatmap: resting orders per price, brighter = bigger compared with the day's typical size. Bid below price, ask above.</li>
+        <li>White line: last price. Green bubbles: aggressive buying. Red bubbles: aggressive selling. Bigger = more contracts in 2 seconds.</li>
+        <li>Diamonds: absorption bursts like your add-on (50+ ES or 100+ MES contracts within 0.01 s), with the size.</li>
+        <li>Shaded band: the zone being tested (its timeframe and test number are on the right). Bottom panel: delta every 10 seconds and cumulative delta.</li>
+        <li>The small chart on the right: 15-minute candles of the last sessions up to the start of the clip, with the zone.</li>
+        <li>Your entry is recorded at the time and price shown when you press. Results are scored later with your risk structure; you won't see them here.</li>
+      </ul>
+    </details>
+    <div class="banner" id="nostore" hidden>Your decisions can't reach the shared store from this view, so they stay in this browser only. Open the page signed in to claude.ai to save them for Claude.</div>
+  </header>
+
+  <div class="bar">
+    <span class="count" id="count"></span>
+    <span class="meter"><i id="meter"></i></span>
+    <div class="nav">
+      <button type="button" id="prev">◀ Previous</button>
+      <button type="button" id="next">Next undecided ▶</button>
+    </div>
+  </div>
+
+  <div class="desk">
+    <section class="screen" aria-label="Replay">
+      <div class="top"><span id="clipinfo">Loading…</span><span id="clock"></span></div>
+      <canvas id="heat"></canvas>
+      <canvas id="delta"></canvas>
+      <div class="controls">
+        <button type="button" id="play">▶ Play</button>
+        <button type="button" id="back">−10 s</button>
+        <button type="button" id="fwd">+10 s</button>
+        <button type="button" id="restart">Restart</button>
+        <label>Speed <select id="speed">
+          <option value="1">1×</option><option value="2">2×</option><option value="5">5×</option>
+          <option value="10" selected>10×</option><option value="20">20×</option><option value="60">60×</option>
+        </select></label>
+        <label><input type="checkbox" id="slow" checked> Slow to 2× near the zone</label>
+      </div>
+    </section>
+
+    <aside class="side">
+      <div class="card">
+        <h2 id="zonetitle">Zone</h2>
+        <p class="facts" id="zonefacts"></p>
+        <canvas id="ctx" aria-label="15-minute context chart"></canvas>
+      </div>
+      <div class="card">
+        <h2>Your decision</h2>
+        <div class="decide" role="group" aria-label="Decision">
+          <button type="button" data-d="long">Long here</button>
+          <button type="button" data-d="short">Short here</button>
+          <button type="button" data-d="skip">Skip</button>
+          <button type="button" data-d="unsure">Not sure</button>
+        </div>
+        <p class="facts" id="decided"></p>
+        <textarea id="note" rows="2" placeholder="Why? (optional)"></textarea>
+        <span class="status" id="status"></span>
+        <span class="keys"><kbd>Space</kbd> play/pause · <kbd>←</kbd><kbd>→</kbd> 10 s · <kbd>L</kbd> long · <kbd>S</kbd> short · <kbd>K</kbd> skip · <kbd>N</kbd> next</span>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<script type="application/json" id="index">__INDEX__</script>
+<script>
+"use strict";
+const INDEX = JSON.parse(document.getElementById("index").textContent);   // [{id, market, tf, kind, test}] in play order
+const TICK = 0.25;
+const decisions = {};
+let db = null, clip = null, heatImg = null, play = false, pos = 0, lastTs = 0, cur = 0;
+
+// ---------- helpers ----------
+const $ = id => document.getElementById(id);
+const p2 = v => v.toFixed(2);
+function css(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+const etFmt = new Intl.DateTimeFormat("en-US", { timeZone: "America/New_York", hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23" });
+const etHm = new Intl.DateTimeFormat("en-US", { timeZone: "America/New_York", hour: "2-digit", minute: "2-digit", hourCycle: "h23" });
+function keep() { try { localStorage.setItem("zone-replay-decisions", JSON.stringify(decisions)); } catch (e) {} }
+try { Object.assign(decisions, JSON.parse(localStorage.getItem("zone-replay-decisions") || "{}")); } catch (e) {}
+// Bookmap-like colours: dark -> blue -> cyan -> yellow -> white
+const STOPS = [[11, 15, 20], [20, 40, 110], [30, 110, 200], [60, 200, 220], [240, 220, 60], [255, 255, 255]];
+function heatColour(q) {           // q 0..127
+  const x = (q / 127) * (STOPS.length - 1), i = Math.min(Math.floor(x), STOPS.length - 2), f = x - i;
+  return STOPS[i].map((c, k) => Math.round(c + (STOPS[i + 1][k] - c) * f));
+}
+
+// ---------- load a clip ----------
+async function load(i) {
+  cur = i; play = false; $("play").textContent = "▶ Play";
+  const meta = INDEX[i];
+  $("clipinfo").textContent = "Loading…";
+  try {
+    const r = await fetch(`tests/${meta.id}.json`);
+    clip = await r.json();
+  } catch (e) { $("clipinfo").textContent = "Could not load this clip."; return; }
+  const raw = atob(clip.heat), n = clip.frames, rows = clip.rows;
+  const off = document.createElement("canvas"); off.width = n; off.height = rows;
+  const g = off.getContext("2d"), img = g.createImageData(n, rows);
+  for (let k = 0; k < n; k++) for (let j = 0; j < rows; j++) {
+    const b = raw.charCodeAt(k * rows + j), q = b & 127, c = heatColour(q), o = ((rows - 1 - j) * n + k) * 4;
+    img.data[o] = c[0]; img.data[o + 1] = c[1]; img.data[o + 2] = c[2]; img.data[o + 3] = 255;
+  }
+  g.putImageData(img, 0, 0); heatImg = off;
+  // cumulative delta
+  clip.cvd = []; let s = 0; for (let k = 0; k < n; k++) { s += clip.buy[k] - clip.sell[k]; clip.cvd.push(s); }
+  pos = 0;
+  const z = clip.zone;
+  $("clipinfo").innerHTML = `<b>${clip.market} ${clip.contract}</b> · ${clip.weekday} · clip ${i + 1} of ${INDEX.length}`;
+  $("zonetitle").textContent = `${z.tf} ${z.kind} zone`;
+  $("zonefacts").innerHTML = `<span><b>${p2(z.lo * TICK)}–${p2(z.hi * TICK)}</b>, edge ${p2(z.near * TICK)}</span>
+    <span>Pattern ${z.pattern}, test ${z.test} of this zone</span>`;
+  paintDecision(); drawAll();
+}
+
+// ---------- drawing ----------
+const H = $("heat"), D = $("delta"), C = $("ctx");
+function fit(cv) { const dpr = window.devicePixelRatio || 1, w = cv.clientWidth, h = cv.clientHeight;
+  if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); }
+  const g = cv.getContext("2d"); g.setTransform(dpr, 0, 0, dpr, 0, 0); return [g, w, h]; }
+const AX = 64;
+function drawAll() { if (!clip) return; drawHeat(); drawDelta(); drawCtx(); clock(); }
+function frameAt() { return Math.min(Math.floor(pos), clip.frames - 1); }
+function drawHeat() {
+  const [g, w, h] = fit(H), n = clip.frames, rows = clip.rows, pw = w - AX, p = frameAt();
+  g.fillStyle = css("--screen"); g.fillRect(0, 0, w, h);
+  const sx = k => (k / n) * pw, sy = j => h - ((j + 0.5) / rows) * h;
+  g.imageSmoothingEnabled = false;
+  g.drawImage(heatImg, 0, 0, p + 1, rows, 0, 0, sx(p + 1), h);
+  // zone band
+  const z = clip.zone, zc = z.kind === "demand" ? css("--demand") : css("--supply");
+  const y1 = sy(z.hi - clip.price_lo) - h / rows / 2, y2 = sy(z.lo - clip.price_lo) + h / rows / 2;
+  g.globalAlpha = 0.16; g.fillStyle = zc; g.fillRect(0, y1, pw, y2 - y1); g.globalAlpha = 1;
+  g.strokeStyle = zc; g.setLineDash([5, 4]); g.lineWidth = 1.2; const ye = sy(z.near - clip.price_lo);
+  g.beginPath(); g.moveTo(0, ye); g.lineTo(pw, ye); g.stroke(); g.setLineDash([]);
+  // price axis and minute lines
+  g.font = `11px ${css("--mono") || "monospace"}`; g.fillStyle = css("--screen-muted"); g.textBaseline = "middle";
+  const step = rows > 60 ? 8 : 4;
+  for (let j = 0; j < rows; j += step) { const y = sy(j); g.fillText(p2((clip.price_lo + j) * TICK), pw + 6, y);
+    g.strokeStyle = css("--screen-grid"); g.beginPath(); g.moveTo(pw, y); g.lineTo(pw + 4, y); g.stroke(); }
+  g.textBaseline = "top";
+  const t0 = clip.start_epoch, t1 = t0 + n * clip.frame_seconds, every = pw > 700 ? 60 : 120;
+  for (let m = Math.ceil(t0 / 60) * 60; m < t1; m += 60) {
+    const x = sx((m - t0) / clip.frame_seconds); g.strokeStyle = css("--screen-grid"); g.beginPath(); g.moveTo(x, 0); g.lineTo(x, h); g.stroke();
+    if (m % every === 0) { g.fillStyle = css("--screen-muted"); g.fillText(etHm.format(new Date(m * 1000)), x + 2, h - 14); } }
+  // price: high-low ticks and the last-price line
+  g.strokeStyle = "rgba(220,230,240,0.35)"; g.lineWidth = 1;
+  for (let k = 0; k <= p; k++) { if (clip.high[k] < 0) continue; const x = sx(k + 0.5);
+    g.beginPath(); g.moveTo(x, sy(clip.high[k])); g.lineTo(x, sy(clip.low[k])); g.stroke(); }
+  g.strokeStyle = "#ffffff"; g.lineWidth = 1.6; g.beginPath(); let started = false;
+  for (let k = 0; k <= p; k++) { if (clip.close[k] < 0) continue; const x = sx(k + 0.5), y = sy(clip.close[k]);
+    if (!started) { g.moveTo(x, y); started = true; } else g.lineTo(x, y); }
+  g.stroke();
+  // trade bubbles
+  for (const [f, j, b, v] of clip.bubbles) { if (f > p) continue;
+    const r = Math.max(2.5, Math.min(18, Math.sqrt(v) * (clip.market === "ES" ? 1.6 : 0.8)));
+    g.beginPath(); g.arc(sx(f + 0.5), sy(j), r, 0, Math.PI * 2);
+    g.fillStyle = b ? "rgba(40,210,130,0.55)" : "rgba(255,85,85,0.55)"; g.fill(); }
+  // absorption bursts
+  g.font = `600 10px ${css("--mono") || "monospace"}`; g.textBaseline = "middle";
+  for (const [f, j, c, dir] of clip.bursts) { if (f > p) continue; const x = sx(f + 0.5), y = sy(j), r = 6;
+    g.beginPath(); g.moveTo(x, y - r); g.lineTo(x + r, y); g.lineTo(x, y + r); g.lineTo(x - r, y); g.closePath();
+    g.fillStyle = dir < 0 ? "#b65cff" : "#ffd23f"; g.fill(); g.fillStyle = "#ffffff"; g.fillText(String(c), x + r + 2, y); }
+  // decision marker and playhead
+  const d = decisions[INDEX[cur].id];
+  if (d && (d.decision === "long" || d.decision === "short") && d.frame != null) {
+    const x = sx(d.frame + 0.5), y = sy(d.price_ticks - clip.price_lo);
+    g.fillStyle = d.decision === "long" ? css("--long") : css("--short");
+    g.beginPath(); if (d.decision === "long") { g.moveTo(x, y - 2); g.lineTo(x - 7, y + 10); g.lineTo(x + 7, y + 10); }
+    else { g.moveTo(x, y + 2); g.lineTo(x - 7, y - 10); g.lineTo(x + 7, y - 10); } g.closePath(); g.fill();
+  }
+  g.strokeStyle = "rgba(255,255,255,0.6)"; g.lineWidth = 1; g.beginPath(); g.moveTo(sx(p + 1), 0); g.lineTo(sx(p + 1), h); g.stroke();
+}
+function drawDelta() {
+  const [g, w, h] = fit(D), n = clip.frames, pw = w - AX, p = frameAt(), bin = Math.max(1, Math.round(10 / clip.frame_seconds));
+  g.fillStyle = css("--screen"); g.fillRect(0, 0, w, h);
+  g.strokeStyle = css("--screen-grid"); g.beginPath(); g.moveTo(0, h / 2); g.lineTo(pw, h / 2); g.stroke();
+  const sums = []; for (let k = 0; k <= p; k += bin) { let s = 0; for (let q = k; q < Math.min(k + bin, p + 1); q++) s += clip.buy[q] - clip.sell[q]; sums.push([k, s]); }
+  const mx = Math.max(1, ...sums.map(x => Math.abs(x[1])));
+  for (const [k, s] of sums) { const x = (k / n) * pw, bw = Math.max(1, (bin / n) * pw - 1), bh = (s / mx) * (h / 2 - 6);
+    g.fillStyle = s >= 0 ? "rgba(40,210,130,0.8)" : "rgba(255,85,85,0.8)"; g.fillRect(x, h / 2 - Math.max(bh, 0), bw, Math.abs(bh)); }
+  const lo = Math.min(...clip.cvd.slice(0, p + 1)), hi = Math.max(...clip.cvd.slice(0, p + 1)), span = Math.max(hi - lo, 1);
+  g.strokeStyle = "#ffffff"; g.lineWidth = 1.4; g.beginPath();
+  for (let k = 0; k <= p; k++) { const x = ((k + 0.5) / n) * pw, y = h - 6 - ((clip.cvd[k] - lo) / span) * (h - 12); if (k === 0) g.moveTo(x, y); else g.lineTo(x, y); }
+  g.stroke();
+  g.fillStyle = css("--screen-muted"); g.font = `11px ${css("--mono") || "monospace"}`; g.textBaseline = "top";
+  g.fillText("delta / 10 s", pw + 6, 4); g.fillText(`CVD ${clip.cvd[p] >= 0 ? "+" : ""}${clip.cvd[p]}`, pw + 6, h - 18);
+}
+function drawCtx() {
+  const [g, w, h] = fit(C), c = clip.context, n = c.o.length;
+  g.fillStyle = css("--screen"); g.fillRect(0, 0, w, h);
+  if (!n) return;
+  const z = clip.zone;
+  let lo = Math.min(...c.l, z.lo), hi = Math.max(...c.h, z.hi); const pad = (hi - lo) * 0.05 + 2; lo -= pad; hi += pad;
+  const pw = w - 52, sx = k => ((k + 0.5) / n) * pw, sy = v => 6 + (hi - v) / (hi - lo) * (h - 12), bw = Math.max(1, pw / n * 0.6);
+  const zc = z.kind === "demand" ? css("--demand") : css("--supply");
+  g.globalAlpha = 0.25; g.fillStyle = zc; g.fillRect(0, sy(z.hi), pw, Math.max(sy(z.lo) - sy(z.hi), 2)); g.globalAlpha = 1;
+  for (let k = 0; k < n; k++) { const x = sx(k); g.strokeStyle = "#c9d3dd"; g.lineWidth = 1;
+    g.beginPath(); g.moveTo(x, sy(c.h[k])); g.lineTo(x, sy(c.l[k])); g.stroke();
+    const top = sy(Math.max(c.o[k], c.c[k])), bot = sy(Math.min(c.o[k], c.c[k]));
+    if (c.c[k] < c.o[k]) { g.fillStyle = "#e05a5a"; g.fillRect(x - bw / 2, top, bw, Math.max(bot - top, 1)); }
+    else { g.fillStyle = "#2fbf7f"; g.fillRect(x - bw / 2, top, bw, Math.max(bot - top, 1)); } }
+  g.fillStyle = css("--screen-muted"); g.font = `10px ${css("--mono") || "monospace"}`; g.textBaseline = "middle";
+  for (const v of [hi - pad, (hi + lo) / 2, lo + pad]) g.fillText(p2(v * TICK), pw + 4, sy(v));
+}
+function clock() {
+  const p = frameAt(), t = clip.start_epoch + (p + 1) * clip.frame_seconds, px = clip.close[p];
+  $("clock").innerHTML = `<b>${etFmt.format(new Date(t * 1000))} ET</b> · last ${px >= 0 ? p2((clip.price_lo + px) * TICK) : "—"}`;
+}
+
+// ---------- playback ----------
+function tick(ts) {
+  if (!play) return;
+  const dt = lastTs ? (ts - lastTs) / 1000 : 0; lastTs = ts;
+  let speed = +$("speed").value;
+  if ($("slow").checked) { const p = frameAt(), z = clip.zone, px = clip.close[p] + clip.price_lo;
+    if (clip.close[p] >= 0 && Math.abs(px - z.near) * TICK <= 2) speed = Math.min(speed, 2); }
+  pos = Math.min(pos + dt * speed / clip.frame_seconds, clip.frames - 1);
+  drawAll();
+  if (pos >= clip.frames - 1) { play = false; $("play").textContent = "▶ Play"; $("status").textContent = "End of the clip. Pick a decision."; return; }
+  requestAnimationFrame(tick);
+}
+function toggle() { if (!clip) return; play = !play; $("play").textContent = play ? "❚❚ Pause" : "▶ Play"; lastTs = 0; if (play) requestAnimationFrame(tick); }
+$("play").onclick = toggle;
+$("back").onclick = () => { pos = Math.max(0, pos - 10 / clip.frame_seconds); drawAll(); };
+$("fwd").onclick = () => { pos = Math.min(clip.frames - 1, pos + 10 / clip.frame_seconds); drawAll(); };
+$("restart").onclick = () => { pos = 0; drawAll(); };
+
+// ---------- decisions ----------
+function paintDecision() {
+  const d = decisions[INDEX[cur].id] || {};
+  document.querySelectorAll(".decide button").forEach(b => b.setAttribute("aria-pressed", String(d.decision === b.dataset.d)));
+  if (document.activeElement !== $("note")) $("note").value = d.note || "";
+  $("decided").innerHTML = d.decision === "long" || d.decision === "short"
+    ? `<span>${d.decision === "long" ? "Long" : "Short"} at <b>${p2(d.price_ticks * TICK)}</b>, ${etFmt.format(new Date(d.entry_time * 1000))} ET</span>`
+    : d.decision ? `<span>${d.decision === "skip" ? "Skipped" : "Not sure"}</span>` : `<span>No decision yet</span>`;
+  progress();
+}
+function progress() {
+  const done = INDEX.filter(x => decisions[x.id] && decisions[x.id].decision).length;
+  $("count").textContent = `${done} of ${INDEX.length} decided`;
+  $("meter").style.width = (100 * done / INDEX.length) + "%";
+}
+async function decide(kind) {
+  if (!clip) return;
+  const id = INDEX[cur].id, p = frameAt(), d = decisions[id] || {};
+  d.decision = kind;
+  if (kind === "long" || kind === "short") {
+    if (clip.close[p] < 0) { $("status").textContent = "No price yet. Play the clip first."; return; }
+    d.frame = p; d.entry_time = clip.start_epoch + (p + 1) * clip.frame_seconds; d.price_ticks = clip.price_lo + clip.close[p];
+  } else { d.frame = null; d.entry_time = null; d.price_ticks = null; }
+  d.note = $("note").value; decisions[id] = d; keep(); paintDecision(); drawAll();
+  play = false; $("play").textContent = "▶ Play";
+  await save(id);
+}
+let saving = false, again = false;
+async function save(id) {
+  const d = decisions[id] || {};
+  if (!db) { $("status").textContent = "Kept in this browser only"; return; }
+  if (saving) { again = true; return; }
+  saving = true; $("status").className = "status"; $("status").textContent = "Saving…";
+  try {
+    await db.collection("replay_decisions").doc(id).set({ clip_id: id, decision: d.decision || "", note: d.note || "",
+      entry_time: d.entry_time ?? null, entry_price: d.price_ticks != null ? d.price_ticks * TICK : null, frame: d.frame ?? null,
+      at_seconds_from_test: d.frame != null ? (d.frame + 1 - clip.test_frame) * clip.frame_seconds : null,
+      speed: +$("speed").value, saved_at: new Date().toISOString() });
+    $("status").textContent = "Saved";
+  } catch (e) { $("status").className = "status err"; $("status").textContent = "Not saved yet. It will retry on your next change."; }
+  finally { saving = false; if (again) { again = false; save(INDEX[cur].id); } }
+}
+document.querySelectorAll(".decide button").forEach(b => b.onclick = () => decide(b.dataset.d));
+let noteTimer = null;
+$("note").oninput = () => { const id = INDEX[cur].id; (decisions[id] = decisions[id] || {}).note = $("note").value; keep();
+  clearTimeout(noteTimer); noteTimer = setTimeout(() => save(id), 900); };
+function nextUndecided() { for (let k = 1; k <= INDEX.length; k++) { const i = (cur + k) % INDEX.length;
+  if (!(decisions[INDEX[i].id] && decisions[INDEX[i].id].decision)) return load(i); } load((cur + 1) % INDEX.length); }
+$("next").onclick = nextUndecided;
+$("prev").onclick = () => load((cur - 1 + INDEX.length) % INDEX.length);
+document.addEventListener("keydown", e => {
+  if (e.target.tagName === "TEXTAREA" || e.target.tagName === "SELECT") return;
+  const k = e.key.toLowerCase();
+  if (k === " ") { e.preventDefault(); toggle(); }
+  else if (k === "arrowleft") $("back").click(); else if (k === "arrowright") $("fwd").click();
+  else if (k === "l") decide("long"); else if (k === "s") decide("short"); else if (k === "k") decide("skip"); else if (k === "n") nextUndecided();
+});
+new ResizeObserver(() => drawAll()).observe(H);
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", drawAll);
+
+// start at the first undecided clip
+const first = INDEX.findIndex(x => !(decisions[x.id] && decisions[x.id].decision));
+load(first < 0 ? 0 : first);
+
+(async () => {
+  db = window.claude && window.claude.use ? await window.claude.use("db") : null;
+  if (!db) { $("nostore").hidden = false; return; }
+  db.collection("replay_decisions").onSnapshot(snap => {
+    snap.docs.forEach(doc => { const v = doc.data(); if (!v || !v.clip_id) return;
+      const m = decisions[v.clip_id] || {};
+      decisions[v.clip_id] = { ...m, decision: v.decision ?? m.decision, note: v.note ?? m.note, entry_time: v.entry_time ?? m.entry_time,
+        price_ticks: v.entry_price != null ? Math.round(v.entry_price / TICK) : m.price_ticks, frame: v.frame ?? m.frame }; });
+    keep(); paintDecision(); drawAll();
+  }, () => { $("nostore").hidden = false; });
+})();
+</script>
