@@ -12,8 +12,8 @@ The bot, on 1-minute candles (an approximation of the tick-level bot in research
   - a test: price trades back to a live zone's near edge (research.zones tests), 09:30-15:30 ET
   - entry: within 5 minutes, the first 1-minute close at least 1 point off the test's extreme,
     filled at that close + 1 tick; no trade if price first gets 3 points through the edge
-  - exits: 2-pt stop / 4-pt target, 3-pt stop / 7-pt target, and the owner's normal stop
-    (3 points past the zone's near edge) with a target of 2x that risk (STRATEGY.md minimum)
+  - exits: [zone_study] all_days_exits: 2/4, 3/7, the owner's normal stop (3 points past the
+    zone's near edge) with a target of 2x that risk, and the owner's risk structure 4/10, 4/12
   - one trade at a time, up to 3 a day, flat at 15:59; a candle that reaches both the stop and
     the target counts as a loss; stops pay 1 tick; $12.40 costs per trade (10 MES)
 Baseline: random entries on the same days (a random minute, random side), same fixed exits.
@@ -80,7 +80,7 @@ def one_market(name: str, fb: pd.DataFrame, z: pd.DataFrame, first: str, last: s
     rth = (mins >= e0) & (mins < hm("16:00"))
     types = day_types(fb, rth)
     t_first, t_last = pd.Timestamp(first, tz="UTC").timestamp(), pd.Timestamp(last, tz="UTC").timestamp()
-    exits = [("2/4", "fixed", 2, 4), ("3/7", "fixed", 3, 7), ("3 past edge, 2x", "edge", 3, 2)]
+    exits = [tuple(e) for e in zs["all_days_exits"]]
 
     cands = []
     for r in z.itertuples():
@@ -137,7 +137,7 @@ def one_market(name: str, fb: pd.DataFrame, z: pd.DataFrame, first: str, last: s
         end = np.flatnonzero((sess == day) & (mins <= flat))[-1]
         for b in rng.choice(idx, zs["random_per_day"]):
             d = int(rng.choice([-1, 1]))
-            for lab, kind, st, tg in exits[:2]:
+            for lab, kind, st, tg in [e for e in exits if e[1] == "fixed"]:
                 pts, _ = run_exit(lo, hi, cl, b, end, cl[b] + d * slip, d, round(st / tick), round(tg / tick), slip)
                 rand.append(dict(market=name, session=day, exit=lab, points=pts * tick))
     tr, rd = pd.DataFrame(trades), pd.DataFrame(rand)

@@ -532,6 +532,37 @@ The bot works on 1-minute candles: a zone test, entry on the first close 1 point
 
 **What it means.** This is the result the owner warned about, confirmed on all the data: a mechanical entry at the zones does not work in any condition. It is not a matter of tuning on the wrong days. The owner's trades near zones do better, so the edge is in the owner's read and timing at the zone, which the bot's rules don't capture.
 
+## 17. The owner's risk structure: 4-point stop, winners run to 10-12 (`run_winners_summary.csv`, Oct 2026)
+
+**The owner's point:** win rate means nothing on its own. The owner wins about 34% of trades but makes money because the winners are bigger: the average win is 5.8 points and the average loss 2.3 (Apr 2024 on), about 2.5 to 1. The owner proposed a 4-point stop with winners running to 10–12 points, held to 12 while delta and aggressive volume keep going the trade's way.
+
+**All days, 1-minute candles, Feb 2024 – Oct 2026 (`zone_all_days_summary.csv`):**
+
+| Exit | Zone bot trades | Winners | Random entries | Per trade | Random per trade | Net |
+|---|---|---|---|---|---|---|
+| 4/10 | 1,293 | 25.0% | 27.4% | −$48 | −$35 | −$61,871 |
+| 4/12 | 1,278 | 21.5% | 24.5% | −$52 | −$36 | −$66,610 |
+
+- Every year loses: with 4/10, 2024 −$23,279, 2025 −$19,879, 2026 −$18,713.
+- 4 to 5 months up out of 33.
+- No type of day changes it.
+
+**Tick data with the buyer/seller side, MES Apr–Oct 2026 and the 23 ES days of 2024.** "4 → 10 or 12" means: at +10, if delta over the last minute is the trade's way and that side's aggressive volume is at least the other side's, hold for 12 with the stop moved to +8.
+
+| Entries | Exit | Trades | Winners | Per trade | Net |
+|---|---|---|---|---|---|
+| Zone bot, MES 2026 | 4/10 | 301 | 24% | −$55 | −$16,595 |
+| Zone bot, MES 2026 | 4/12 | 299 | 22% | −$44 | −$13,108 |
+| Zone bot, MES 2026 | 4 → 10 or 12 | 301 | 24% | −$55 | −$16,582 |
+| Random entries, MES 2026 | 4 → 10 or 12 | 5,800 | 27% | −$41 | |
+| Zone bot, ES 2024 | 4 → 10 or 12 | 60 | 18% | −$88 | −$5,269 |
+
+**Why the structure doesn't save it.**
+
+- With a 4-point stop and a 10-point target, a trade needs about 31% winners to break even after slippage and costs. The owner gets there (34% with 2.5 to 1); the bot's zone entries reach 24–25%.
+- Random entries with the same exits lose too. A risk structure multiplies an edge in the entries; it cannot create one.
+- Holding to 12 while delta continues barely changes the result. When price has already gone 10 points, the trade is usually a winner either way.
+
 ## Caveats
 
 - The read is my translation of the owner's description. Every threshold above is a proposal, and the owner's eye may weigh things differently.

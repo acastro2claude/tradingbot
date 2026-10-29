@@ -353,3 +353,19 @@ random_per_day = 50                # random entries per day for the baseline
 exits = [[3.0, 4.0], [3.0, 7.0]]   # stop / target in points from the fill (owner: the normal stop is 3 points past the level)
 hold_stop_past_far_points = 1.0    # diagnostic only: does the zone hold as an area? stop 1 point past the far edge...
 hold_targets_x_risk = [1.0, 2.0]   # ...targets 1x and 2x that risk (the owner keeps the normal stop; this is not a bot rule)
+# Exits for research/zone_all_days.py: [label, "fixed" (stop/target points from the fill) or
+# "edge" (stop this far past the zone's near edge, target this multiple of the risk), stop, target]
+all_days_exits = [["2/4", "fixed", 2, 4], ["3/7", "fixed", 3, 7], ["3 past edge, 2x", "edge", 3, 2],
+                  ["4/10", "fixed", 4, 10], ["4/12", "fixed", 4, 12]]   # 4/10 and 4/12: the owner's risk structure (Oct 2026)
+
+[run_winners]
+# Owner (Oct 2026): "a 4 point stop loss, but let winners run to about 10-12 points depending on market
+# conditions (mostly meaning delta is heavily continuing in our direction, and aggressive buyers/sellers
+# are still moving the same direction)". research/run_winners.py. Values marked proposed are TBD.
+stop_points = 4.0
+target_points = 10.0
+extended_target_points = 12.0
+lock_points_when_extended = 8.0  # proposed: when the trade is held past 10, the stop moves up to +8
+delta_window_seconds = 60        # proposed: "delta continuing" = delta over the last 60 s is our way...
+aggressor_ratio = 1.0            # ...and our side's aggressive volume over that minute is at least the other side's
+random_per_day = 50
