@@ -335,6 +335,7 @@ departure_min_heights = 1.5       # proposed: price moves 1.5x the zone's height
 rearm_min_points = 5.0            # proposed: a new test needs price to move away by the zone's height (at least this) first
 weak_from_test = 4                # owner: from about the 4th test a zone is on its way out, unless heavy order-book pressure
 chop_invalid_candles = 4          # proposed: inside for 4 candles of the zone's timeframe ends it (owner: about an hour, = 4 on 15m)
-# Edges (owner's drawing): near edge = the basing candle's open, far edge = the wick of the basing and move-away candles.
+# Edges (owner's drawing, confirmed): near edge = the basing candle's open (green: bottom of body, red: top of body),
+# far edge = the wick of the basing and move-away candles.
 # Broken when a candle on the zone's timeframe closes beyond the far edge (proposed).
 # Stop: the normal stop rules (owner: even when the zone is big), not past the zone.

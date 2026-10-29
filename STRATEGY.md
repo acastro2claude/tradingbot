@@ -55,6 +55,7 @@ Source A and source B (1e, the owner's current method) are both tested. The data
 - **Basing candle (owner, Oct 2026):** the candle right before the move away. It is red before a rally (demand) and green before a drop (supply). If the candle right before the rally is green, there is no basing candle and no zone.
 - **How the owner draws a zone (Oct 2026):** from the body of the basing candle to the wick. For supply, from the bottom of the green basing candle's body up to the upper wick (of the basing candle or the drop candle). For demand, from the top of the red basing candle's body down to the low wick. All zones are drawn this way.
   - Example: the 22 Aug 2024 4-hour supply zone is 5645.50–5665.25 (Sep contract). 5645.50 is where the green basing candle opened (the candle before it closed there). 5665.25 is the drop candle's upper wick.
+  - Confirmed by the owner (Oct 2026): the zone starts at the basing candle's **open** on both sides. That is the bottom of a green candle's body for supply and the top of a red candle's body for demand, so the whole body is inside the zone. The 15 Aug 2024 demand zone is 5532.50–5550.75 on the owner's chart (5471.75–5490.00 Sep contract).
 - **Strong move away:** there's no set size. Roughly, it's at least double the size of the basing candle. If the basing candle's wicks are big and the next candle doesn't move much past it, it is not a zone (owner on the 19 Aug 2024 1-hour zone at 5593).
 - **Not every candle that moves away makes a zone (owner, Oct 2026).** When price is chopping in a range, those candles are chop, not zones.
 - **Fresh zones:** the best zones are fresh and untested: price has not been back since it left. They hold the most waiting orders. Look from right to left on the chart to find them.
@@ -106,7 +107,7 @@ Source A and source B (1e, the owner's current method) are both tested. The data
 - **Not chop (proposed):** price must move at least **1.5× the zone's height** away from it before it first comes back; otherwise there is no zone. The bot only knows the zone from that moment.
   - Under the earlier drawing, this rule separated the owner's verdicts: 5636 moved 1.8× its height away, and the chop zone at 5594 only 1.0×. Drawn the owner's way, 5636 moves 3.2×. 5594 no longer has a basing candle.
 - **Edges (the owner's drawing):**
-  - The near edge is the basing candle's body: its open (for a doji, the body edge price comes back to first).
+  - The near edge is the basing candle's open (owner, confirmed for both sides). For a doji, it is the body edge price comes back to first.
   - The far edge is the wick: for demand, the lowest low of the basing and move-away candles; for supply, the highest high.
   - These rules reproduce all 9 of the owner's verdicts so far (2 valid, 7 rejected). They are test cases in `tests/test_zones.py`.
 - **Tests:** price trades back to the near edge. A new test needs price to move away again by the zone's height (at least 5 points) first (proposed). From the 4th test, the zone is "on its way out".
