@@ -1,0 +1,282 @@
+[
+ {
+  "review":1,
+  "side":"long",
+  "level":"zone",
+  "contract":"ESH4",
+  "when":"Tue 27 Feb 2024, 09:41 ET"
+ },
+ {
+  "review":2,
+  "side":"short",
+  "level":"zone",
+  "contract":"ESH4",
+  "when":"Tue 27 Feb 2024, 10:00 ET"
+ },
+ {
+  "review":3,
+  "side":"long",
+  "level":"zone",
+  "contract":"ESH4",
+  "when":"Tue 27 Feb 2024, 10:45 ET"
+ },
+ {
+  "review":4,
+  "side":"short",
+  "level":"zone",
+  "contract":"ESH4",
+  "when":"Wed 28 Feb 2024, 10:08 ET"
+ },
+ {
+  "review":5,
+  "side":"long",
+  "level":"zone",
+  "contract":"ESH4",
+  "when":"Thu 29 Feb 2024, 10:08 ET"
+ },
+ {
+  "review":6,
+  "side":"short",
+  "level":"zone",
+  "contract":"ESH4",
+  "when":"Fri 01 Mar 2024, 10:05 ET"
+ },
+ {
+  "review":7,
+  "side":"long",
+  "level":"POC",
+  "contract":"ESM4",
+  "when":"Tue 09 Apr 2024, 10:28 ET"
+ },
+ {
+  "review":8,
+  "side":"short",
+  "level":"POC",
+  "contract":"ESM4",
+  "when":"Tue 09 Apr 2024, 12:35 ET"
+ },
+ {
+  "review":9,
+  "side":"long",
+  "level":"zone",
+  "contract":"ESM4",
+  "when":"Thu 11 Apr 2024, 10:16 ET"
+ },
+ {
+  "review":10,
+  "side":"short",
+  "level":"POC",
+  "contract":"ESM4",
+  "when":"Fri 12 Apr 2024, 09:59 ET"
+ },
+ {
+  "review":11,
+  "side":"short",
+  "level":"POC",
+  "contract":"ESM4",
+  "when":"Fri 12 Apr 2024, 10:01 ET"
+ },
+ {
+  "review":12,
+  "side":"long",
+  "level":"zone",
+  "contract":"ESM4",
+  "when":"Fri 12 Apr 2024, 12:17 ET"
+ },
+ {
+  "review":13,
+  "side":"short",
+  "level":"zone",
+  "contract":"ESM4",
+  "when":"Mon 03 Jun 2024, 10:00 ET"
+ },
+ {
+  "review":14,
+  "side":"long",
+  "level":"POC",
+  "contract":"ESM4",
+  "when":"Mon 03 Jun 2024, 10:48 ET"
+ },
+ {
+  "review":15,
+  "side":"short",
+  "level":"zone",
+  "contract":"ESM4",
+  "when":"Thu 06 Jun 2024, 14:49 ET"
+ },
+ {
+  "review":16,
+  "side":"short",
+  "level":"POC",
+  "contract":"ESM4",
+  "when":"Fri 07 Jun 2024, 10:21 ET"
+ },
+ {
+  "review":17,
+  "side":"short",
+  "level":"zone",
+  "contract":"ESM4",
+  "when":"Fri 07 Jun 2024, 10:37 ET"
+ },
+ {
+  "review":18,
+  "side":"long",
+  "level":"POC",
+  "contract":"ESM4",
+  "when":"Fri 07 Jun 2024, 11:04 ET"
+ },
+ {
+  "review":19,
+  "side":"long",
+  "level":"zone",
+  "contract":"ESM4",
+  "when":"Fri 07 Jun 2024, 14:05 ET"
+ },
+ {
+  "review":20,
+  "side":"long",
+  "level":"zone",
+  "contract":"ESU4",
+  "when":"Tue 30 Jul 2024, 10:00 ET"
+ },
+ {
+  "review":21,
+  "side":"short",
+  "level":"POC",
+  "contract":"ESU4",
+  "when":"Tue 30 Jul 2024, 10:05 ET"
+ },
+ {
+  "review":22,
+  "side":"long",
+  "level":"POC",
+  "contract":"ESU4",
+  "when":"Tue 30 Jul 2024, 14:49 ET"
+ },
+ {
+  "review":23,
+  "side":"short",
+  "level":"POC",
+  "contract":"ESU4",
+  "when":"Thu 01 Aug 2024, 10:24 ET"
+ },
+ {
+  "review":24,
+  "side":"long",
+  "level":"POC",
+  "contract":"ESU4",
+  "when":"Thu 01 Aug 2024, 12:23 ET"
+ },
+ {
+  "review":25,
+  "side":"long",
+  "level":"zone",
+  "contract":"ESU4",
+  "when":"Thu 01 Aug 2024, 12:35 ET"
+ },
+ {
+  "review":26,
+  "side":"short",
+  "level":"POC",
+  "contract":"ESU4",
+  "when":"Thu 01 Aug 2024, 15:30 ET"
+ },
+ {
+  "review":27,
+  "side":"short",
+  "level":"zone",
+  "contract":"ESZ4",
+  "when":"Mon 23 Sep 2024, 10:46 ET"
+ },
+ {
+  "review":28,
+  "side":"long",
+  "level":"POC",
+  "contract":"ESZ4",
+  "when":"Mon 23 Sep 2024, 11:01 ET"
+ },
+ {
+  "review":29,
+  "side":"short",
+  "level":"POC",
+  "contract":"ESZ4",
+  "when":"Mon 23 Sep 2024, 11:21 ET"
+ },
+ {
+  "review":30,
+  "side":"long",
+  "level":"POC",
+  "contract":"ESZ4",
+  "when":"Tue 24 Sep 2024, 10:00 ET"
+ },
+ {
+  "review":31,
+  "side":"short",
+  "level":"POC",
+  "contract":"ESZ4",
+  "when":"Tue 24 Sep 2024, 10:45 ET"
+ },
+ {
+  "review":32,
+  "side":"short",
+  "level":"POC",
+  "contract":"ESZ4",
+  "when":"Tue 24 Sep 2024, 10:57 ET"
+ },
+ {
+  "review":33,
+  "side":"short",
+  "level":"zone",
+  "contract":"ESZ4",
+  "when":"Tue 24 Sep 2024, 12:35 ET"
+ },
+ {
+  "review":34,
+  "side":"long",
+  "level":"zone",
+  "contract":"ESZ4",
+  "when":"Tue 24 Sep 2024, 14:29 ET"
+ },
+ {
+  "review":35,
+  "side":"long",
+  "level":"POC",
+  "contract":"ESZ4",
+  "when":"Wed 25 Sep 2024, 11:44 ET"
+ },
+ {
+  "review":36,
+  "side":"long",
+  "level":"POC",
+  "contract":"ESZ4",
+  "when":"Wed 25 Sep 2024, 14:14 ET"
+ },
+ {
+  "review":37,
+  "side":"short",
+  "level":"POC",
+  "contract":"ESZ4",
+  "when":"Wed 25 Sep 2024, 14:16 ET"
+ },
+ {
+  "review":38,
+  "side":"long",
+  "level":"zone",
+  "contract":"ESZ4",
+  "when":"Thu 26 Sep 2024, 09:30 ET"
+ },
+ {
+  "review":39,
+  "side":"long",
+  "level":"POC",
+  "contract":"ESZ4",
+  "when":"Thu 26 Sep 2024, 11:20 ET"
+ },
+ {
+  "review":40,
+  "side":"short",
+  "level":"POC",
+  "contract":"ESZ4",
+  "when":"Thu 26 Sep 2024, 13:30 ET"
+ }
+]

@@ -18,7 +18,7 @@ A random sample of tests (fixed seed) is drawn from level_tests_es_weeks.csv.
 Charts go to research/results/journal/review/, numbered; the outcomes are kept
 in review_key.csv for scoring after the owner answers.
 
-Run from the repo root:   python -m research.review_charts [count]
+Run from the repo root:   python -m research.review_charts [count] [--batch name]
 """
 
 from __future__ import annotations
@@ -37,6 +37,7 @@ from matplotlib.collections import LineCollection  # noqa: E402
 from research.bot_week_study import BOOK_DIR, TRADES_DIR, et  # noqa: E402
 from research.journal_replay import es_context  # noqa: E402
 from research.journal_study import OUT  # noqa: E402
+from research.level_study import DERIVED  # noqa: E402
 from research.level_test_book import marked_levels  # noqa: E402
 from research.market_data import session_dates  # noqa: E402
 from research.orderbook import Book, build_book, load_mbo  # noqa: E402
@@ -166,15 +167,27 @@ def draw_review(book: Book, trades: pd.DataFrame, levels: pd.DataFrame, t_dec: f
 
 
 def main() -> None:
-    count = int(sys.argv[1]) if len(sys.argv) > 1 else 12
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("count", type=int, nargs="?", default=12)
+    ap.add_argument("--batch", default="", help="a later batch: new tests only, charts in review/<batch>/, "
+                    "answer key kept out of the repo (data/derived) until the owner has answered")
+    args = ap.parse_args()
     s = load_settings()
     tests = pd.read_csv(OUT / "level_tests_es_weeks.csv")
     plan = pd.read_csv(OUT / "es_week_price_plan.csv").set_index("day")
     e = tests[tests["turn"] == "turned"]
-    pick = e.sample(count, random_state=s["level_study"]["random_seed"]).sort_values("entry_time")
+    out_dir, key_file, seed = REVIEW, REVIEW / "review_key.csv", s["level_study"]["random_seed"]
+    if args.batch:
+        seen = pd.concat([pd.read_csv(f)[["day", "entry_time"]] for f in
+                          [REVIEW / "review_key.csv", *sorted(DERIVED.glob("review_*_key.csv"))] if f.exists()])
+        e = e[~e.set_index(["day", "entry_time"]).index.isin(seen.set_index(["day", "entry_time"]).index)]
+        out_dir, key_file, seed = REVIEW / args.batch, DERIVED / f"review_{args.batch}_key.csv", seed + 1
+    pick = e.sample(args.count, random_state=seed).sort_values("entry_time")
     pick = pick.assign(review=range(1, len(pick) + 1))
     sessions, zones, offsets = es_context(s)
-    REVIEW.mkdir(parents=True, exist_ok=True)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    manifest = []
     for day, g in pick.groupby("day"):
         es = plan.loc[day, "es"]
         book = build_book(load_mbo(BOOK_DIR / f"{es}_{day}_mbo.dbn.zst"), int(et(day, "08:00")), int(et(day, "16:00")))
@@ -187,10 +200,14 @@ def main() -> None:
             side = "long" if r.direction == 1 else "short"
             title = f"#{r.review}  {es} {when:%a %d %b %Y, %H:%M:%S} ET: take this {side}? ({r.sources} test)"
             draw_review(book, trades, levels, r.entry_time, int(r.direction), r.entry_price * 0.25, title,
-                        REVIEW / f"review_{r.review:02d}.png")
+                        out_dir / f"review_{r.review:02d}.png")
+            manifest.append(dict(review=int(r.review), side=side, level=r.sources, contract=es,
+                                 when=f"{when:%a %d %b %Y, %H:%M} ET"))
             print("saved review", r.review, day, side, flush=True)
+    key_file.parent.mkdir(parents=True, exist_ok=True)
     pick[["review", "day", "entry_time", "direction", "sources", "edge", "points", "exit_how", "owner_points"]].to_csv(
-        REVIEW / "review_key.csv", index=False)
+        key_file, index=False)
+    pd.DataFrame(manifest).sort_values("review").to_json(out_dir / "charts.json", orient="records", indent=1)
 
 
 if __name__ == "__main__":
