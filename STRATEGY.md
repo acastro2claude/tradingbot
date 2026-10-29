@@ -59,7 +59,9 @@ How the owner draws them:
   - price starts chopping in it.
   - Price can come back, hang around the zone for a little while and then retest. But if it hangs around too long (over about an hour), the zone is probably no longer valid.
 
-Proposed defaults for the bot (**TBD**, for the owner to confirm):
+**Owner (Oct 2026): the bot's zones below do not match how the owner marks zones, and the owner would not use any of them.** The zone criteria must be redefined with the owner before the bot can be tested again (**TBD**). Example of the bot's zones: `research/results/journal/zone_charts/`.
+
+Proposed defaults the bot used so far (**rejected by the owner**, kept for reference):
 
 - **Higher timeframe:** test 15-, 30- and 60-minute candles.
 - **The chop:** 3 or more candles in a row that all trade through one common price.
@@ -98,11 +100,17 @@ Proposed defaults for the bot (**TBD**, for the owner to confirm):
 
 ### Level strength
 
-A level ranks higher when the sources agree. Examples:
+**Owner (Oct 2026): supply and demand zones come first. POCs are supplementary.** Volume by price still matters a lot: it shows how participants are trading and what price they see as fair. But a POC never comes before a good supply or demand zone. So:
 
-- A recent uncovered POC (1e) that lines up with a supply or demand zone. This is how the owner trades now.
-- A POC cluster that overlaps a supply or demand zone.
-- A cluster that sits next to a long-term low-volume area.
+- **The trade level is a good supply or demand zone (1b).**
+- **POCs and the volume profile add weight** when they line up with the zone, and help pick targets and checkpoints. They also help judge where participants see fair value.
+- **A POC on its own is not a trade level.** The earlier level sources (POC clusters, recent uncovered POCs on their own) are now context only.
+
+Examples, strongest first:
+
+- A good supply or demand zone with a recent uncovered POC (1e) inside it.
+- A good supply or demand zone on its own.
+- A good zone next to a long-term low-volume area.
 
 ## 2. Entries: absorption at the level
 
