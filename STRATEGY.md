@@ -54,6 +54,7 @@ How the owner draws them:
 - **Sharp move:** there's no set size. Roughly, it's at least double the size of the last candle in the chop.
 - **Chart:** zones hold up better when drawn on a higher-timeframe chart.
 - **Lookback:** zones from up to about a month back.
+- **Untested zones from earlier days and weeks count (owner, Oct 2026).** A zone stays live until price comes back to test it. Looking only at zones made within the day misses most of them. **TBD:** whether a zone is done after its first test, or after how many.
 - **When a zone stops counting:**
   - price blows past it, or
   - price starts chopping in it.
