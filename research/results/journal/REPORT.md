@@ -365,6 +365,26 @@ The 4th-and-later trades came only about 25 minutes later than the first three (
 - Inside vs outside the opening range: 27% vs 21% in 2024 ES, 25% vs 25% in 2026 MES.
 - The pattern belongs to the owner's own choices. The bot only trades the coded read, which has no edge at any time of day.
 
+## 11. The journal over time: the disciplined period (`journal_by_quarter.csv`, Oct 2026)
+
+Owner: "earlier in 2024 I did not have as much discipline; around 2025 it is more the case."
+Code: `research/journal_periods.py`.
+
+| Quarter | Days | Trades/day | Win rate | Avg win / loss (pts) | Net $ | $/trade | Profit factor |
+|---|---|---|---|---|---|---|---|
+| 2024 Q1 | 36 | 3.9 | 37% | 2.8 / −1.8 | −1,524 | −10.88 | 0.83 |
+| 2024 Q2 | 48 | 3.3 | 41% | 4.2 / −2.0 | +3,314 | +20.71 | 1.30 |
+| 2024 Q3 | 30 | 3.7 | 30% | 5.8 / −2.1 | +1,275 | +11.38 | 1.15 |
+| 2024 Q4 | 30 | 2.7 | 28% | 7.6 / −2.7 | +1,854 | +22.89 | 1.19 |
+| 2025 Q1 | 6 | 3.3 | 25% | 18.2 / −4.3 | +390 | +19.50 | 1.40 |
+
+- **Q1 2024 was the learning period:** quick scalps averaging 2.8 points, −$1,524.
+- **From Q2 2024 on:** 373 trades, +$6,833 (+$18.32 per trade), profitable every quarter. Fewer trades a day by Q4, and the average win grew to 7.6 points (18 points in the six days of 2025): letting winners run.
+- **Early entries inside the 09:30–09:45 range lost in every quarter** (−$598 to −$1,115 each), so that pattern isn't a leftover from the undisciplined months.
+- **Near a marked level** (a recent uncovered POC or a 15-minute zone, within 2 points), from Q2 2024 on: 48 trades, 38% win, +1.70 points per contract, +$3,542. That's more than half the period's profit. The other 323 trades averaged +0.24 points.
+- **That near-level edge is not proven.** The difference has a 95% range of −0.24 to +3.48 points, three runners of 12.75–23 points carry part of it (+0.66 without them), and in Q1 2024 near-level trades did worse (−0.42).
+- **What this means:** treat Q2 2024 onward as the reference for how the owner trades. That is fewer trades, more of them at marked levels, outside the opening range early in the day, and letting winners run. This matches STRATEGY.md's levels and runner targets. The six days of 2025 are too few to judge on their own.
+
 ## Caveats
 
 - The read is my translation of the owner's description. Every threshold above is a proposal, and the owner's eye may weigh things differently.
