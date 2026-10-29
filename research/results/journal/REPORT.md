@@ -510,6 +510,28 @@ The 2024 result was luck: the version that made money in 2024 lost $11,036 in 20
 
 **What it means.** The zones are right for the owner: their trades there do better. But no mechanical entry at the zones works, with any exit, read or year. The difference is in when and how the owner enters, which the bot does not yet copy.
 
+## 16. The zone bot on every day with charts, Feb 2024 – Oct 2026 (`zone_all_days_*.csv`, Oct 2026)
+
+The owner asked to stop judging changes on the same few days. So this test runs the zone bot on every regular session with 1-minute candles: 588 days with zone entries.
+
+- ES, Feb 2024 – Mar 2025, zones from the ES candles.
+- MES, Apr 2025 – Oct 2026, zones from the MES candles.
+- 2024 is where the zone rules were built; 2025–2026 are unseen.
+
+The bot works on 1-minute candles: a zone test, entry on the first close 1 point off the test's extreme within 5 minutes, one trade at a time, up to 3 a day.
+
+| Exit | Trades | Winners | Random entries | Per trade | Net | Months up |
+|---|---|---|---|---|---|---|
+| 2-pt stop, 4-pt target | 1,369 | 27.3% | 27.7% | −$39 | −$53,938 | 2 of 33 |
+| 3-pt stop, 7-pt target | 1,342 | 25.2% | 27.1% | −$46 | −$61,416 | 3 of 33 |
+| Stop 3 past the zone edge, target 2x | 1,282 | 28.8% | (coin flip 33%) | −$55 | −$70,459 | 4 of 33 |
+
+- The same in every year: with 2/4, 27.1% winners in 2024, 28.7% in 2025 and 25.8% in 2026, against about 28% random.
+- No quarter, type of day, gap or zone timeframe turns it into a winner. Trend vs range days, high vs low volatility, gap vs no gap: everything stays within a few points of random.
+- A few quarters are near break-even (2024 Q4, 2025 Q3), but they don't repeat.
+
+**What it means.** This is the result the owner warned about, confirmed on all the data: a mechanical entry at the zones does not work in any condition. It is not a matter of tuning on the wrong days. The owner's trades near zones do better, so the edge is in the owner's read and timing at the zone, which the bot's rules don't capture.
+
 ## Caveats
 
 - The read is my translation of the owner's description. Every threshold above is a proposal, and the owner's eye may weigh things differently.

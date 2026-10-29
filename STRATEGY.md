@@ -354,6 +354,15 @@ Every number below is an adjustable setting. The defaults come from this spec.
   This is not part of the first version.
 - **Add to the position on a weak retest:** after an early entry, add when the retest confirms the trade (less volume at the level, CVD lower high).
 
+## How changes are tested
+
+**Owner (Oct 2026):** "each day is different. If we keep comparing changes against the same days we are only trying to optimize for certain days, and not trying to generalize the strategy in ALL conditions."
+
+- Judge every change on all the days with data, not on a few fixed weeks: every session from Feb 2024 to Oct 2026 with 1-minute candles (588 days with zone entries).
+- Report results by year, by quarter and by type of day (trend or range, volatility, gap), so it shows whether a rule works in all conditions.
+- Rules are built on 2024. 2025 and 2026 stay unseen until a rule is fixed, and are only used to check it.
+- The order-book weeks (23 days of 2024) are for questions only the book can answer, never for picking rules.
+
 ## Build plan
 
 1. **Level study (Python):** using historical trades, answer three questions:
@@ -374,6 +383,7 @@ Every number below is an adjustable setting. The defaults come from this spec.
    - So the zone says where to look, and the order-flow read decides. Next: the book read at zone tests on the 23 ES days on hand. Details: `research/results/journal/REPORT.md` section 14.
    - **Order book at the zones (23 ES days of 2024):** no book read separates bounces from breaks at zone tests (117 entries; 21% winners vs 27% random with 2/4). One exit, the 3-point stop past the zone edge with the STRATEGY.md targets, made +$2,835 on 27 trades, mostly from two trades. The same version lost $11,036 on MES in Apr–Oct 2026 (164 trades, 2 of 7 months up). Every exit lost in 2026.
    - Only 7 of the owner's 43 trades near zones on those days line up with the bot's zone tests. The owner enters at other moments than "price comes back to the edge after being 5 points away". Details: REPORT.md section 15.
+   - **All days, Feb 2024 – Oct 2026 (588 sessions, 1-minute candles):** the zone bot matches random entries in every year, quarter and type of day. For example, 27% winners vs 28% random with 2/4, and only 2–4 of 33 months up. Details: REPORT.md section 16.
 
    **First look (Oct 2026, full MES book for the owner's 20 busiest journal days in 2024–2025, 163 trades):** the owner's entries came once price had already started their way. Compared with random moments that had the same move, the orders in the path of the trade were being pulled faster than they were added more often (51% vs 40%). Big resting lines next to the entry were rare, and on their own they did not hold price. None of the book readings tested separated winners from losers. These 20 days were also the owner's losing days (26% win rate, −$6,015), and the journal trades are mostly ES while this book is MES. Details: `research/results/journal/REPORT.md`.
 
