@@ -84,3 +84,25 @@ def test_candles_start_at_chicago_midnight():
     assert list(c["label"].dt.strftime("%H:%M")) == ["00:00", "04:00"]
     assert c["start"].iat[1] == pd.Timestamp("2024-08-15 09:00", tz="UTC").timestamp()
     assert c["start"].iat[0] == pd.Timestamp("2024-08-15 05:00", tz="UTC").timestamp()
+
+
+def _zone(tf, low, high, created, fresh_until):
+    return dict(timeframe=tf, low=low, high=high, created=created, fresh_until=fresh_until,
+                first_touch=fresh_until, broken=np.inf, expires=np.inf)
+
+
+def test_overlapping_zones_keep_the_higher_timeframe():
+    from research.zones import resolve_overlaps
+    z = pd.DataFrame([
+        _zone(240, 10, 20, 100, 500),     # 4h zone, fresh from 100 to 500
+        _zone(60, 15, 18, 200, 450),      # forms inside the fresh 4h zone: not marked
+        _zone(60, 12, 14, 50, 400),       # fresh 1h zone the 4h zone forms over at 100: ends there
+        _zone(60, 16, 19, 600, 700),      # forms after the 4h zone was used: kept
+        _zone(60, 30, 35, 10, 300),       # elsewhere: kept
+        _zone(60, 33, 40, 50, 310),       # same timeframe, over the earlier fresh zone: not marked
+    ])
+    out = resolve_overlaps(z).set_index(["timeframe", "low"])
+    assert sorted(out.index) == [(60, 12), (60, 16), (60, 30), (240, 10)]
+    assert out.loc[(60, 12), "fresh_until"] == 100
+    assert out.loc[(60, 12), "ended"] == "replaced by a higher timeframe"
+    assert out.loc[(60, 16), "ended"] == "tested"

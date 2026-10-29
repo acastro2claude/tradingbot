@@ -54,7 +54,8 @@ Source A and source B (1e, the owner's current method) are both tested. The data
   - Drop-base-drop (continuation, forms in downtrends) and rally-base-drop (reversal) leave a **supply zone**. Sell the first rally into it.
 - **Strong move away:** there's no set size. Roughly, it's at least double the size of the last candle in the base.
 - **Fresh zones:** the best zones are fresh and untested: price has not been back since it left. They hold the most waiting orders. Look from right to left on the chart to find them.
-- **Chart:** higher timeframes. The course uses 1-hour and 4-hour zones (also daily and weekly) and trades them from a lower-timeframe chart (for example a 1-hour supply zone on a 15-minute chart). The owner's example below is a 4-hour zone.
+- **Timeframes (owner, Oct 2026):** 4-hour, 2-hour, 1-hour, 30-minute and 15-minute. A zone that shows on a higher timeframe is usually stronger. The course also trades a higher-timeframe zone from a lower-timeframe chart (for example a 1-hour supply zone on a 15-minute chart). The owner's example below is a 4-hour zone.
+- **No overlapping zones (owner, Oct 2026):** avoid them. If a zone can be marked on both a lower-timeframe and a higher-timeframe chart, the higher-timeframe zone is the one that counts.
 - **Lookback:** zones from up to about a month back. Untested zones from earlier days and weeks count (owner, Oct 2026). Looking only at zones made within the day misses most of them.
 - **Stop and target (course):** the stop goes just past the zone ("proper risk above the zone" for a short). Take profits at the opposite zone (a long from demand takes profit at supply).
 - **When a zone stops counting:**
@@ -72,7 +73,7 @@ Source A and source B (1e, the owner's current method) are both tested. The data
 
 **How the bot draws them (proposed, TBD until the owner checks them on charts).** Code: `research/zones.py`. Settings: `[zones]`.
 
-- **Candles:** 1-hour and 4-hour, starting at midnight Chicago time like the owner's thinkorswim charts. A candle never spans two sessions.
+- **Candles:** the owner's five timeframes, starting at midnight Chicago time like the owner's thinkorswim charts. A candle never spans two sessions.
 - **Base:** 1 to 3 candles in a row that all trade through one common price.
 - **Move away:** one candle that:
   - has a body at least double every base candle's body (the owner's rule above),
@@ -84,8 +85,13 @@ Source A and source B (1e, the owner's current method) are both tested. The data
   - The move-away candle's wick is left out, because on a news candle it can be huge.
 - **Fresh:** until price first trades back to the near edge. A zone expires untested after 31 days.
 - **Broken:** a candle on the zone's timeframe closes beyond the far edge.
-- **On 2024 ES data:** about 3 four-hour zones and 9 one-hour zones a week.
-  - Median height is 16.5 points (4-hour) and 10 points (1-hour).
+- **Overlaps (the owner's rule):** two zones overlap when their price ranges share a tick while both are fresh.
+  - The higher timeframe wins. On the same timeframe, the earlier zone wins.
+  - A zone that would form over a winning fresh zone is not marked.
+  - A fresh lower-timeframe zone stops counting when a higher-timeframe zone forms over it. The lower one usually shows up first, while the higher one's base is still forming.
+- **On 2024 ES data:** about 40 zones a week across the five timeframes, after overlaps.
+  - Per week: 3 four-hour, 3 two-hour, 4.5 one-hour, 11.5 thirty-minute and 18 fifteen-minute.
+  - Median height in points: 16.5 (4-hour), 11.25 (2-hour), 8.5 (1-hour), 4.75 (30-minute), 3.25 (15-minute).
   - About 1 in 5 four-hour zones is taller than 30 points, usually because a news candle is in the base.
 - **Charts for the owner to check:** `research/results/journal/zone_charts/course_zones_*.png`.
 
@@ -280,7 +286,8 @@ Every number below is an adjustable setting. The defaults come from this spec.
 | Recent POC lookback (1e) | 5 sessions | |
 | Covered POC rule (1e) | Next session's value area | A POC inside it no longer counts |
 | Value area | 70% of the session's volume | |
-| Supply/demand timeframes (1b) | 1-hour and 4-hour | Proposed, TBD. Candles start at midnight Chicago time |
+| Supply/demand timeframes (1b) | 4h, 2h, 1h, 30m, 15m | Owner. Candles start at midnight Chicago time |
+| Overlapping zones | The higher timeframe wins | Owner. Same timeframe: the earlier zone wins |
 | Supply/demand lookback | 1 month | An untested zone expires after 31 days |
 | Base | 1–3 candles through one common price | Proposed, TBD |
 | Strong move away | Body at least 2× every base candle's body | Plus a range at least 1.5× the last 20 candles' average (proposed, TBD) |

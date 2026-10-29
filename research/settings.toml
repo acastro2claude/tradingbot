@@ -320,7 +320,8 @@ reference_start = "2024-04-01"   # the owner's disciplined period (owner, Oct 20
 [zones]
 # Supply and demand zones as the owner's course draws them (STRATEGY.md 1b, Oct 2026; research/zones.py).
 # Values marked proposed are TBD until the owner confirms them on charts.
-timeframes_minutes = [60, 240]    # proposed: 1-hour and 4-hour zones (course examples: 15-min charts trading 1-hour zones, 1h, 4h, daily, weekly)
+timeframes_minutes = [240, 120, 60, 30, 15]   # owner (Oct 2026): the valid timeframes, strongest first
+# Owner: avoid overlapping zones; where zones overlap, the higher timeframe wins (research/zones.py resolve_overlaps).
 candle_clock_tz = "America/Chicago"   # candles start at midnight Chicago time, like the owner's thinkorswim charts
 base_max_candles = 3              # proposed: a base is 1 to 3 candles sharing a common price (course examples: 1-2)
 leg_out_body_ratio = 2.0          # owner (STRATEGY 1b): the move-away candle's body is at least double every base candle's body

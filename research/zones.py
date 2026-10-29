@@ -16,6 +16,12 @@ A zone is fresh until price first trades back to its near edge (the first return
 trade). It is broken when a candle on its own timeframe closes beyond the far edge, and
 expires if price has not come back within max_age_days (owner: about a month).
 
+No overlapping zones (owner, Oct 2026): where zones overlap, the higher timeframe wins
+(4h > 2h > 1h > 30m > 15m). A zone that would form over a fresh zone of a higher (or the
+same) timeframe is not marked. A fresh lower-timeframe zone stops counting once a
+higher-timeframe zone forms over it (the lower one usually appears first, inside the
+higher one's base).
+
 Candles are aligned like the owner's thinkorswim charts: buckets from midnight Chicago
 time (a 4-hour chart has candles at 00, 04, 08, 12, 16 (17:00 open) and 20 CT), and a
 candle never spans two sessions. Prices are adjusted ticks (research.market_data), times
@@ -113,9 +119,37 @@ def zone_status(zones: pd.DataFrame, bars: pd.DataFrame, candles: dict[int, pd.D
     return z
 
 
+def resolve_overlaps(zones: pd.DataFrame) -> pd.DataFrame:
+    """Keep one zone per price area: the higher timeframe, then the earlier zone. Adds `ended`.
+
+    Needs fresh_until (zone_status). Two zones overlap when their price ranges share a tick
+    while both are fresh.
+    """
+    z = zones.sort_values(["timeframe", "created"], ascending=[False, True]).reset_index(drop=True)
+    lo, hi = z["low"].to_numpy(), z["high"].to_numpy()
+    tf, cr = z["timeframe"].to_numpy(), z["created"].to_numpy()
+    fu = z["fresh_until"].to_numpy().copy()
+    keep = np.zeros(len(z), bool)
+    replaced = np.full(len(z), np.inf)
+    for i in range(len(z)):
+        prev = np.nonzero(keep[:i])[0]                     # kept so far: higher timeframes, or same and earlier
+        prev = prev[(lo[prev] <= hi[i]) & (hi[prev] >= lo[i])]
+        if ((cr[prev] <= cr[i]) & (fu[prev] > cr[i])).any():
+            continue                                       # forms over a fresh zone that counts more
+        later = prev[(tf[prev] > tf[i]) & (cr[prev] > cr[i]) & (cr[prev] < fu[i])]
+        if len(later):
+            replaced[i] = fu[i] = cr[later].min()          # a higher-timeframe zone formed over it
+        keep[i] = True
+    z["fresh_until"] = fu
+    z["replaced"] = replaced
+    z["ended"] = np.select([fu == replaced, fu == z["first_touch"], fu == z["broken"], fu == z["expires"]],
+                           ["replaced by a higher timeframe", "tested", "broken", "expired"], "data ended")
+    return z[keep].sort_values("created").reset_index(drop=True)
+
+
 def all_zones(bars: pd.DataFrame, s: dict) -> tuple[pd.DataFrame, dict[int, pd.DataFrame]]:
-    """Zones on every timeframe in [zones] timeframes_minutes, with first touch and break times."""
+    """Zones on every timeframe in [zones] timeframes_minutes, overlaps resolved, with first touch and break times."""
     z = s["zones"]
     candles = {m: make_candles(bars, m, z["candle_clock_tz"]) for m in z["timeframes_minutes"]}
     found = pd.concat([find_zones(candles[m], m, z) for m in z["timeframes_minutes"]], ignore_index=True)
-    return zone_status(found, bars, candles, z["max_age_days"]), candles
+    return resolve_overlaps(zone_status(found, bars, candles, z["max_age_days"])), candles
