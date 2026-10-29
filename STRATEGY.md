@@ -95,7 +95,7 @@ Source A and source B (1e, the owner's current method) are both tested. The data
 - 15-minute 5377 demand (13 Aug): no basing candle, no rally.
 - The other 30-minute and 15-minute zones looked good (a quick look, not zone by zone).
 
-**How the bot draws them (proposed, TBD until the owner checks them).** Code: `research/zones.py`. Settings: `[zones]`.
+**How the bot draws them.** The owner reviewed the charts and said the rest look good (Oct 2026). Values marked proposed stay open to change. Code: `research/zones.py`. Settings: `[zones]`.
 
 - **Candles:** the owner's five timeframes, starting at midnight Chicago time like the owner's thinkorswim charts. A candle never spans two sessions.
 - **Basing candle:** the candle right before the move away: red before a rally, green before a drop (the owner's rule).
@@ -366,6 +366,12 @@ Every number below is an adjustable setting. The defaults come from this spec.
 
    **First results (Oct 2026, trades Apr–Oct 2026, regular hours):** absorption bursts point the right way slightly more often than random entries at the same time. The full setup (early or retest entry, stop 3 points past the level, the owner's targets, costs) still loses on every version tested. The best versions come out around break-even, and about 75–85% of trades are stopped out. The rules replay Example 1 correctly. Details: `research/results/step2/REPORT.md`.
 3. **Add the order book:** test the resting-order signals with historical book data.
+
+   **Zones, the owner's way (Oct 2026, ES 1-minute bars, Feb 2024 – Mar 2025).**
+   - The owner approved the zone charts.
+   - Entered blindly at the zone edge with the normal 3-point stop, zone tests do no better than random entries (38% winners either way). The same holds as whole areas (stop past the far edge).
+   - The owner's own trades near these zones made +$31 to +$40 per trade, against about break-even away from them. That is likely real but not proven.
+   - So the zone says where to look, and the order-flow read decides. Next: the book read at zone tests on the 23 ES days on hand. Details: `research/results/journal/REPORT.md` section 14.
 
    **First look (Oct 2026, full MES book for the owner's 20 busiest journal days in 2024–2025, 163 trades):** the owner's entries came once price had already started their way. Compared with random moments that had the same move, the orders in the path of the trade were being pulled faster than they were added more often (51% vs 40%). Big resting lines next to the entry were rare, and on their own they did not hold price. None of the book readings tested separated winners from losers. These 20 days were also the owner's losing days (26% win rate, −$6,015), and the journal trades are mostly ES while this book is MES. Details: `research/results/journal/REPORT.md`.
 

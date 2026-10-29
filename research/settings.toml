@@ -339,3 +339,17 @@ chop_invalid_candles = 4          # proposed: inside for 4 candles of the zone's
 # far edge = the wick of the basing and move-away candles.
 # Broken when a candle on the zone's timeframe closes beyond the far edge (proposed).
 # Stop: the normal stop rules (owner: even when the zone is big), not past the zone.
+
+[zone_study]
+# How price behaves at the owner-style zones (research/zone_study.py). Analysis settings, not bot settings.
+period_start = "2024-02-01"        # zones need a few weeks of history first
+reference_start = "2024-04-01"     # the owner's disciplined period (also [journal_rules])
+entry_from_et = "09:30"            # zone tests counted in regular hours only, like the earlier studies
+last_entry_et = "15:30"
+flat_et = "15:59"
+near_points = 3.0                  # an owner trade is "at a zone" up to 3 points outside its near edge ([owner_rules] near_level_points)
+far_points = 1.0                   # ...or up to 1 point past its far edge
+random_per_day = 50                # random entries per day for the baseline
+exits = [[3.0, 4.0], [3.0, 7.0]]   # stop / target in points from the fill (owner: the normal stop is 3 points past the level)
+hold_stop_past_far_points = 1.0    # diagnostic only: does the zone hold as an area? stop 1 point past the far edge...
+hold_targets_x_risk = [1.0, 2.0]   # ...targets 1x and 2x that risk (the owner keeps the normal stop; this is not a bot rule)

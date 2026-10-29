@@ -445,6 +445,39 @@ The owner shared the supply and demand course they follow (rally-base-rally, dro
   - With these rules the bot matches all 9 of the owner's verdicts so far: 2 valid and 7 rejected zones. About 16 zones a week.
 - **Not tested yet:** how often first returns hold. That waits until the owner confirms the zones look right on the charts.
 
+## 14. How price behaves at the owner-style zones (`zone_study_*.csv`, Oct 2026)
+
+The owner approved the zone charts (Oct 2026). This tests the zones on ES 1-minute bars, Feb 2024 – Mar 2025 (no new data).
+
+**1. The owner's own trades (journal, `zone_study_owner_summary.csv`).** A trade counts as near a zone when its entry is inside a live zone, within 3 points of its near edge or 1 point of its far edge.
+
+| Trades | All journal | Disciplined period (Apr 2024 on) |
+|---|---|---|
+| At a zone, going its way (long at demand, short at supply) | 89 trades, +$31 each, +$2,769 | 65 trades, +$32 each, +$2,048 |
+| Into a zone, against it | 70 trades, +$31 each, +$2,203 | 46 trades, +$51 each, +$2,346 |
+| Away from zones | 303 trades, −$3 each, −$846 | 212 trades, +$5 each, +$1,157 |
+
+- Most of the owner's profit came from trades near the bot's zones.
+- The gap, near minus away, is +$34 per trade; its 95% range is −$4 to +$74 (disciplined period: −$16 to +$86). Likely real, not proven.
+- By timeframe, trades at 1-hour and 30-minute zones did best (+$66 and +$55 per trade), 15-minute and 2-hour zones lost. These are small samples (8–31 trades each).
+- Tests 1–3: +$37 per trade (74 trades). Test 4 or later: +$4 (15 trades). This agrees with the owner's "4+ retests, on its way out", but the sample is tiny.
+
+**2. Every zone test entered blindly (`zone_study_summary.csv`).** A limit order at the near edge, the owner's normal 3-point stop, regular hours, 951 tests on 265 days.
+
+- Stop 3 / target 4: 38.4% winners vs 38.2% for random entries on the same days. That is −$36 per trade, the same as random.
+- Stop 3 / target 7: 27.4% vs 27.0%.
+- No timeframe, test number, pattern or side beats random. 4-hour zones did worst (31% vs 38%).
+
+**3. Do zones hold as an area? (`zone_study_hold.csv`).** This is a check, not a bot rule: the stop goes 1 point past the far edge, the target is 1× or 2× that risk, and each test is compared with a random entry using the same distances.
+
+- 1× the risk: 44.5% vs 46.4% random.
+- 2× the risk: 32.2% vs 34.8% random.
+- First tests: 47.9% vs 44.4% at 1×, not significant.
+
+**What it means.** On their own, the zones don't make price turn: entered blindly, they do no better than random, as the POC study found. But the owner's trades near them made most of the money. The zones mark where to look; the order-flow read at the zone decides the trade.
+
+**Next (no new data needed):** read the order book at every zone test on the 23 ES days on hand. Check whether stacking, absorption or delta separate the bounces from the breaks, and compare the bot with the owner on those weeks, using the zones as the levels.
+
 ## Caveats
 
 - The read is my translation of the owner's description. Every threshold above is a proposal, and the owner's eye may weigh things differently.
