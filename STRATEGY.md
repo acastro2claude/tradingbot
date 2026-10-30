@@ -309,14 +309,25 @@ Low-volume days produce smaller moves, so the bot takes less risk on them.
 - **Protective orders:** send the stop and the first target as soon as the entry fills, so the trade stays protected if the bot or the computer goes down. Check that the stop is held by the broker or the exchange, not only by NinjaTrader on the computer.
 - **End of day:** close any open trade at **16:50 ET**, 10 minutes before the 17:00 ET session close. No new entries after **16:30 ET**. On holiday early-close days, the same rules apply relative to the early close.
 - **Major news:** no new entries from **15 minutes before to 30 minutes after** a major release. Close an open trade **5 minutes before** the release, because stops can slip badly when the numbers come out.
-  - **Owner (Oct 2026, blind review):** also no trade in the several minutes after any scheduled release, including the 10:00 ET reports (for example ISM, JOLTS and consumer confidence), when volume jumps. **TBD:** which reports count.
+  - **Owner (Oct 2026, blind review):** also no trade in the several minutes after any scheduled release, including the 10:00 ET reports, when volume jumps.
+  - **Which reports (owner, 30 Oct 2026):**
+    - CPI
+    - employment and jobs reports
+    - PMI
+    - job openings
+    - Fed decisions (whole day off, below)
+  - **My reading of that list (proposed):**
+    - Jobs: nonfarm payrolls (08:30 ET) and ADP (08:15), plus weekly jobless claims (08:30 Thursdays).
+    - PMI: ISM manufacturing and services (10:00).
+    - Job openings: JOLTS (10:00).
   - **Owner (30 Oct 2026):** skip only around the time of the news, not the whole day. Trade again once volume settles down, usually 30 minutes to an hour after the release; "then price tends to act rationally again."
     - **Proposed (TBD):** after the first 30 minutes, entries resume once the last 5 minutes' volume is back under 1.5× normal for that time of day (the average of the last 20 sessions), and at the latest 60 minutes after the release.
-  - **Journal check (Oct 2026):** skipping entries in the 10 minutes after a news volume spike (08:30, 10:00 or 14:00 ET minute at 3× or more the 10 minutes before) would have added +$1,309 to the owner's 2024–25 journal, in both halves. Proposed default: 10 minutes after any such spike.
-- **Open:** no trades too soon after the 09:30 ET open (owner, Oct 2026 review). **TBD:** how long to wait.
-  - Default events: CPI, the jobs report (nonfarm payrolls) and Fed rate decisions.
   - **Fed decision days: no trading at all, the whole session** (owner, 30 Oct 2026: "those days are crazy"). In the owner's journal from Q2 2024 on, the 13 trades on Fed days came out about even (−$17), against +$19 a trade on other days.
-  - The bot reads release dates and times from a calendar file built from the official schedules (BLS and the Federal Reserve). The backtest skips the same windows.
+  - **Journal check (Oct 2026):** skipping entries in the 10 minutes after a news volume spike (08:30, 10:00 or 14:00 ET minute at 3× or more the 10 minutes before) would have added +$1,309 to the owner's 2024–25 journal, in both halves.
+  - **Calendar:** the bot reads release dates and times from a calendar file built from the official schedules (BLS, ISM, ADP and the Federal Reserve). The backtest skips the same windows.
+    - `research/news_calendar.csv` so far has only CPI, the jobs report and Fed dates for Apr–Oct 2026.
+    - The other reports, and 2024–2025, need adding before the next all-days test.
+- **Open:** no trades too soon after the 09:30 ET open (owner, Oct 2026 review). **TBD:** how long to wait.
 
 ## 5. Bot settings
 
@@ -332,7 +343,7 @@ Every number below is an adjustable setting. The defaults come from this spec.
 | No new entries after | 16:30 ET | |
 | Close open trade at | 16:50 ET | 10 minutes before the session close |
 | No entries before | 10:00 ET | Owner: "we don't trade the open". The owner skipped all 19 replay clips before 10:00. 10:00 proposed, TBD |
-| News events | CPI, jobs report, Fed decisions | Also the 10:00 ET releases such as ISM (proposed: the owner skipped 10:00 news spikes on the replay page). Owner: only the time around a release, not the whole day |
+| News events | CPI, employment and jobs reports, PMI, job openings, Fed decisions | Owner (30 Oct 2026). Read as: payrolls, ADP, weekly jobless claims, ISM manufacturing and services, JOLTS (proposed). Only the time around a release, not the whole day |
 | News blackout for entries | 15 min before to 30–60 min after | Owner: until volume settles, usually 30 min to an hour. Proposed: after 30 min, resume once 5-minute volume is under 1.5× normal for that time of day; at most 60 min |
 | Fed decision days | No trading at all | Owner: "those days are crazy" |
 | Close open trade before news | 5 min before the release | |

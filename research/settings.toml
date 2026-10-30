@@ -18,7 +18,10 @@ max_trades_per_day = 1
 daily_loss_limit_usd = 800
 no_new_entries_after_et = "16:30"
 close_open_trade_at_et = "16:50"
-news_events = ["CPI", "jobs report", "Fed decision"]
+# Owner (30 Oct 2026): CPI, employment and jobs reports, PMI, job openings, Fed decisions.
+# Read as (proposed): payrolls, ADP, weekly jobless claims, ISM manufacturing and services PMI, JOLTS.
+news_events = ["CPI", "jobs report", "ADP employment", "jobless claims", "ISM manufacturing PMI", "ISM services PMI",
+               "JOLTS job openings", "Fed decision"]
 news_blackout_before_min = 15
 news_blackout_after_min = 30     # at least this long
 no_trading_days = ["Fed decision"]        # owner (30 Oct 2026): no trading at all on Fed days, "those days are crazy"
