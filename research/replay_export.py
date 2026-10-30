@@ -15,7 +15,7 @@ date is not shown on the page.
 Writes data/derived/replay/tests/<id>.json (the clips, too big for git), the trades of each
 MES day to data/derived/replay_trades/ (for scoring the owner's entries later), and
 research/results/journal/replay_tests.csv (the list of tests, committed).
-Run from the repo root:   python -m research.replay_export
+Run from the repo root:   python -m research.replay_export      (--backfill-vwap: add the volume bubbles' prices to old clips)
 """
 
 from __future__ import annotations
@@ -63,6 +63,30 @@ def b64(a: np.ndarray) -> str:
     return base64.b64encode(np.ascontiguousarray(a).tobytes()).decode()
 
 
+def vwap_frames(f: np.ndarray, px: np.ndarray, sz: np.ndarray, n: int) -> list:
+    """Volume-weighted price per frame (price rows above price_lo, 2 decimals; -1 = no trades)."""
+    vol = np.bincount(f, weights=sz, minlength=n)[:n]
+    pv = np.bincount(f, weights=px * sz, minlength=n)[:n]
+    return [round(float(a / v), 2) if v > 0 else -1 for a, v in zip(pv, vol)]
+
+
+def backfill_vwap() -> None:
+    """Add the per-frame volume-weighted price to clips exported before it existed, from the saved trades."""
+    tests = pd.read_csv(OUT / "replay_tests.csv")
+    for r in tests.itertuples():
+        path = REPLAY_DIR / f"{r.id}.json"
+        c = json.loads(path.read_text())
+        src = (DERIVED / "es_weeks_trades" / f"{r.contract}_{r.day}.parquet" if r.market == "ES"
+               else TRADES_OUT / f"{r.contract}_{r.day}.parquet")
+        tr = pd.read_parquet(src)
+        t_a, fs, n = c["start_epoch"], c["frame_seconds"], c["frames"]
+        tr = tr[(tr["t"] >= t_a) & (tr["t"] < t_a + n * fs)]
+        f = ((tr["t"] - t_a) // fs).astype(int).to_numpy()
+        c["vwap"] = vwap_frames(f, tr["price"].to_numpy().astype(np.int64) - c["price_lo"], tr["size"].to_numpy(), n)
+        path.write_text(json.dumps(c, separators=(",", ":")))
+    print("added vwap to", len(tests), "clips")
+
+
 def clip(book, typ: float, bursts: pd.DataFrame, x, meta: dict, ctx_candles: pd.DataFrame, off: int, R: dict,
          bubble_min: float) -> dict:
     fs, half = R["frame_seconds"], int(round(R["half_range_points"] / 0.25))
@@ -88,6 +112,7 @@ def clip(book, typ: float, bursts: pd.DataFrame, x, meta: dict, ctx_candles: pd.
         if m.any():
             close[k], hi[k], lo[k] = px[m][-1], px[m].max(), px[m].min()
             bv[k], sv[k] = sz[m & buy].sum(), sz[m & ~buy].sum()
+    vwap = vwap_frames(f, px, sz, n)
     for k in range(1, n):                                      # carry the last price through quiet frames
         if close[k] < 0:
             close[k], hi[k], lo[k] = close[k - 1], close[k - 1], close[k - 1]
@@ -103,6 +128,7 @@ def clip(book, typ: float, bursts: pd.DataFrame, x, meta: dict, ctx_candles: pd.
         zone=dict(kind="demand" if x.direction == 1 else "supply", near=int(x.edge), lo=int(x.lo), hi=int(x.hi),
                   tf=meta["tf"], pattern=meta["pattern"], test=meta["zone_test"]),
         heat=b64(heat), close=close.tolist(), high=hi.tolist(), low=lo.tolist(), buy=bv.tolist(), sell=sv.tolist(),
+        vwap=vwap,
         bubbles=agg[["f", "p", "b", "v"]].astype(int).values.tolist(),
         bursts=[[int((b.time - t_a) // fs), int(b.price - p_lo), int(b.contracts), int(b.direction)] for b in bu.itertuples()],
         context=dict(start=c["start"].astype(int).tolist(), o=(c["open"] - off).astype(int).tolist(),
@@ -167,4 +193,5 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    import sys
+    backfill_vwap() if "--backfill-vwap" in sys.argv else main()

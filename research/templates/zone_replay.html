@@ -86,7 +86,7 @@ kbd { font: 0.78rem var(--mono); border: 1px solid var(--line); border-radius: 4
       <summary>What's on the screen</summary>
       <ul>
         <li>Heatmap: resting orders per price, brighter = bigger compared with the day's typical size. Bid below price, ask above.</li>
-        <li>White line: last price. Green bubbles: aggressive buying. Red bubbles: aggressive selling. Bigger = more contracts in 2 seconds.</li>
+        <li>White line: last price. Bubbles: all the volume traded every 2 seconds, at its average price, like Bookmap's volume dots. Bigger = more contracts. Green = buyers outweighed sellers (buyer delta), red = sellers outweighed buyers; the stronger the imbalance, the stronger the colour, and grey = about even.</li>
         <li>Diamonds: absorption bursts like your add-on (50+ ES or 100+ MES contracts at one price within 0.01 s). Purple = aggressive buyers absorbed by sellers (bearish). Yellow = aggressive sellers absorbed by buyers (bullish; green on your add-on). The size is written next to the bigger ones.</li>
         <li>Shaded band: the zone being tested (its timeframe and test number are on the right). Bottom panel: delta every 10 seconds and cumulative delta.</li>
         <li>The small chart on the right: 15-minute candles of the last sessions up to the start of the clip, with the zone.</li>
@@ -227,6 +227,15 @@ function drawHeat() {
   for (let m = Math.ceil(t0 / 60) * 60; m < t1; m += 60) {
     const x = sx((m - t0) / clip.frame_seconds); g.strokeStyle = css("--screen-grid"); g.beginPath(); g.moveTo(x, 0); g.lineTo(x, h); g.stroke();
     if (m % every === 0 && x < pw - 44) { g.fillStyle = css("--screen-muted"); g.fillText(etHm.format(new Date(m * 1000)), x + 2, h - 14); } }
+  // volume bubbles, like Bookmap: all volume every frame at its average price; size = volume, colour = delta
+  if (!clip.volRef) { const vols = clip.buy.map((b, k) => b + clip.sell[k]).filter(v => v > 0).sort((a, b) => a - b);
+    clip.volRef = vols.length ? vols[Math.floor(vols.length * 0.98)] : 1; }
+  for (let k = 0; k <= p; k++) { const v = clip.buy[k] + clip.sell[k]; if (!v || !clip.vwap || clip.vwap[k] < 0) continue;
+    const r = 1.5 + 13 * Math.sqrt(Math.min(v / clip.volRef, 1.6));
+    const imb = (clip.buy[k] - clip.sell[k]) / v, m = Math.pow(Math.abs(imb), 0.7), base = imb >= 0 ? [40, 210, 130] : [255, 85, 85];
+    const col = base.map(c => Math.round(150 + (c - 150) * m));
+    g.beginPath(); g.arc(sx(k + 0.5), sy(clip.vwap[k]), r, 0, Math.PI * 2);
+    g.fillStyle = `rgba(${col[0]},${col[1]},${col[2]},0.6)`; g.fill(); }
   // price: high-low ticks and the last-price line
   g.strokeStyle = "rgba(220,230,240,0.35)"; g.lineWidth = 1;
   for (let k = 0; k <= p; k++) { if (clip.high[k] < 0) continue; const x = sx(k + 0.5);
@@ -235,11 +244,6 @@ function drawHeat() {
   for (let k = 0; k <= p; k++) { if (clip.close[k] < 0) continue; const x = sx(k + 0.5), y = sy(clip.close[k]);
     if (!started) { g.moveTo(x, y); started = true; } else g.lineTo(x, y); }
   g.stroke();
-  // trade bubbles
-  for (const [f, j, b, v] of clip.bubbles) { if (f > p) continue;
-    const r = Math.max(2.5, Math.min(18, Math.sqrt(v) * (clip.market === "ES" ? 1.6 : 0.8)));
-    g.beginPath(); g.arc(sx(f + 0.5), sy(j), r, 0, Math.PI * 2);
-    g.fillStyle = b ? "rgba(40,210,130,0.55)" : "rgba(255,85,85,0.55)"; g.fill(); }
   // absorption bursts
   g.font = `600 10px ${css("--mono") || "monospace"}`; g.textBaseline = "middle";
   for (const [f, j, c, dir] of clip.bursts) { if (f > p) continue; const x = sx(f + 0.5), y = sy(j), r = 6;
