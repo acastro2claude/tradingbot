@@ -593,7 +593,11 @@ The bot works on 1-minute candles: a zone test, entry on the first close 1 point
 | Took the trade | 24 | 58% | 24 hours | 25% | 21% |
 
 - The clearest difference is what price did **before** the zone formed. Most zones called invalid formed overnight, a few hours before the test, in an area price had traded through both ways in the previous two days.
-- **A display issue:** the context chart shaded the zone across all the days shown, including the days before the zone existed. So the owner may have read those earlier moves as price blowing through the zone. Fixed: the shading now starts at the candle where the zone formed. Whether earlier price action should count is the owner's call (TBD).
+- **A display issue:** the context chart shaded the zone across all the days shown, including the days before the zone existed. The owner read those earlier moves as price blowing through or chopping in the zone. Fixed: the shading now starts at the candle where the zone formed.
+- **The owner's rule:** only what happens after the zone forms counts.
+  - 22 of the 56 invalid calls fit it: price went 1+ point past the far edge, or spent 30+ minutes inside, after the zone formed.
+  - 31 were judged on price action from before the zone formed. Those are on the page again for a second look (`replay_recheck.csv`, new clips r001–r031, shown first). When a test has two decisions, the second one counts.
+  - 3 have neither.
 - Time spent inside the zone does not separate the groups by this measure.
 - **The bot's entry by zone age** (102 clips, 4/10): zones 12+ hours old +$51 a trade (31 clips), younger zones −$77 (71 clips). This is a hint worth testing on all days, not a result.
 

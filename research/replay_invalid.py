@@ -13,7 +13,15 @@ already blew past this zone both up and down (previous day)", "demand zone above
   hours_old           hours from the zone forming to the test
 and compares the clips the owner called invalid, the other skips, and the trades.
 
-Writes research/results/journal/replay_invalid.csv. Run:   python -m research.replay_invalid
+Second look (--recheck): the page's context chart shaded each zone across the days before it
+existed (fixed 30 Oct 2026). The clips the owner called invalid where nothing happened after the
+zone formed (price never 1+ point past the far edge, under 30 minutes inside) but price had
+traded both sides of it before it formed were judged on that misleading chart. --recheck writes
+them, shuffled, to research/results/journal/replay_recheck.csv (new public ids r001 ...) for
+research.replay_page to show again. When a test has decisions from both rounds, the second
+look counts.
+
+Writes research/results/journal/replay_invalid.csv. Run:   python -m research.replay_invalid   (--recheck)
 """
 
 from __future__ import annotations
@@ -57,6 +65,7 @@ def main() -> None:
     clips = pd.read_csv(OUT / "replay_clip_ids.csv").merge(pd.read_csv(OUT / "replay_tests.csv"), on="id")
     d = dec.merge(clips, left_on="clip_id", right_on="public_id")
     d = d[d["decision"].isin(["long", "short", "skip", "unsure"])]
+    d = d.sort_values("round").drop_duplicates("id", keep="last")      # a second look replaces the first
     rows = []
     for r in d.itertuples():
         es = r.contract if r.market == "ES" else "ES" + r.contract[3:]
@@ -75,7 +84,7 @@ def main() -> None:
         c0, c1 = np.searchsorted(sess, first, "left"), np.searchsorted(t, z.formed, "left")
         both = bool(c1 > c0 and hi[c0:c1].max() >= z.high + 5 / tick and lo[c0:c1].min() <= z.low - 5 / tick)
         hour = pd.Timestamp(z.formed, unit="s", tz="UTC").tz_convert("America/New_York")
-        rows.append(dict(clip=r.clip_id, decision=r.decision, group=label(r.decision, r.note), tf=NAMES[z.timeframe],
+        rows.append(dict(clip=r.clip_id, test_id=r.id, decision=r.decision, group=label(r.decision, r.note), tf=NAMES[z.timeframe],
                          test=r.zone_test, through_after_pts=max(through, 0.0) if through == through else np.nan,
                          minutes_inside=inside, traded_both_before=both,
                          formed_overnight=not (9.5 <= hour.hour + hour.minute / 60 < 18),
@@ -94,5 +103,25 @@ def main() -> None:
     print(g.round(2).to_string())
 
 
+def recheck() -> None:
+    """The clips judged invalid only because of the old context chart, for a second look."""
+    path = OUT / "replay_recheck.csv"
+    if path.exists():
+        print("already written:", path)
+        return
+    s = load_settings()
+    x = pd.read_csv(OUT / "replay_invalid.csv")
+    x = x[x["clip"].str.startswith("c")]
+    after = (x["through_after_pts"] >= 1) | (x["minutes_inside"] >= 30)
+    pick = x[(x["group"] == "skipped: invalid zone") & ~after & x["traded_both_before"]]
+    order = np.random.default_rng(s["level_study"]["random_seed"] + 1).permutation(len(pick))
+    out = pick.iloc[order].reset_index(drop=True)
+    out = pd.DataFrame(dict(public_id=[f"r{k + 1:03d}" for k in range(len(out))], id=out["test_id"],
+                            first_look=out["clip"]))
+    out.to_csv(path, index=False)
+    print(len(out), "clips for a second look ->", path)
+
+
 if __name__ == "__main__":
-    main()
+    import sys
+    recheck() if "--recheck" in sys.argv else main()

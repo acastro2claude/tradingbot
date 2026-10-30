@@ -124,7 +124,7 @@ Source A and source B (1e, the owner's current method) are both tested. The data
   - Price already blew past the zone, often both ways ("previous day").
   - Demand with price trading below it, or supply with price above it.
   - Price hanging inside the zone too long.
-  - **TBD (question to the owner):** does price action from before the zone formed count? Most zones called invalid formed overnight, a few hours before the test, in an area price had traded through both ways in the previous two days (88% of them, vs 58% of the zones traded). The page's side chart shaded each zone across those earlier days too, as if it already existed (fixed).
+  - Only what happens **after** the zone forms counts (owner, Oct 2026). The page's side chart had shaded each zone across the days before it existed (fixed). 31 of the 56 invalid calls were judged on price action from before the zone formed; the owner is taking a second look at those on the fixed chart.
 - **On 2024 ES data:** about 16 zones a week across the five timeframes, after overlaps (40 before the basing-candle and chop rules).
   - Per week: 1.3 four-hour, 1.2 two-hour, 1.6 one-hour, 4.6 thirty-minute and 7 fifteen-minute.
   - Median height in points: 10.5 (4-hour), 10 (2-hour), 5.5 (1-hour), 3.75 (30-minute), 2.25 (15-minute).

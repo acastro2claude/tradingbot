@@ -70,6 +70,7 @@ def main() -> None:
     tests = pd.read_csv(OUT / "replay_tests.csv")
     d = dec.merge(ids, left_on="clip_id", right_on="public_id").merge(tests, on="id")
     d = d[d["decision"].isin(["long", "short", "skip", "unsure"])]
+    d = d.sort_values("round").drop_duplicates("id", keep="last")      # a second look replaces the first
     rows = []
     for (market, contract, day), g in d.groupby(["market", "contract", "day"]):
         dt, flat = load_day(market, contract, day), et(day, FLAT_ET)
