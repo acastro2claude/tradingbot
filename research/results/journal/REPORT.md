@@ -631,7 +631,7 @@ The bot works on 1-minute candles: a zone test, entry on the first close 1 point
 - **Still not proven either way.** The careful trades' +$30 a trade has a 95% range of roughly −$80 to +$140.
 - **More notes:**
   - Of 25 clips before 10:00 ET, the owner skipped 22. The 3 taken (09:30, 09:42 and 09:47) won 1.
-  - "News day" skips also came at 13:00 (11 Apr and 25 Sep 2024), not only at 10:00. Whether "news day" means the whole day or the time around a release is TBD.
+  - "News day" skips also came at 13:00 (11 Apr and 25 Sep 2024), not only at 10:00. The owner: skip only around the time of the news, then trade again once volume settles, usually 30 minutes to an hour later.
 
 ## Caveats
 
