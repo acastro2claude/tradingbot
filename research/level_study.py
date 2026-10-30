@@ -39,23 +39,29 @@ CONDITION_FILE = RAW / "GLBX_condition.json"
 
 # ---------------------------------------------------------------- inputs
 
-def degraded_dates(start: str, end: str) -> list[str]:
+def degraded_dates(start: str, end: str, cache: Path = CONDITION_FILE) -> list[str]:
     """Days Databento marks as reduced quality (free lookup, cached)."""
-    if not CONDITION_FILE.exists():
+    if not cache.exists():
         import requests
         resp = requests.get("https://hist.databento.com/v0/metadata.get_dataset_condition",
                             params=dict(dataset="GLBX.MDP3", start_date=start, end_date=end), timeout=60)
         resp.raise_for_status()
-        CONDITION_FILE.write_text(resp.text)
-    rows = json.loads(CONDITION_FILE.read_text())
+        cache.write_text(resp.text)
+    rows = json.loads(cache.read_text())
     return [r["date"] for r in rows if r["condition"] != "available"]
 
 
-def prepare(settings: dict):
-    """Front-contract bars, session table, and daily profiles on one price scale."""
+def prepare(settings: dict, bars_file: Path = BARS_FILE, symbology_file: Path = SYMBOLOGY_FILE,
+            period: tuple[str, str] | None = None, condition_cache: Path = CONDITION_FILE):
+    """Front-contract bars, session table, and daily profiles on one price scale.
+
+    Defaults to the level study's MES bars; pass other files (e.g. ES bars for
+    the journal) with their period and a separate condition cache.
+    """
     ls = settings["level_study"]
-    bars = load_bars(BARS_FILE, SYMBOLOGY_FILE, settings)
-    fb, sessions = build_sessions(bars, degraded_dates(ls["data_start"], ls["data_end"]), settings)
+    bars = load_bars(bars_file, symbology_file, settings)
+    start, end = period or (ls["data_start"], ls["data_end"])
+    fb, sessions = build_sessions(bars, degraded_dates(start, end, condition_cache), settings)
 
     pm = ProfileMatrix(list(sessions.index), fb["low_adj"].min(), fb["high_adj"].max())
     pocs, vals, vahs = [], [], []

@@ -46,29 +46,92 @@ Source A and source B (1e, the owner's current method) are both tested. The data
 
 ### 1b. Supply and demand zones
 
-How the owner draws them:
+**The owner's definition (Oct 2026).** The owner marks zones the way their supply and demand course teaches (slides and charts shared in Oct 2026). Supply is the same idea in reverse.
 
-- **What makes one:** an area where price hangs around (chops), then a sharp move away in one direction.
-  - A sharp move up leaves a **demand zone** below.
-  - A sharp move down leaves a **supply zone** above.
-- **Sharp move:** there's no set size. Roughly, it's at least double the size of the last candle in the chop.
-- **Chart:** zones hold up better when drawn on a higher-timeframe chart.
-- **Lookback:** zones from up to about a month back.
+- **What makes one:** a **base** (one or a few candles where price pauses, a balanced market), then a strong move away (an imbalance). Large orders were left unfilled in the base, and price tends to come back to it "to pick up the rest of the orders".
+- **The four patterns.** The move into the base gives the name; the move away gives the side:
+  - Rally-base-rally (continuation, forms in uptrends) and drop-base-rally (reversal) leave a **demand zone**. Buy the first pullback into it.
+  - Drop-base-drop (continuation, forms in downtrends) and rally-base-drop (reversal) leave a **supply zone**. Sell the first rally into it.
+- **Basing candle (owner, Oct 2026):** the candle right before the move away. It is red before a rally (demand) and green before a drop (supply). If the candle right before the rally is green, there is no basing candle and no zone.
+- **How the owner draws a zone (Oct 2026):** from the body of the basing candle to the wick. For supply, from the bottom of the green basing candle's body up to the upper wick (of the basing candle or the drop candle). For demand, from the top of the red basing candle's body down to the low wick. All zones are drawn this way.
+  - Example: the 22 Aug 2024 4-hour supply zone is 5645.50–5665.25 (Sep contract). 5645.50 is where the green basing candle opened (the candle before it closed there). 5665.25 is the drop candle's upper wick.
+  - Confirmed by the owner (Oct 2026): the zone starts at the basing candle's **open** on both sides. That is the bottom of a green candle's body for supply and the top of a red candle's body for demand, so the whole body is inside the zone. The 15 Aug 2024 demand zone is 5532.50–5550.75 on the owner's chart (5471.75–5490.00 Sep contract).
+- **Strong move away:** there's no set size. Roughly, it's at least double the size of the basing candle. If the basing candle's wicks are big and the next candle doesn't move much past it, it is not a zone (owner on the 19 Aug 2024 1-hour zone at 5593).
+- **Not every candle that moves away makes a zone (owner, Oct 2026).** When price is chopping in a range, those candles are chop, not zones.
+- **Fresh zones:** the best zones are fresh and untested: price has not been back since it left. They hold the most waiting orders. Look from right to left on the chart to find them.
+- **Timeframes (owner, Oct 2026):** 4-hour, 2-hour, 1-hour, 30-minute and 15-minute. A zone that shows on a higher timeframe is usually stronger. No daily zones: they are too big. The course also trades a higher-timeframe zone from a lower-timeframe chart (for example a 1-hour supply zone on a 15-minute chart). The owner's example below is a 4-hour zone.
+- **No overlapping zones (owner, Oct 2026):** avoid them. If a zone can be marked on both a lower-timeframe and a higher-timeframe chart, the higher-timeframe zone is the one that counts.
+- **Lookback:** zones from up to about a month back. Untested zones from earlier days and weeks count (owner, Oct 2026). Looking only at zones made within the day misses most of them.
+- **Retests (owner, Oct 2026):** a zone is still valid on retests, but like a level, the more retests, the less valid it gets. At 4 or more retests it is probably on its way out, unless the order book shows heavy pressure from the zone's side.
+  - **TBD:** what counts as "heavy pressure" on the order book.
+  - The bot counts the first return as test 1, so "on its way out" starts at test 4 (proposed reading).
+- **Stop (owner, Oct 2026):** the normal stop rules (section 3), even when the zone is big. The course puts the stop just past the zone; the owner does not.
+- **Target (course):** take profits at the opposite zone (a long from demand takes profit at supply).
 - **When a zone stops counting:**
   - price blows past it, or
   - price starts chopping in it.
   - Price can come back, hang around the zone for a little while and then retest. But if it hangs around too long (over about an hour), the zone is probably no longer valid.
 
-Proposed defaults for the bot (**TBD**, for the owner to confirm):
+**The owner's example (Oct 2026): a new 4-hour demand zone on ES, 14–15 Aug 2024.**
 
-- **Higher timeframe:** test 15-, 30- and 60-minute candles.
-- **The chop:** 3 or more candles in a row that all trade through one common price.
-- **Where the zone is drawn (owner's choice):** the body of the last chop candle before the sharp move, from its open to its close. That gives zones of about 1.5 points on 15-minute candles, 2 points on 30-minute and 3 points on 60-minute.
-  - The owner asked to use bigger zones if they work better. The level study compared four sizes (about 1.5 to 20 points) and none clearly worked better, so this drawing stays (see the level study report).
-- **Sharp move:** the next candle's range is at least 2× the last chop candle's range, and it closes beyond the chop.
-- **Blows past:** a candle on the zone's timeframe closes beyond the far side of the zone.
-- **Chops in it:** more than 60 minutes in a row with every 1-minute close inside the zone.
-- **Lines up with a POC:** the POC sits inside the zone.
+- Price rallied in small 4-hour candles on 14 Aug. It paused with a small red candle (Wed 14 Aug, 22:00–02:00 Pacific), then rallied 45 and 30 points in the next two candles.
+- The zone top is the open of that red candle: 5550.75 on the owner's thinkorswim chart, 5490.00 in the Sep 2024 contract. The owner's chart is back-adjusted, 60.75 points above the Sep contract. It shows Pacific time, with 4-hour candles starting at midnight Chicago time.
+- The bot's rules (below) find this zone at 5471.75–5490.00 (Sep contract). It is a test case in `tests/test_zones.py`.
+- First return: Thu 5 Sep 2024 at 12:16 ET, to exactly 5490.00. Price bounced 37 points in about 1.5 hours. It came back overnight and bounced 20 points again, then broke the zone on the 6 Sep jobs report.
+
+**The owner's verdicts on the bot's 4-hour zones, Aug–Sep 2024 (Oct 2026):**
+
+- 5368 demand: no basing candle (the base was green candles under a rally). It did bounce on a retest, "so maybe there is some merit".
+- 5431 supply: no basing candle.
+- The zones at the top of the late-August range: chop, not zones.
+- 5636 supply: the only one that is valid, because it held multiple retests. It should be drawn the owner's way: 5645.50–5665.25.
+
+**The owner's verdicts on the review page, week of 12–23 Aug 2024 (Oct 2026):**
+
+- 4-hour 5565 demand (19 Aug): no basing candle. The candle before the rally was green.
+- 2-hour 5630 supply (20 Aug): no base, then drop. The candle before the drop was red.
+- 1-hour 5593 demand (19 Aug): the basing candle's wick is too big, and the next candle didn't move enough (only 1.3× the basing candle).
+- 30-minute 5377 demand (13 Aug): no real rally (only 1.4× the basing candle).
+- 15-minute 5377 demand (13 Aug): no basing candle, no rally.
+- The other 30-minute and 15-minute zones looked good (a quick look, not zone by zone).
+
+**How the bot draws them.** The owner reviewed the charts and said the rest look good (Oct 2026). Values marked proposed stay open to change. Code: `research/zones.py`. Settings: `[zones]`.
+
+- **Candles:** the owner's five timeframes, starting at midnight Chicago time like the owner's thinkorswim charts. A candle never spans two sessions.
+- **Basing candle:** the candle right before the move away: red before a rally, green before a drop (the owner's rule).
+  - A doji (body at most 10% of its high-low range) also counts (proposed: 3 doji zones the owner glanced at and approved).
+- **Move away:** one candle that:
+  - is at least **1.5×** the basing candle's size, high to low. The owner said "roughly double"; 1.5× drops the two zones the owner said didn't move enough (1.3×, 1.4×) and keeps the 30m/15m zones they approved, several of which were 1.7–1.9× (proposed),
+  - has a range at least 1.5× the average of the last 20 candles (the owner's example: 2.7×), and
+  - closes beyond the basing candle.
+- **Not chop (proposed):** price must move at least **1.5× the zone's height** away from it before it first comes back; otherwise there is no zone. The bot only knows the zone from that moment.
+  - Under the earlier drawing, this rule separated the owner's verdicts: 5636 moved 1.8× its height away, and the chop zone at 5594 only 1.0×. Drawn the owner's way, 5636 moves 3.2×. 5594 no longer has a basing candle.
+- **Edges (the owner's drawing):**
+  - The near edge is the basing candle's open (owner, confirmed for both sides). For a doji, it is the body edge price comes back to first.
+  - The far edge is the wick: for demand, the lowest low of the basing and move-away candles; for supply, the highest high.
+  - These rules reproduce all 9 of the owner's verdicts so far (2 valid, 7 rejected). They are test cases in `tests/test_zones.py`.
+- **Tests:** price trades back to the near edge. A new test needs price to move away again by the zone's height (at least 5 points) first (proposed). From the 4th test, the zone is "on its way out".
+- **Ends:** whichever comes first:
+  - **Broken:** a candle on the zone's timeframe closes beyond the far edge.
+  - **Chopped in (proposed):** price closes inside the zone on every 1-minute bar for 4 candles of the zone's timeframe, counting trading minutes only. That is the owner's hour on 15-minute zones and 16 trading hours on 4-hour zones.
+    - Drawn the owner's way, the 5636 zone is 5645.50–5665.25. It no longer ends this way: it lives through its retests until a 4-hour candle closes above it on 19 Sep 2024.
+  - **Expired:** 31 days after it formed.
+- **Overlaps (the owner's rule):** two zones overlap when their price ranges share a tick while both still count.
+  - The higher timeframe wins. On the same timeframe, the earlier zone wins.
+  - A zone that would form over a winning zone is not marked.
+  - A lower-timeframe zone stops counting when a higher-timeframe zone forms over it. The lower one usually shows up first, while the higher one's base is still forming.
+- **Invalid zones (owner, replay page, Oct 2026):** the owner called 56 of 104 replayed zones invalid. Not yet in the bot's rules:
+  - Price already blew past the zone, often both ways ("previous day").
+  - Demand with price trading below it, or supply with price above it.
+  - Price hanging inside the zone too long.
+  - Only what happens **after** the zone forms counts (owner, Oct 2026). The page's side chart had shaded each zone across the days before it existed (fixed). 31 of the 56 invalid calls were judged on price action from before the zone formed. On the fixed chart the owner traded 11 of those 31 (+$47 a trade), and only 1 was still called invalid.
+- **On 2024 ES data:** about 16 zones a week across the five timeframes, after overlaps (40 before the basing-candle and chop rules).
+  - Per week: 1.3 four-hour, 1.2 two-hour, 1.6 one-hour, 4.6 thirty-minute and 7 fifteen-minute.
+  - Median height in points: 10.5 (4-hour), 10 (2-hour), 5.5 (1-hour), 3.75 (30-minute), 2.25 (15-minute).
+  - A zone gets 2 tests on average; 1 in 6 reaches 4 or more. Most zones end by breaking (89%).
+- **For the owner to check:** the interactive review page `research/results/journal/review/zones/index.html` (published as an artifact). Mark each zone valid or noise and note the missed ones. Static charts: `research/results/journal/zone_charts/course_zones_*.png`.
+
+**Rejected (Oct 2026):** the owner would not use any of the bot's earlier zones, which did not match how the owner marks zones. Those used 15-minute candles and a chop of 3 or more candles; the zone was the body of the last chop candle, and it was dead after an hour of chop. The code is kept in `research/supply_demand.py` for the earlier studies.
 
 ### 1c. Long-term volume profile
 
@@ -76,10 +139,12 @@ Proposed defaults for the bot (**TBD**, for the owner to confirm):
 - **Low-volume areas:** price is expected to move through these quickly.
 - The long-term POC and value area (the range holding about 70% of the volume) serve as extra levels and targets.
 
-### 1d. Resting-order lines (TBD)
+### 1d. Resting-order lines
 
 - In example 1, the reaction happened at a heatmap line of heavy resting orders (5540). After that day's gap down, the previous days' POCs were likely far above.
-- **TBD:** whether lines of large resting orders should count as levels.
+- **Owner (Oct 2026):** resting orders mean nothing unless they sit at or around a level already marked (POCs, supply and demand zones). Away from marked levels they are usually pulled before price gets there. So a line does not make a level on its own; it confirms a marked level.
+  - The order book data agrees: on the owner's busiest days, big lines anywhere near price did not hold price on their own (`research/results/journal/REPORT.md`).
+- **TBD:** how big an order must be to count as a line (Bookmap shades it dark relative to what's on screen), and how close to the marked level it must sit.
 
 ### 1e. Recent uncovered POCs (level source B: how the owner trades now)
 
@@ -96,11 +161,17 @@ Proposed defaults for the bot (**TBD**, for the owner to confirm):
 
 ### Level strength
 
-A level ranks higher when the sources agree. Examples:
+**Owner (Oct 2026): supply and demand zones come first. POCs are supplementary.** Volume by price still matters a lot: it shows how participants are trading and what price they see as fair. But a POC never comes before a good supply or demand zone. So:
 
-- A recent uncovered POC (1e) that lines up with a supply or demand zone. This is how the owner trades now.
-- A POC cluster that overlaps a supply or demand zone.
-- A cluster that sits next to a long-term low-volume area.
+- **The trade level is a good supply or demand zone (1b).**
+- **POCs and the volume profile add weight** when they line up with the zone, and help pick targets and checkpoints. They also help judge where participants see fair value.
+- **A POC on its own is not a trade level.** The earlier level sources (POC clusters, recent uncovered POCs on their own) are now context only.
+
+Examples, strongest first:
+
+- A good supply or demand zone with a recent uncovered POC (1e) inside it.
+- A good supply or demand zone on its own.
+- A good zone next to a long-term low-volume area.
 
 ## 2. Entries: absorption at the level
 
@@ -118,6 +189,44 @@ The bot copies the read currently done by eye in Bookmap. That read uses volume 
 - **Delta and CVD:** delta is aggressive buy volume minus aggressive sell volume. CVD (cumulative volume delta) is the running total of delta through the session. The bot compares the CVD highs (or lows) at the first test of a level and at the retest.
 - **Volume at the level on each test:** how much traded at and near the level the first time price reached it, compared with the retest.
 - **Order book:** the size of resting bids and asks at and near the level, and whether they refill after being hit.
+
+### The read in the owner's words (Oct 2026)
+
+Example: a long at a demand zone that has previous days' POCs inside it (a near-perfect setup). Mirror it for a short.
+
+1. The heatmap shows a line of large resting bids (dark) at the marked level.
+2. Price comes down to test it. Watch whether the bids get eaten, or whether even more resting bids join the book at the level.
+3. As the bids are being eaten, the volume delta starts to skew toward buyers. That adds conviction that price may reverse up.
+4. More conviction again with buyer absorption markers at those prices and more resting bids coming in to hold price.
+5. Then look for the long entry.
+
+**From the owner's answers on 12 blind review charts (Oct 2026):**
+- **Wait while the other side is still in control.** For a long, that means delta is still making new lows or sellers are still the aggressors (buyers, for a short). "Too soon to tell."
+- **Absorption:** a spike in aggressive buying (selling) at the level while price fails to push past it → short (long). Aggression without progress is absorption. Aggression with progress means that side is in control.
+- **Weaker retest:** price comes back to a level with less aggressive volume pushing into it than on the last attempt, and more resting orders on the far side → enter.
+- **Divergence in a range:** price at the previous high of the chop while delta makes a lower high → short toward the bottom of the chop (mirror for a long).
+- **Zone direction:** short at supply zones, long at demand zones. No long while price keeps failing below a supply zone.
+- **No trade** in chop with no clear movement.
+- **Targets:** the next POC, the far side of the chop, or about 3/4 of the way across today's value area (the 70% volume node).
+- **Continuation trades:** the owner also takes a retest of a chop zone in the direction of the move already made (delta rising, little aggression either way). This is not part of the bot's reversal setup. **TBD:** whether to add it.
+
+**From the replay page (24 trades and 77 skips, Oct 2026):**
+- Every trade was in the zone's direction.
+- Reasons to take a trade:
+  - CVD makes a higher low at demand (a lower high at supply) as price retests the zone.
+  - Absorption as price hits the zone, then the other side comes in.
+  - A weaker second push into the zone.
+  - Resting orders holding the line.
+- Reasons to skip:
+  - The zone is invalid (section 1b).
+  - The open ("we don't trade the open").
+  - News spikes.
+  - A "moving train" with nobody stopping it.
+  - Chop at the zone.
+  - Absorption without the other side coming in.
+
+- In 2024 the owner most likely watched the ES heatmap in Bookmap, even when trading MES.
+- The journal replay shows the entry usually comes once price has already started to turn (median 0.5 points in the trade's direction in the last 5 seconds).
 
 ### Setup (example: short after price rises into a level)
 
@@ -200,8 +309,25 @@ Low-volume days produce smaller moves, so the bot takes less risk on them.
 - **Protective orders:** send the stop and the first target as soon as the entry fills, so the trade stays protected if the bot or the computer goes down. Check that the stop is held by the broker or the exchange, not only by NinjaTrader on the computer.
 - **End of day:** close any open trade at **16:50 ET**, 10 minutes before the 17:00 ET session close. No new entries after **16:30 ET**. On holiday early-close days, the same rules apply relative to the early close.
 - **Major news:** no new entries from **15 minutes before to 30 minutes after** a major release. Close an open trade **5 minutes before** the release, because stops can slip badly when the numbers come out.
-  - Default events: CPI, the jobs report (nonfarm payrolls) and Fed rate decisions. On Fed days, the block lasts until the press conference ends.
-  - The bot reads release dates and times from a calendar file built from the official schedules (BLS and the Federal Reserve). The backtest skips the same windows.
+  - **Owner (Oct 2026, blind review):** also no trade in the several minutes after any scheduled release, including the 10:00 ET reports, when volume jumps.
+  - **Which reports (owner, 30 Oct 2026):**
+    - CPI
+    - employment and jobs reports
+    - PMI
+    - job openings
+    - Fed decisions (whole day off, below)
+  - **My reading of that list (proposed):**
+    - Jobs: nonfarm payrolls (08:30 ET) and ADP (08:15), plus weekly jobless claims (08:30 Thursdays).
+    - PMI: ISM manufacturing and services (10:00).
+    - Job openings: JOLTS (10:00).
+  - **Owner (30 Oct 2026):** skip only around the time of the news, not the whole day. Trade again once volume settles down, usually 30 minutes to an hour after the release; "then price tends to act rationally again."
+    - **Proposed (TBD):** after the first 30 minutes, entries resume once the last 5 minutes' volume is back under 1.5× normal for that time of day (the average of the last 20 sessions), and at the latest 60 minutes after the release.
+  - **Fed decision days: no trading at all, the whole session** (owner, 30 Oct 2026: "those days are crazy"). In the owner's journal from Q2 2024 on, the 13 trades on Fed days came out about even (−$17), against +$19 a trade on other days.
+  - **Journal check (Oct 2026):** skipping entries in the 10 minutes after a news volume spike (08:30, 10:00 or 14:00 ET minute at 3× or more the 10 minutes before) would have added +$1,309 to the owner's 2024–25 journal, in both halves.
+  - **Calendar:** the bot reads release dates and times from a calendar file built from the official schedules (BLS, ISM, ADP and the Federal Reserve). The backtest skips the same windows.
+    - `research/news_calendar.csv` so far has only CPI, the jobs report and Fed dates for Apr–Oct 2026.
+    - The other reports, and 2024–2025, need adding before the next all-days test.
+- **Open:** no trades too soon after the 09:30 ET open (owner, Oct 2026 review). **TBD:** how long to wait.
 
 ## 5. Bot settings
 
@@ -216,8 +342,10 @@ Every number below is an adjustable setting. The defaults come from this spec.
 | Session | 18:00–17:00 ET | Full Globex session |
 | No new entries after | 16:30 ET | |
 | Close open trade at | 16:50 ET | 10 minutes before the session close |
-| News events | CPI, jobs report, Fed decisions | |
-| News blackout for entries | 15 min before to 30 min after | Fed days: until the press conference ends |
+| No entries before | 10:00 ET | Owner: "we don't trade the open". The owner skipped all 19 replay clips before 10:00. 10:00 proposed, TBD |
+| News events | CPI, employment and jobs reports, PMI, job openings, Fed decisions | Owner (30 Oct 2026). Read as: payrolls, ADP, weekly jobless claims, ISM manufacturing and services, JOLTS (proposed). Only the time around a release, not the whole day |
+| News blackout for entries | 15 min before to 30–60 min after | Owner: until volume settles, usually 30 min to an hour. Proposed: after 30 min, resume once 5-minute volume is under 1.5× normal for that time of day; at most 60 min |
+| Fed decision days | No trading at all | Owner: "those days are crazy" |
 | Close open trade before news | 5 min before the release | |
 | POC lookback | 20 sessions | |
 | POC cluster width | TBD | |
@@ -225,12 +353,20 @@ Every number below is an adjustable setting. The defaults come from this spec.
 | Recent POC lookback (1e) | 5 sessions | |
 | Covered POC rule (1e) | Next session's value area | A POC inside it no longer counts |
 | Value area | 70% of the session's volume | |
-| Supply/demand chart timeframe | TBD | Study tests 15, 30 and 60 minutes |
-| Supply/demand lookback | 1 month | |
-| Chop before the move | 3+ candles through one common price | Proposed, TBD |
-| Zone drawn from | Body of the last chop candle | Open to close of the candle before the sharp move |
-| Sharp move size | 2× the last chop candle | |
-| Zone invalid after chopping in it | 60 minutes | Also invalid when a candle closes beyond the far side |
+| Supply/demand timeframes (1b) | 4h, 2h, 1h, 30m, 15m | Owner. No daily (too big). Candles start at midnight Chicago time |
+| Overlapping zones | The higher timeframe wins | Owner. Same timeframe: the earlier zone wins |
+| Supply/demand lookback | 1 month | An untested zone expires after 31 days |
+| Base | 1–3 candles through one common price | Proposed, TBD |
+| Strong move away | Body at least 2× every base candle's body | Plus a range at least 1.5× the last 20 candles' average (proposed, TBD) |
+| Zone edges | Near edge = base bodies, far edge = base wicks | Course charts and the owner's example |
+| Basing candle | The candle right before the move: red (demand) or green (supply) | Owner. A doji also counts (proposed) |
+| Move-away size | At least 1.5× the basing candle, high to low | Owner said roughly double. 1.5× proposed |
+| Zone drawn | Basing candle's body (its open) to the wick | Owner |
+| Not chop | Price moves 1.5× the zone's height away before it first comes back | Proposed, TBD |
+| Zone tests | Valid on retests; from the 4th test only with heavy order-book pressure | Owner. "Heavy pressure" TBD |
+| Zone broken | A candle on its timeframe closes beyond the far edge | Proposed |
+| Zone invalid after chopping in it | 4 candles of the zone's timeframe | Owner said about an hour (= 4 on 15m). Proposed, TBD for big zones |
+| Stop at a zone | Normal stop rules (section 3) | Owner: even when the zone is big |
 | Long-term profile window | 3 months | Backtest compares 1, 3 and 6 months |
 | Absorption burst | 100 contracts in 0.01 s | Matches the Bookmap add-on |
 | Absorption hold check | TBD | Price stays within X ticks for Y seconds |
@@ -254,6 +390,15 @@ Every number below is an adjustable setting. The defaults come from this spec.
   This is not part of the first version.
 - **Add to the position on a weak retest:** after an early entry, add when the retest confirms the trade (less volume at the level, CVD lower high).
 
+## How changes are tested
+
+**Owner (Oct 2026):** "each day is different. If we keep comparing changes against the same days we are only trying to optimize for certain days, and not trying to generalize the strategy in ALL conditions."
+
+- Judge every change on all the days with data, not on a few fixed weeks: every session from Feb 2024 to Oct 2026 with 1-minute candles (588 days with zone entries).
+- Report results by year, by quarter and by type of day (trend or range, volatility, gap), so it shows whether a rule works in all conditions.
+- Rules are built on 2024. 2025 and 2026 stay unseen until a rule is fixed, and are only used to check it.
+- The order-book weeks (23 days of 2024) are for questions only the book can answer, never for picking rules.
+
 ## Build plan
 
 1. **Level study (Python):** using historical trades, answer three questions:
@@ -266,6 +411,34 @@ Every number below is an adjustable setting. The defaults come from this spec.
 
    **First results (Oct 2026, trades Apr–Oct 2026, regular hours):** absorption bursts point the right way slightly more often than random entries at the same time. The full setup (early or retest entry, stop 3 points past the level, the owner's targets, costs) still loses on every version tested. The best versions come out around break-even, and about 75–85% of trades are stopped out. The rules replay Example 1 correctly. Details: `research/results/step2/REPORT.md`.
 3. **Add the order book:** test the resting-order signals with historical book data.
+
+   **Zones, the owner's way (Oct 2026, ES 1-minute bars, Feb 2024 – Mar 2025).**
+   - The owner approved the zone charts.
+   - Entered blindly at the zone edge with the normal 3-point stop, zone tests do no better than random entries (38% winners either way). The same holds as whole areas (stop past the far edge).
+   - The owner's own trades near these zones made +$31 to +$40 per trade, against about break-even away from them. That is likely real but not proven.
+   - So the zone says where to look, and the order-flow read decides. Next: the book read at zone tests on the 23 ES days on hand. Details: `research/results/journal/REPORT.md` section 14.
+   - **Order book at the zones (23 ES days of 2024):** no book read separates bounces from breaks at zone tests (117 entries; 21% winners vs 27% random with 2/4). One exit, the 3-point stop past the zone edge with the STRATEGY.md targets, made +$2,835 on 27 trades, mostly from two trades. The same version lost $11,036 on MES in Apr–Oct 2026 (164 trades, 2 of 7 months up). Every exit lost in 2026.
+   - Only 7 of the owner's 43 trades near zones on those days line up with the bot's zone tests. The owner enters at other moments than "price comes back to the edge after being 5 points away". Details: REPORT.md section 15.
+   - **The owner's risk structure (Oct 2026):** "a 4 point stop loss, but let winners run to about 10-12 points depending on market conditions (mostly meaning delta is heavily continuing in our direction, and aggressive buyers/sellers are still moving the same direction)."
+     - The owner's journal (Apr 2024 on): 34% winners, average win 5.8 points, average loss 2.3.
+     - Tested on all days and on 2026 tick data, the zone bot still loses with 4/10, 4/12 and the delta-based 10-or-12 exit (24–25% winners, about 31% needed). Random entries with the same exits lose too: the exits multiply an edge in the entries but cannot create one. Details: REPORT.md section 17.
+   - **Replay page (Oct 2026, 104 clips of zone tests, date hidden):**
+     - The owner took 24 trades, all in the zone's direction: 38% winners, +$25 per trade with 4/10 (+$602), +$32 with the 10-or-12 hold.
+     - The bot's own entry on the same clips: −$7 per trade. On the 75 clips the owner skipped: −$50. Random entries on the clips the owner took: −$22.
+     - Most of the difference is which clips the owner takes. The owner's entry price was also about 1 point better than the bot's.
+     - 24 trades don't prove it (95% range −$111 to +$161 per trade).
+     - Most skips (56 of 77) were "invalid zone". Details: REPORT.md section 18.
+     - **All 155 clips (second sitting, 30 Oct):** 59 trades, 31% winners, −$15 per trade.
+       - The trades decided carefully, with notes, made +$30 per trade (38 trades). That includes +$47 on 11 zones first called invalid because of the chart bug.
+       - The last 45 clips were decided quickly, without notes: −$98 per trade on 21 trades. Those clips were also hard for the bot's entry (10% winners).
+       - Not proven either way.
+   - **All days, Feb 2024 – Oct 2026 (588 sessions, 1-minute candles):** the zone bot matches random entries in every year, quarter and type of day. For example, 27% winners vs 28% random with 2/4, and only 2–4 of 33 months up. Details: REPORT.md section 16.
+
+   **First look (Oct 2026, full MES book for the owner's 20 busiest journal days in 2024–2025, 163 trades):** the owner's entries came once price had already started their way. Compared with random moments that had the same move, the orders in the path of the trade were being pulled faster than they were added more often (51% vs 40%). Big resting lines next to the entry were rare, and on their own they did not hold price. None of the book readings tested separated winners from losers. These 20 days were also the owner's losing days (26% win rate, −$6,015), and the journal trades are mostly ES while this book is MES. Details: `research/results/journal/REPORT.md`.
+
+   **ES book, five whole weeks of 2024 (Oct 2026, 23 days):** the owner's read was coded as a bot (marked level, line at the level, eaten and stacking, delta, absorption, entry on a 1-point turn; 2-point stop, 4-point target, 1 tick slippage). Over 221 level tests, no version reached break-even (about 40% wins needed). POC tests did best at 28% wins. The full read won 20% (25 tests). Over the same days, the owner made 126 trades and lost $1,410. The bot's versions lost between $749 and $2,932. The owner traded only 13 of the 230 tests. The thresholds are proposals awaiting the owner's check on the charts.
+
+   **Exit styles on the same tests (Oct 2026):** none made the read profitable. 3-point stop / 7-point target: −$79 per trade. Stop past the test: −$54 to −$67. The section 3 targets with the stop 3 points past the level came closest at −$30 per trade (+$295 for the bot over 40 trades, carried by a few big runners). Losses are almost all quick stop-outs (median 1.2 minutes for a 2-point stop), and 56% of tests later traded through the target. But a wider stop doesn't fix it: at every stop size these entries won 4–9 points less often than random entries on the same days. So the entry is the problem, not the exit: price tends to push further through the level before reversing. Adding the read's conditions made every exit worse, so the coded read likely differs from the owner's. **Blind review (12 charts):** the owner took 4 and skipped 8. The skips avoided the trades that ran 6–21 points against. Two of the four takes reached the owner's target. Turning the owner's reasons into rules: the bot's first-turn entry nearly always comes while the other side is still in control. Waiting for that to fade (patient entry) did not help (22% wins). The clearest signal is the weaker retest: 34% winners with a 2-point stop and 4-point target when the push into the level was weaker than last time, vs 15% when it wasn't (47 and 40 tests). Still about −$19 per trade, and borderline on this sample. **Checked on 2026 MES trades (126 sessions, 1,359 level tests):** the weaker retest won 29% vs 25% for other retests (+4 points, 95% range −3 to +11), down from 19 points in 2024. Level tests as a whole did no better than random entries (25% vs 27%). Nothing came near break-even. So the mechanical level-test entries found so far have no edge. **Blind review, second round (40 charts on a review page, Oct 2026):** the owner took 19 and skipped 21. The takes did not do better than the skips: 16% vs 24% reached 4 points before 2 against, and 16% vs 29% reached the owner's own target with a 3-point stop. Across both rounds (52 charts) the difference is within chance (p ≈ 0.5). Caveats: static charts are not live Bookmap (the owner noted they can't see the book move), the entry moment and stop were the bot's, and in 2024 the owner used these levels only partly. So far neither the coded rules nor the static chart read shows an edge at these marked levels. **Day rules on the owner's journal (Oct 2026):** trade caps, stopping after losses and daily loss limits would all have cut the owner's profit (for example, at most 3 trades a day: +$5,309 → −$196). The owner's first ~3 trades of a day had no edge, and the later ones did (+$5,505 on 169 trades, in both halves). Taking the first three at half size or on sim kept the profit with lower drawdown. The section 5 cap of 1 trade a day would have left +$240 on this journal. Details: `research/results/journal/REPORT.md` section 9. **What made the later trades better (section 10):** not the clock. The losers were early entries inside the 09:30–09:45 range (189 trades, −$4,033). Skipping every entry inside that range would have made +$7,211 instead of +$5,309 (profit factor 1.38), in both halves. The bot's level tests show no such pattern (about 25% wins inside and outside the range, at every hour). **Proposed (owner's call):** no entries while price is inside the 09:30–09:45 range. **The journal over time (section 11):** the owner says early 2024 lacked discipline, and the data agrees. Q1 2024 lost $1,524 with quick scalps. From Q2 2024 on, every quarter was profitable (+$6,833 on 373 trades), and the average win grew from 2.8 to 7.6 points. In that period, trades near a marked level did better (+1.70 vs +0.24 points per contract, 48 trades), but that is not yet proven (95% range −0.24 to +3.48). Use Q2 2024 onward as the reference for the owner's method. **Disciplined period only (section 12):** the owner's two filters (no entries inside the 09:30–09:45 range, none in the 10 minutes after a news spike) turn +$6,833 into +$8,898 on 188 trades (profit factor 1.66), in both halves. The best bot version on the 2024 ES weeks of that period (+$832, STRATEGY.md exits) lost $18,436 over six months of 2026 MES. Every bot version built so far loses in both years. Next: a blind review, where the owner marks take or skip on charts that stop at the entry. Orders that trail price (for example 150-lot orders kept 3.5 points from price) are real orders, not a data error. The owner says they can count as resting orders.
 4. **Live bot:** a NinjaScript strategy, tested in this order:
    - Market Replay (past days replayed, order book included)
    - Sim account
@@ -278,4 +451,4 @@ Every number below is an adjustable setting. The defaults come from this spec.
   - Add order book history for build step 3.
 - **Needed last, for the live bot:** a futures broker account with Rithmic and a real-time CME data subscription that includes market depth, connected to NinjaTrader and Bookmap.
 - **Other historical option:** Rithmic's own history. It may be limited, and Rithmic may need to approve API access for a custom program.
-- **Bookmap recordings:** example 1 is a Bookmap replay, so recording files from past trading may exist. They contain the full order book, but they are in Bookmap's own format.
+- **Bookmap recordings:** the owner has saved Bookmap recordings (.bmf) from past trading. They contain the full order book, but only Bookmap can open them: Bookmap offers no open file format for its feed data (owner, Oct 2026). The order book history comes from Databento's MBO data instead, which carries the same CME order-by-order feed Bookmap draws its heatmap from.

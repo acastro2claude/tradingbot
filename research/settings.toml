@@ -18,9 +18,18 @@ max_trades_per_day = 1
 daily_loss_limit_usd = 800
 no_new_entries_after_et = "16:30"
 close_open_trade_at_et = "16:50"
-news_events = ["CPI", "jobs report", "Fed decision"]
+# Owner (30 Oct 2026): CPI, employment and jobs reports, PMI, job openings, Fed decisions.
+# Read as (proposed): payrolls, ADP, weekly jobless claims, ISM manufacturing and services PMI, JOLTS.
+news_events = ["CPI", "jobs report", "ADP employment", "jobless claims", "ISM manufacturing PMI", "ISM services PMI",
+               "JOLTS job openings", "Fed decision"]
 news_blackout_before_min = 15
-news_blackout_after_min = 30     # Fed days: until the press conference ends
+news_blackout_after_min = 30     # at least this long
+no_trading_days = ["Fed decision"]        # owner (30 Oct 2026): no trading at all on Fed days, "those days are crazy"
+# Owner (30 Oct 2026): skip only around the news; trade again once volume settles, usually 30-60 minutes after.
+news_blackout_max_after_min = 60          # proposed, TBD
+news_settle_window_min = 5                # proposed: volume over the last 5 minutes ...
+news_settle_volume_x_normal = 1.5         # ... back under 1.5x normal for that time of day (proposed)
+news_normal_volume_sessions = 20          # normal = average of the last 20 sessions at that time (proposed)
 close_before_news_min = 5
 poc_lookback_sessions = 20
 # poc_cluster_width_ticks = TBD  (the level study tests the widths listed below)
@@ -29,7 +38,8 @@ pocs_for_strong_level = 3
 recent_poc_lookback_sessions = 5           # level source B (STRATEGY.md 1e)
 covered_poc_rule = "next session's value area"   # a POC inside it no longer counts
 value_area_share = 0.70
-# Supply and demand zones (STRATEGY.md 1b). Values marked proposed are TBD.
+# The bot's earlier supply and demand zones: rejected by the owner (Oct 2026), kept for the earlier
+# studies. The course-style zones the owner uses are in [zones] below (STRATEGY.md 1b).
 # sd_timeframe_minutes = TBD     (the study tests the list in [level_study])
 sd_lookback_months = 1
 sd_base_min_candles = 3          # proposed: candles in the chop, all through one common price
@@ -173,3 +183,213 @@ entry = "retest"
 front_only = true
 start_et = "10:00"
 min_contracts = 150
+
+# Journal-style exits (the owner's 2024 trades: median loss 2.0 points, median win 4.0,
+# about 3 trades a day, mostly 9:30-11:00 ET). Stop and target measured from the entry.
+[[backtest.variants]]
+name = "8a journal-style exits 2/4, early entry"
+sources = ["your levels (POC or zone)", "no level"]
+exits = "fixed"
+stop_points = 2
+target_points = 4
+max_trades = 3
+
+[[backtest.variants]]
+name = "8b journal-style exits 2/5, early entry"
+sources = ["your levels (POC or zone)", "no level"]
+exits = "fixed"
+stop_points = 2
+target_points = 5
+max_trades = 3
+
+[[backtest.variants]]
+name = "8c journal-style exits 2/4, 09:30-11:30 only"
+sources = ["your levels (POC or zone)", "no level"]
+exits = "fixed"
+stop_points = 2
+target_points = 4
+max_trades = 3
+end_et = "11:30"
+
+[[backtest.variants]]
+name = "8d journal-style exits 2/4, retest entry"
+sources = ["your levels (POC or zone)", "no level"]
+entry = "retest"
+front_only = true
+exits = "fixed"
+stop_points = 2
+target_points = 4
+max_trades = 3
+
+[book_study]
+# Build step 3: the owner's Bookmap read at tests of marked levels, on the full order book.
+# All values are proposals (TBD in STRATEGY.md) until the owner settles them.
+level_area_points = 1.0          # "at or around" a level: within this of it (zones: of their edges)
+test_arm_points = 5.0            # a test needs price to have been this far away first
+test_break_points = 3.0          # this far through the level = the test failed
+turn_points = 1.0                # entry once price trades this far back off the test's extreme (2 ticks fired on bid/ask bounce)
+max_test_minutes = 5             # the turn must come within this long of the test start
+line_lookback_minutes = 5        # a line must be there in the minutes before the test
+line_multiple = 2.0              # a line = this many times the day's typical size per price
+delta_seconds = 10               # owner: delta "starts to skew" the trade's way
+burst_contracts_es = 50          # ES absorption burst size (the owner's MES add-on setting is 100; ES setting TBD)
+burst_contracts_mes = 100
+check_stop_points = 2            # quick check of each test: 4 points before 2 against, within 30 minutes
+check_target_points = 4
+check_minutes = 30
+owner_match_minutes = 10         # an owner trade "took" a test if entered this soon after it, same way,
+owner_match_points = 1.0         # within this of the level area
+max_trades_per_day = 3           # bot vs owner: up to 3 trades a day, one at a time (the owner's median)
+slippage_ticks = 1               # on market entries and stops
+flatten_et = "15:59"
+
+# Exit styles compared on every test (owner, Oct 2026: "try 3 and 7, and the STRATEGY.md targets").
+# stop: "fixed" (stop_points from the fill), "past test" (stop_points past the test's low or high),
+#       "past level" (stop_points past the level).
+# target: "fixed" (target_points from the fill), "risk multiple" (target_multiple x the risk),
+#         "strategy" (STRATEGY.md section 3: first target = top of the last 1-minute chop before
+#         the move into the level, runner = low of that chop and breakout; skipped if the first
+#         target is under min_reward_to_risk x the risk).
+[[book_study.exits]]
+name = "2-pt stop, 4-pt target"
+stop = "fixed"
+stop_points = 2
+target = "fixed"
+target_points = 4
+
+[[book_study.exits]]
+name = "3-pt stop, 7-pt target"
+stop = "fixed"
+stop_points = 3
+target = "fixed"
+target_points = 7
+
+[[book_study.exits]]
+name = "stop 1 pt past the test, target 2x the risk"
+stop = "past test"
+stop_points = 1
+target = "risk multiple"
+target_multiple = 2.0
+
+[[book_study.exits]]
+name = "stop 1 pt past the test, STRATEGY.md targets"
+stop = "past test"
+stop_points = 1
+target = "strategy"
+
+[[book_study.exits]]
+name = "stop 3 pts past the level, STRATEGY.md targets"
+stop = "past level"
+stop_points = 3
+target = "strategy"
+
+[owner_rules]
+# Rules taken from the owner's reasons on the blind review charts (Oct 2026). All values proposed.
+control_lookback_s = 300         # "delta still making lower lows": the 5-minute delta extreme against the trade...
+control_recent_s = 30            # ...was set in the last 30 seconds before entry
+aggression_window_s = 60         # "buyers still too aggressive": the other side's aggressive volume over the last minute...
+aggression_ratio = 1.2           # ...is at least 1.2x ours
+retest_within_min = 60           # a retest: the same level was tested earlier, at most an hour before
+retest_window_s = 120            # aggressive volume pushing into the level in the 2 minutes before each arrival
+retest_weaker_ratio = 0.8        # weaker retest: at most 80% of the previous attempt's push
+spike_bar_s = 15                 # absorption spike: a 15-second bar of aggressive volume into the level...
+spike_multiple = 2.0             # ...at least 2x the median 15-second bar of the 15 minutes before...
+spike_baseline_min = 15
+spike_max_through_points = 1.0   # ...while price gets no more than 1 point past the level
+divergence_lookback_min = 30     # price at or past the 30-minute high (low), delta below its value at that earlier high (low)
+divergence_near_points = 1.0
+zone_conflict_points = 4.0       # no long with a supply zone this close above (no short with a demand zone below)
+target_min_points = 4.0          # owner's targets: the next POC in the trade's direction, at least 4 points away...
+target_max_points = 20.0         # ...and at most 20 (else 2x the risk)
+stop_points = 3.0
+# Patient entry (owner's review: "wait", "too soon to tell"): after a test starts, enter at the
+# first second, within wait_max_min, when price has turned turn_points off its extreme and is
+# still within near_level_points of the level, delta has made no new extreme against the
+# trade in the last control_recent_s, and our side's aggressive volume over the last
+# aggression_window_s is at least the other side's. No trade if price breaks test_break_points first.
+wait_max_min = 10
+near_level_points = 3.0
+
+[journal_rules]
+# Day-level rules replayed on the owner's journal (research/journal_day_rules.py). Analysis grids, not bot settings.
+news_minutes = ["08:30", "10:00", "14:00"]   # release minutes checked for a volume spike (ES 1-minute bars)
+news_spike_ratio = 3.0           # spike: that minute's volume >= 3x the median of the 10 minutes before
+news_spike_baseline_min = 10
+max_trades = [1, 2, 3, 4, 5]
+stop_after_losses = [1, 2, 3]
+daily_loss_limit_usd = [150, 250, 400, 800]
+daily_profit_stop_usd = [150, 250, 500]
+skip_first_minutes = [5, 15, 30]
+skip_after_news_minutes = [10, 15]
+morning_end_et = "11:00"
+split_date = "2024-07-01"        # robustness: first half vs second half of the journal
+observe_first_trades = 3         # what-if: the first trades of each day on sim, or at half size
+reference_start = "2024-04-01"   # the owner's disciplined period (owner, Oct 2026: early 2024 lacked discipline)
+
+[zones]
+# Supply and demand zones as the owner's course draws them (STRATEGY.md 1b, Oct 2026; research/zones.py).
+# Values marked proposed are TBD until the owner confirms them on charts.
+timeframes_minutes = [240, 120, 60, 30, 15]   # owner (Oct 2026): the valid timeframes, strongest first
+# Owner: avoid overlapping zones; where zones overlap, the higher timeframe wins (research/zones.py resolve_overlaps).
+candle_clock_tz = "America/Chicago"   # candles start at midnight Chicago time, like the owner's thinkorswim charts
+# Basing candle (owner): the candle right before the move away, red before a rally, green before a drop.
+doji_body_share = 0.10            # proposed: a doji (body at most 10% of its high-low range) also counts as a basing candle
+leg_out_vs_basing_range = 1.5     # owner: the move away is roughly double the basing candle; 1.5x keeps the zones the owner OK'd
+                                  # and drops the two they said did not move enough (1.3x, 1.4x)
+leg_out_range_vs_average = 1.5    # proposed: and its high-low range is at least 1.5x the average of the last candles (owner example: 2.7x)
+average_candles = 20              # candles in that average
+leg_in_candles = 3                # candles before the base that name the pattern (rally or drop into it)
+max_age_days = 31                 # owner (STRATEGY 1b): zones from up to about a month back
+departure_min_heights = 1.5       # proposed: price moves 1.5x the zone's height away before it first comes back, else chop
+rearm_min_points = 5.0            # proposed: a new test needs price to move away by the zone's height (at least this) first
+weak_from_test = 4                # owner: from about the 4th test a zone is on its way out, unless heavy order-book pressure
+chop_invalid_candles = 4          # proposed: inside for 4 candles of the zone's timeframe ends it (owner: about an hour, = 4 on 15m)
+# Edges (owner's drawing, confirmed): near edge = the basing candle's open (green: bottom of body, red: top of body),
+# far edge = the wick of the basing and move-away candles.
+# Broken when a candle on the zone's timeframe closes beyond the far edge (proposed).
+# Stop: the normal stop rules (owner: even when the zone is big), not past the zone.
+
+[zone_study]
+# How price behaves at the owner-style zones (research/zone_study.py). Analysis settings, not bot settings.
+period_start = "2024-02-01"        # zones need a few weeks of history first
+reference_start = "2024-04-01"     # the owner's disciplined period (also [journal_rules])
+entry_from_et = "09:30"            # zone tests counted in regular hours only, like the earlier studies
+last_entry_et = "15:30"
+flat_et = "15:59"
+near_points = 3.0                  # an owner trade is "at a zone" up to 3 points outside its near edge ([owner_rules] near_level_points)
+far_points = 1.0                   # ...or up to 1 point past its far edge
+random_per_day = 50                # random entries per day for the baseline
+exits = [[3.0, 4.0], [3.0, 7.0]]   # stop / target in points from the fill (owner: the normal stop is 3 points past the level)
+hold_stop_past_far_points = 1.0    # diagnostic only: does the zone hold as an area? stop 1 point past the far edge...
+hold_targets_x_risk = [1.0, 2.0]   # ...targets 1x and 2x that risk (the owner keeps the normal stop; this is not a bot rule)
+# Exits for research/zone_all_days.py: [label, "fixed" (stop/target points from the fill) or
+# "edge" (stop this far past the zone's near edge, target this multiple of the risk), stop, target]
+all_days_exits = [["2/4", "fixed", 2, 4], ["3/7", "fixed", 3, 7], ["3 past edge, 2x", "edge", 3, 2],
+                  ["4/10", "fixed", 4, 10], ["4/12", "fixed", 4, 12]]   # 4/10 and 4/12: the owner's risk structure (Oct 2026)
+
+[run_winners]
+# Owner (Oct 2026): "a 4 point stop loss, but let winners run to about 10-12 points depending on market
+# conditions (mostly meaning delta is heavily continuing in our direction, and aggressive buyers/sellers
+# are still moving the same direction)". research/run_winners.py. Values marked proposed are TBD.
+stop_points = 4.0
+target_points = 10.0
+extended_target_points = 12.0
+lock_points_when_extended = 8.0  # proposed: when the trade is held past 10, the stop moves up to +8
+delta_window_seconds = 60        # proposed: "delta continuing" = delta over the last 60 s is our way...
+aggressor_ratio = 1.0            # ...and our side's aggressive volume over that minute is at least the other side's
+random_per_day = 50
+
+[replay]
+# Zone replay page (research/replay_export.py, research/replay_page.py). Display settings, not bot settings.
+before_seconds = 600             # the replay starts 10 minutes before the zone test
+after_seconds = 300              # and stops 5 minutes after it (the bot's longest wait for a turn)
+frame_seconds = 2                # heatmap and tape in 2-second frames
+half_range_points = 10           # heatmap covers the zone edge +/- 10 points
+depth_full_colour_x_typical = 8  # resting size at 8x the day's typical size per price shows at full colour
+bubble_top_share = 0.05          # trade bubbles: the biggest 5% of the day's per-frame volume at a price
+max_bubbles = 600
+burst_seconds = 0.01             # absorption markers like the owner's add-on: contracts in 0.01 s...
+burst_min_es = 50                # ...at least this many on ES ([book_study] burst_contracts_es)
+burst_min_mes = 100              # ...and on MES (the owner's setting)
+context_minutes = 15             # context chart: 15-minute candles...
+context_sessions = 2             # ...for the 2 sessions before the test's session, up to the replay start

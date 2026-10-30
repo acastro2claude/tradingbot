@@ -1,0 +1,41 @@
+review,side,owner,owner_target,owner_reason,saved_at
+1,long,skip,,"delta lower lows, more aggressive selling (it's only slightly higher)",2026-10-29T02:33:18.218Z
+2,short,skip,,there's so much extra volume on the way up I don't trust this. Was this a news day?,2026-10-29T02:33:54.535Z
+3,long,skip,,"lots of aggressive selling, even at demand zone sellers are still pushing. delta continues to move lower.",2026-10-29T02:40:26.973Z
+4,short,take,5070.5,"big buying volume into supply, no big move above to get above it. at the top of high volume node.",2026-10-29T02:50:06.109Z
+5,long,skip,,looks like a bunch of chop,2026-10-29T02:52:35.548Z
+6,short,take,5102.25,this is definitely a news day btw (volume goes nuts at 10am usually when there's news). short because big buyer volume on the previous attempt up failed at supply zone. delta makes lower low as well.,2026-10-29T02:54:48.507Z
+7,long,skip,,this is so obviously an aggressive sell move. sell volume just stays high and delta just takes a dump. Don't want to get in front of a moving train.,2026-10-29T02:55:56.732Z
+8,short,skip,,"a lot of chop. price is in between high volume nodes, because of this and no supply zone to back up this poc level. delta also just keeps increasing at a steady rate",2026-10-29T02:57:39.560Z
+9,long,take,5192.5,I'd say this is a little premature but I'd take it. A bunch of resting orders at the bottom of the demand zone. sell volume is high but not continuing down into the zone. Resting order might be eating those at the ask but since it's not live I can't tell exactly.,2026-10-29T02:59:06.206Z
+10,short,take,5207,"top of the high volume node zone (described by today's volume on the right). lower lows, delta matches. decent amount of resting orders at around 5215.",2026-10-29T03:01:08.521Z
+11,short,skip,,another news day. I wouldn't take a trade in the several minutes after news is released.,2026-10-29T03:01:42.147Z
+12,long,take,5192.5,"big sell volume but not going down into the zone. big indicator here is that as price moved lower, volume delta kept increasing showing buyer's interest. also bottom of a high volume node zone.",2026-10-29T03:03:08.939Z
+13,short,skip,,this is news at the time it is released. the spread out triangles clearly indicates that priced moved insanely fast.,2026-10-29T03:04:04.651Z
+14,long,skip,,"a lot of sell orders triggered at this poc level. the problem with this is that it looks like it is a continuation move. delta just drops, I don't see any indication of buyers interest here.",2026-10-29T03:05:33.123Z
+15,short,take,5351,delta is showing lower highs as price tries to rise into the supply zone. poc and supply zone close together. A lot more conviction here. you can also see sell volume is starting to get larger slightly.,2026-10-29T03:07:06.381Z
+16,short,take,,"same reason as chart 15. delta, buyer volume is higher but cant break through.",2026-10-29T03:08:07.762Z
+17,short,take,5361,This might be a riskier trade. I'm trading solely on the fact that high buy volume into a supply zone. Also a lot of resting orders according to the heatmap.,2026-10-29T03:09:46.523Z
+18,long,take,5370,"poc/demand zone. high selling volume into the zone the first test, and it didn't break. less selling volume on the retest again and demand held.",2026-10-29T03:14:46.637Z
+19,long,take,,same reason as chart 18. except the delta.,2026-10-29T03:15:18.393Z
+20,long,take,5520,"two zones on top of each other, not great. but higher delta lows, the big sell volume on the low but it didn't break through. tells me price might likely continue higher.",2026-10-29T03:16:58.946Z
+21,short,take,5500,clear break below and retest of the poc level. volume shows high buyers but it's not breaking back above.,2026-10-29T03:21:05.600Z
+22,long,skip,,the only thing here worth looking at is that sell volume is big but price doesn't move that much lower. I can't be sure because the other factors aren't lined up.,2026-10-29T03:23:27.524Z
+23,short,take,5553,even though price moved above poc delta is making lower lows. and buyer delta is staying high but it's not moving. indicating some kind of absorption.,2026-10-29T03:26:25.154Z
+24,long,skip,,too premature. I'd wait until price reached the demand zone first.,2026-10-29T03:27:21.025Z
+25,long,take,5503,delta higher lows right into a demand zone. strong selling but no moves down. this is a high conviction trade.,2026-10-29T03:32:17.559Z
+26,short,take,5460,slightly lower low delta but price is higher. lack of aggressive volume on both sides. it seems like participants don't want to trade at this price.,2026-10-29T03:33:59.555Z
+27,short,take,5773,supply zone with slightly lower high on delta and reduced volume,2026-10-29T03:36:55.936Z
+28,long,skip,,"too close to a supply zone, and a lot of chop in between",2026-10-29T03:37:14.321Z
+29,short,skip,,same as chart 28,2026-10-29T03:37:52.392Z
+30,long,skip,,"too much selling volume, delta drops, this seems like a news day? volume jumps at 10am",2026-10-29T03:40:50.093Z
+31,short,skip,,too much buyer volume delta is making higher highs and higher lows.,2026-10-29T03:45:11.357Z
+32,short,skip,,"delta just goes higher, price already broke above the poc level",2026-10-29T03:47:47.037Z
+33,short,take,5782,"lower delta high compared to when price was at the high in this picture. low volume overall, participants not interested in this level. plus at supply zone",2026-10-29T03:49:52.473Z
+34,long,take,5790,big delta drop into demand zone but price almost doesn't budge past its other low in this picture. Also at the top of the second high volume node.,2026-10-29T03:51:28.282Z
+35,long,take,5793,"delta higher lows, high sell volume but no follow through, bottom of high volume node. we also tested this level before",2026-10-29T03:54:47.972Z
+36,long,skip,,"almost no buyer volume. sellers are strong but not pushing, but buyers are not interestedf",2026-10-29T03:53:42.424Z
+37,short,skip,,this is the same day as the other two charts. no buyer interest,2026-10-29T03:56:49.216Z
+38,long,skip,,too soon after open,2026-10-29T03:57:41.235Z
+39,long,skip,,I'd actually wait to see how price handled at the demand zone.,2026-10-29T03:59:31.444Z
+40,short,skip,,this chart seems weird. demand zone but price is hanging out below it isn't a demand zone anymore. Nothing to indicate going short,2026-10-29T04:00:24.092Z

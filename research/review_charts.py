@@ -1,0 +1,214 @@
+"""Blind review charts: the owner marks take or skip on level tests, without seeing the outcome.
+
+Each chart stops at the moment the bot would enter. It shows what the owner
+said was missing from the first charts (Oct 2026): delta, volume, and where
+the POCs and supply/demand zones are.
+  - heatmap of the rebuilt ES book (resting contracts per price per second),
+    trade dots, last price
+  - the marked levels in view: the last 5 sessions' uncovered POCs (dashed) and
+    live 15-minute supply/demand zones (shaded)
+  - right: volume traded at each price today (from the evening open), with
+    today's POC so far
+  - below: buy vs sell volume every 15 seconds (aggressive buys up in aqua,
+    aggressive sells down in orange), so the stronger side shows at a glance
+  - bottom: cumulative delta (aggressive buys minus aggressive sells) since 09:30 ET,
+    aqua while buyers push it up, orange while sellers push it down (owner, Oct 2026)
+
+A random sample of tests (fixed seed) is drawn from level_tests_es_weeks.csv.
+Charts go to research/results/journal/review/, numbered; the outcomes are kept
+in review_key.csv for scoring after the owner answers.
+
+Run from the repo root:   python -m research.review_charts [count] [--batch name]
+"""
+
+from __future__ import annotations
+
+import sys
+
+import matplotlib
+import numpy as np
+import pandas as pd
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt  # noqa: E402
+import matplotlib.ticker  # noqa: E402
+from matplotlib.collections import LineCollection  # noqa: E402
+
+from research.bot_week_study import BOOK_DIR, TRADES_DIR, et  # noqa: E402
+from research.journal_replay import es_context  # noqa: E402
+from research.journal_study import OUT  # noqa: E402
+from research.level_study import DERIVED  # noqa: E402
+from research.level_test_book import marked_levels  # noqa: E402
+from research.market_data import session_dates  # noqa: E402
+from research.orderbook import Book, build_book, load_mbo  # noqa: E402
+from research.orderbook_chart import BUY, INK, MUTED, RAMP, SELL, SURFACE  # noqa: E402
+from research.settings import load_settings  # noqa: E402
+
+REVIEW = OUT / "review"
+DEMAND, SUPPLY = "#1baf7a", "#eb6834"
+BEFORE_S = 900                     # 15 minutes of context before the decision
+HALF_POINTS = 10.0
+BAR_S = 15                         # buy/sell volume bars
+
+
+def draw_review(book: Book, trades: pd.DataFrame, levels: pd.DataFrame, t_dec: float, d: int, price: float,
+                title: str, path) -> None:
+    r1 = book.row(t_dec)
+    r0 = max(r1 - BEFORE_S, 0)
+    x0 = book.t0 + r0
+    e = int(round(price / 0.25))
+    p0, p1 = e - int(HALF_POINTS * 4), e + int(HALF_POINTS * 4)
+    depth = book.bid[r0:r1 + 1, p0 - book.lo:p1 - book.lo + 1] + book.ask[r0:r1 + 1, p0 - book.lo:p1 - book.lo + 1]
+    vmax = np.percentile(depth[depth > 0], 98) if (depth > 0).any() else 1
+
+    fig = plt.figure(figsize=(12, 9), dpi=110, facecolor=SURFACE)
+    gs = fig.add_gridspec(3, 2, width_ratios=[6, 1], height_ratios=[3, 0.9, 0.9], wspace=0.03, hspace=0.14)
+    ax = fig.add_subplot(gs[0, 0])
+    axv = fig.add_subplot(gs[0, 1], sharey=ax)
+    axb = fig.add_subplot(gs[1, 0], sharex=ax)
+    axc = fig.add_subplot(gs[2, 0], sharex=ax)
+    for a in (ax, axv, axb, axc):
+        a.set_facecolor(SURFACE)
+        a.tick_params(colors=MUTED, labelsize=8)
+        for sp in a.spines.values():
+            sp.set_visible(False)
+
+    lo_px, hi_px = (p0 - 0.5) * 0.25, (p1 + 0.5) * 0.25
+    ax.imshow(depth.T, origin="lower", aspect="auto", cmap=RAMP, vmin=0, vmax=vmax,
+              extent=[0, r1 - r0 + 1, lo_px, hi_px], interpolation="nearest")
+
+    # marked levels in view
+    for lv in levels.itertuples():
+        lo, hi = lv.lo * 0.25, lv.hi * 0.25
+        if hi < lo_px or lo > hi_px:
+            continue
+        if lv.source == "POC":
+            ax.axhline(lo, color=INK, lw=1.2, ls="--", zorder=2)
+            ax.text(2, lo + 0.1, f"POC {lo:.2f}", color=INK, fontsize=8, zorder=5)
+        else:
+            colour = DEMAND if lv.direction == 1 else SUPPLY
+            ax.axhspan(lo - 0.125, hi + 0.125, color=colour, alpha=0.18, zorder=2)
+            ax.text(2, hi + 0.1, f"{'demand' if lv.direction == 1 else 'supply'} zone (15 min)",
+                    color=INK, fontsize=8, zorder=5)
+
+    w = trades[(trades["t"] >= x0) & (trades["t"] < t_dec)]
+    ax.plot(w["t"] - x0, w["price"] * 0.25, color=MUTED, lw=1, drawstyle="steps-post", zorder=3)
+    w = w[(w["price"] >= p0) & (w["price"] <= p1)].assign(sec=lambda f: np.floor(f["t"] - x0))
+    agg = w.groupby(["sec", "price", "side"], as_index=False)["size"].sum()
+    agg = agg[agg["size"] >= 20]
+    for side, colour, marker, label in (("B", BUY, "^", "aggressive buys (20+ in a second)"),
+                                        ("A", SELL, "v", "aggressive sells (20+ in a second)")):
+        g = agg[agg["side"] == side]
+        ax.scatter(g["sec"] + 0.5, g["price"] * 0.25, s=np.clip(g["size"], 20, 600) / 2, c=colour, marker=marker,
+                   edgecolors=INK, linewidths=0.4, alpha=0.9, zorder=4, label=label)
+    ax.legend(loc="lower left", fontsize=8, frameon=True, facecolor=SURFACE, edgecolor=MUTED, labelcolor=INK)
+    ax.annotate(f"bot would go {'long' if d == 1 else 'short'} here", xy=(r1 - r0, price),
+                xytext=(r1 - r0 - 240, price + (3 if d == -1 else -3)), color=INK, fontsize=9,
+                arrowprops=dict(arrowstyle="->", color=INK), zorder=6)
+    ax.set_xlim(0, r1 - r0 + 30)
+    ax.set_ylim(lo_px, hi_px)
+    ax.set_ylabel("price", color=MUTED)
+    ax.set_title(title, color=INK, loc="left", fontsize=11)
+    plt.setp(ax.get_xticklabels(), visible=False)
+
+    # today's volume at price, up to the decision
+    today = trades[trades["t"] < t_dec]
+    vol = today.groupby("price")["size"].sum()
+    view = vol[(vol.index >= p0) & (vol.index <= p1)]
+    axv.barh(view.index * 0.25, view.to_numpy(), height=0.22, color=MUTED, alpha=0.7)
+    if len(vol):
+        poc = vol.idxmax() * 0.25
+        if lo_px <= poc <= hi_px:
+            axv.axhline(poc, color=INK, lw=1)
+            axv.text(view.max() * 0.05 if len(view) else 0, poc + 0.1, "today's POC", color=INK, fontsize=7)
+    axv.set_xticks([])
+    axv.set_xlabel("today's volume", color=MUTED, fontsize=8)
+    plt.setp(axv.get_yticklabels(), visible=False)
+
+    # buy vs sell volume every BAR_S seconds: buyers up (aqua), sellers down (orange)
+    win = trades[(trades["t"] >= x0) & (trades["t"] < t_dec)]
+    k = ((win["t"] - x0) // BAR_S).astype(int)
+    buys = win["size"].where(win["side"] == "B", 0).groupby(k).sum()
+    sells = win["size"].where(win["side"] == "A", 0).groupby(k).sum()
+    left = buys.index.to_numpy() * BAR_S
+    axb.bar(left, buys.to_numpy(), width=BAR_S * 0.85, align="edge", color=BUY, label="aggressive buys")
+    axb.bar(left, -sells.to_numpy(), width=BAR_S * 0.85, align="edge", color=SELL, label="aggressive sells")
+    axb.axhline(0, color=MUTED, lw=0.6)
+    top = max(buys.max() if len(buys) else 1, sells.max() if len(sells) else 1)
+    axb.set_ylim(-top * 1.1, top * 1.1)
+    axb.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, _: f"{abs(v):,.0f}"))
+    axb.set_ylabel(f"volume per {BAR_S} s\nbuys up, sells down", color=MUTED, fontsize=8)
+    axb.legend(loc="upper left", fontsize=8, frameon=True, facecolor=SURFACE, edgecolor=MUTED, labelcolor=INK)
+    plt.setp(axb.get_xticklabels(), visible=False)
+
+    # cumulative delta since 09:30 ET, aqua while buyers push it up, orange while sellers push it down
+    open_t = et(pd.Timestamp(t_dec, unit="s", tz="UTC").tz_convert("America/New_York").date().isoformat(), "09:30")
+    rth = trades[(trades["t"] >= open_t) & (trades["t"] < t_dec)]
+    signed = np.where(rth["side"] == "B", rth["size"], np.where(rth["side"] == "A", -rth["size"], 0))
+    cvd = pd.Series(np.cumsum(signed), index=rth["t"].to_numpy())
+    cw = cvd[cvd.index >= x0]
+    if len(cw) > 1:
+        x, y = cw.index.to_numpy() - x0, cw.to_numpy()
+        net = (buys - sells).reindex(np.arange(int(x.max() // BAR_S) + 1), fill_value=0).to_numpy()
+        up = net[(x[1:] // BAR_S).astype(int)] >= 0
+        segs = np.stack([np.column_stack([x[:-1], y[:-1]]), np.column_stack([x[1:], y[1:]])], axis=1)
+        axc.add_collection(LineCollection(segs, colors=np.where(up, BUY, SELL), linewidths=1.6))
+        axc.set_ylim(y.min() - 0.05 * (np.ptp(y) + 1), y.max() + 0.05 * (np.ptp(y) + 1))
+        if y.min() < 0 < y.max():                     # zero line only when delta crosses it
+            axc.axhline(0, color=MUTED, lw=0.6)
+    axc.set_ylabel("cum. delta since 09:30\naqua rising, orange falling", color=MUTED, fontsize=8)
+    ticks = np.arange((60 - x0 % 60) % 60, r1 - r0 + 1, 120)
+    axc.set_xticks(ticks)
+    axc.set_xticklabels([pd.Timestamp(x0 + k, unit="s", tz="UTC").tz_convert("America/New_York").strftime("%H:%M")
+                         for k in ticks], color=MUTED)
+    axc.set_xlabel("time (ET)", color=MUTED)
+    fig.savefig(path, facecolor=SURFACE, bbox_inches="tight")
+    plt.close(fig)
+
+
+def main() -> None:
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("count", type=int, nargs="?", default=12)
+    ap.add_argument("--batch", default="", help="a later batch: new tests only, charts in review/<batch>/, "
+                    "answer key kept out of the repo (data/derived) until the owner has answered")
+    args = ap.parse_args()
+    s = load_settings()
+    tests = pd.read_csv(OUT / "level_tests_es_weeks.csv")
+    plan = pd.read_csv(OUT / "es_week_price_plan.csv").set_index("day")
+    e = tests[tests["turn"] == "turned"]
+    out_dir, key_file, seed = REVIEW, REVIEW / "review_key.csv", s["level_study"]["random_seed"]
+    if args.batch:
+        seen = pd.concat([pd.read_csv(f)[["day", "entry_time"]] for f in
+                          [REVIEW / "review_key.csv", *sorted(DERIVED.glob("review_*_key.csv"))] if f.exists()])
+        e = e[~e.set_index(["day", "entry_time"]).index.isin(seen.set_index(["day", "entry_time"]).index)]
+        out_dir, key_file, seed = REVIEW / args.batch, DERIVED / f"review_{args.batch}_key.csv", seed + 1
+    pick = e.sample(args.count, random_state=seed).sort_values("entry_time")
+    pick = pick.assign(review=range(1, len(pick) + 1))
+    sessions, zones, offsets = es_context(s)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    manifest = []
+    for day, g in pick.groupby("day"):
+        es = plan.loc[day, "es"]
+        book = build_book(load_mbo(BOOK_DIR / f"{es}_{day}_mbo.dbn.zst"), int(et(day, "08:00")), int(et(day, "16:00")))
+        trades = pd.read_parquet(TRADES_DIR / f"{es}_{day}.parquet")
+        session = pd.Timestamp(session_dates(pd.Series([pd.Timestamp(et(day, "12:00"), unit="s", tz="UTC")])).iat[0])
+        for r in g.itertuples():
+            levels = marked_levels(sessions, zones, session, int(offsets[es]), r.entry_time - 1, r.entry_time,
+                                   s["bot"]["recent_poc_lookback_sessions"])
+            when = pd.Timestamp(r.entry_time, unit="s", tz="UTC").tz_convert("America/New_York")
+            side = "long" if r.direction == 1 else "short"
+            title = f"#{r.review}  {es} {when:%a %d %b %Y, %H:%M:%S} ET: take this {side}? ({r.sources} test)"
+            draw_review(book, trades, levels, r.entry_time, int(r.direction), r.entry_price * 0.25, title,
+                        out_dir / f"review_{r.review:02d}.png")
+            manifest.append(dict(review=int(r.review), side=side, level=r.sources, contract=es,
+                                 when=f"{when:%a %d %b %Y, %H:%M} ET"))
+            print("saved review", r.review, day, side, flush=True)
+    key_file.parent.mkdir(parents=True, exist_ok=True)
+    pick[["review", "day", "entry_time", "direction", "sources", "edge", "points", "exit_how", "owner_points"]].to_csv(
+        key_file, index=False)
+    pd.DataFrame(manifest).sort_values("review").to_json(out_dir / "charts.json", orient="records", indent=1)
+
+
+if __name__ == "__main__":
+    main()

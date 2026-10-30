@@ -1,0 +1,13 @@
+review,owner,owner_reason,side,fill,best 30m,worst 30m,best 60m,worst 60m,your target,target pts,reached?,worst before target,minutes to target
+1,wait,Wait still; look for entries if the level held. Price made a new low but delta a higher low. Too soon to tell; price could explode short.,long,5252.25,3.5,5.5,7.0,7.0,,,,,
+2,skip,"Hitting a demand zone doesn't mean it reverses long. Delta keeps making lower lows; aggressive buys start at the level, but can't tell yet if resting buyers absorb the sells.",long,5260.25,3.75,6.0,3.75,13.5,,,,,
+3,take,"Delta makes higher highs, but aggressive buys slowed since the last attempt at this level and the heatmap shows more resting sells. Still inside the 70% volume node; target about 3/4 of the node, around 5281.",short,5287.0,10.0,2.75,10.0,4.75,5281.0,6.0,True,2.75,6.809570507208506
+4,skip,"Just chop, no clear movement.",long,5360.75,1.25,6.5,1.25,9.5,,,,,
+5,skip,"Aggressive buyers still showing, no clear level.",short,5358.5,7.25,1.0,7.25,1.0,,,,,
+6,skip,"Near the bottom of the volume node, but delta still making lower lows and no real change in aggressive buyers or sellers.",long,5515.0,4.0,13.25,4.0,22.5,,,,,
+7,take,"Short in obvious chop: delta makes a lower low while price is at about the previous high. Target the bottom of the chop, about 5460.5.",short,5466.0,4.0,7.0,4.0,25.0,5460.5,5.5,False,,
+8,skip,Buyers still too aggressive; no sign of a turn.,short,5574.75,17.0,13.75,29.25,13.75,,,,,
+9,take,Spike in aggressive buyers but price does not push past the POC. Target the next POC level.,short,5507.5,15.0,8.0,25.25,8.0,5500.0,7.5,True,8.0,15.718496123949686
+10,take,Retest of the chop zone; delta rising but levelling off; no aggressive sellers or buyers. Continuation trade with the move already up.,long,5469.75,2.0,21.0,2.0,25.0,5500.0,30.25,False,,
+11,skip,Aggressive buys outweigh sells; uptrend with buy delta increasing.,short,5465.0,6.0,20.75,6.0,20.75,,,,,
+12,skip,"Price keeps failing to break and hold above the supply zone. Rule: go short at supply zones, so no long here.",long,5775.0,7.0,5.75,7.0,7.0,,,,,

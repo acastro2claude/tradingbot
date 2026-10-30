@@ -1,0 +1,157 @@
+clip,test_id,decision,group,tf,test,through_after_pts,minutes_inside,traded_both_before,formed_overnight,hours_old,note
+c001,ES-2024-07-31-01,short,took the trade,30m,2,0.0,7,False,False,168.03621129804188,"price came up into the zone twice. this is the second time. cvd lower high, and we see a bunch of selling start to come in right after that big buying burst around 5548. "
+c002,MES-2024-05-02-00,skip,skipped: invalid zone,15m,3,3.0,21,True,True,1.2758560480011834,skipped because the previous day shows that this zone is no longer valid. price already blew past this zone both up and down. 
+c007,MES-2025-03-11-02,long,took the trade,15m,3,0.5,1,True,True,12.130039994385507,cvd higher low big sell volume but price didn't move down that much
+c008,ES-2024-09-26-01,skip,skipped: invalid zone,15m,1,0.0,0,False,True,8.585516740878424,zone invalid. price is so far below this demand zone how is this still on the chart?
+c009,MES-2024-02-28-03,short,took the trade,30m,1,0.0,0,True,True,8.500951960881551,"price hit the zone, lots of absorption"
+c010,MES-2024-02-28-02,short,took the trade,30m,1,0.0,0,True,True,7.480288710461722,big absorption at the zone. resting orders are right at the start of the zone. this is an early entry. it's possible this one doesn't work out that great
+c011,ES-2024-06-03-02,short,took the trade,1h,2,0.0,1,True,False,2.0272338536050585,big selling started to come in. absorption right as price hit the level the first time. retest of the zone
+c012,MES-2024-03-01-01,skip,skipped: other reason,1h,2,0.0,7,False,True,4.000003585285611,"news day, volume exploded at 10am. it's too soon on this chart to make a decision"
+c014,ES-2024-09-25-01,skip,skipped: invalid zone,30m,2,3.75,1,True,True,9.681921001407835,this zone is insanely invalid. price blows past this in both directions. this should no longer be on the chart
+c015,ES-2024-09-24-00,skip,skipped: invalid zone,30m,5,7.5,11,True,True,6.518362911277348,invalid zone
+c016,ES-2024-04-08-07,skip,skipped: invalid zone,15m,3,3.25,56,True,False,4.142240202228228,invalid zone
+c017,ES-2024-09-24-01,unsure,not sure,15m,4,7.5,42,True,False,90.56084691789415,"Price moved too fast into the zone. this could have been a good trade, but I don't really see anything special on the zone touch. I was expecting a restest, but we didn't get that"
+c018,MES-2024-02-27-00,skip,skipped: other reason,30m,2,0.0,12,False,True,5.083227641979853,sellers clearly in control. resting orders also were being pulled off the order book as price moved downward.
+c019,MES-2024-05-02-03,long,took the trade,2h,3,6.0,100,False,False,20.535102438529332,green volume coming in. seller delta is not as strong as it was on the way down into the zone. price also bounced at where the resting order was
+c020,ES-2024-04-09-04,unsure,not sure,30m,1,7.25,26,True,False,96.40194694432947,"this zone isn't exactly valid, but price could jump higher in this area just because there looks liek there might be a different but valid zone here."
+c021,ES-2024-09-24-04,skip,skipped: other reason,1h,1,3.5,136,True,False,4.5625283394919505,price is trading inside the zone for a bit. this is not a valid supply zone anymore.
+c022,ES-2024-02-26-01,skip,skipped: other reason,1h,3,0.0,2,True,True,1.2502587187952465,not a valid zone
+c023,ES-2024-07-29-04,skip,skipped: invalid zone,15m,5,4.25,40,True,True,6.183460909393099,zone not valid
+c024,ES-2024-04-09-02,long,took the trade,4h,1,0.0,0,False,False,93.72459690597323,"buyer delta is coming in after what I can only assume is a long a fast drop of price. price touches zone, then bounces up with a higher low of cvd"
+c025,ES-2024-06-07-01,skip,skipped: invalid zone,1h,1,0.75,48,False,True,2.2435813252131145,"price is hanging out in the zone, it's been here too long, zone is probably no longer valid"
+c026,ES-2024-02-28-03,short,took the trade,30m,1,0.0,0,True,True,8.501221082541678,
+c027,MES-2024-05-31-01,skip,skipped: other reason,4h,1,0.0,0,False,True,1.2204522920979395,"too much selling. price has already hit this zone too much
+"
+c028,ES-2024-06-04-09,skip,skipped: invalid zone,1h,8,5.0,21,True,True,8.676725395123164,invalid zone
+c032,ES-2024-04-08-00,skip,skipped: invalid zone,30m,3,6.5,42,True,True,6.174820344845454,invalid zone
+c035,ES-2024-04-08-03,skip,skipped: invalid zone,30m,4,6.5,42,True,True,8.73207286523448,invalid zone
+c036,ES-2024-08-01-09,long,took the trade,15m,3,0.0,2,True,True,44.17422703464826,price retests zone with a big cvd shift to buyer side. absorption here on the way to this bottom
+c039,MES-2024-02-29-00,skip,skipped: invalid zone,15m,1,0.0,0,True,False,0.386248207754559,sellers clearly in control. zone is now invalid as price moved down away from it
+c040,ES-2024-06-07-04,skip,skipped: invalid zone,1h,1,5.5,261,False,True,6.40761024441984,"price in the zone too long, no longer valid"
+c042,ES-2024-07-29-08,unsure,not sure,2h,1,0.0,11,False,False,1.592684187690417,"zone is valid, but a lot of buyers and sellers fighting up here. hard to tell which direction"
+c043,MES-2025-03-11-01,skip,skipped: other reason,15m,2,0.5,1,True,True,12.036779863635699,"price is moving too fast here, there's no absorption "
+c044,MES-2024-07-31-00,skip,skipped: other reason,30m,1,0.0,7,False,False,167.50061547875404,this is at the open and before it. we dont trade the open
+c045,ES-2024-08-01-00,skip,skipped: other reason,30m,2,0.0,3,False,True,7.190149887336625,"too close to the open, volume a little crazy"
+c046,ES-2024-06-07-00,short,took the trade,1h,1,0.0,0,False,True,1.2903930217689938,cvd lower high but price went higher with absorption
+c047,MES-2024-09-24-02,skip,skipped: invalid zone,15m,5,7.5,42,True,False,91.11100258039103,zone not valid
+c048,ES-2024-04-11-02,short,took the trade,15m,1,0.0,2,True,False,1.5423515643013848,"absorption on the first push up with big buying volume, then less buying on the second attempt up. sellers started coming in after that"
+c049,ES-2024-08-01-10,long,took the trade,15m,3,3.75,37,True,True,45.00002112236288,"absorption at the low, cvd sees more selling but price stays steady. "
+c050,ES-2024-04-08-01,skip,skipped: other reason,1h,3,0.0,41,True,False,68.49528625720077,"a lot of absorption and big buyers without a move, but sellers never came in on the cvd to confirm the reversal. "
+c051,ES-2024-09-24-02,long,took the trade,15m,5,7.5,42,True,False,91.11100775447157,price hit the zone on big selling and absorption. and then a lot of buying came in
+c052,ES-2024-07-29-01,skip,skipped: invalid zone,15m,3,4.25,33,True,True,5.5952507821718855,invalid zone
+c053,ES-2024-08-01-08,long,took the trade,15m,2,0.0,0,True,True,44.06143654074934,"selling hit into the zone, buyers started coming in shortly after cvd dipped and is now starting to come back up"
+c054,ES-2024-06-04-07,skip,skipped: invalid zone,1h,6,5.0,16,True,True,7.7996846525536645,invalid zone
+c056,ES-2024-04-08-08,skip,skipped: invalid zone,15m,4,3.25,57,True,False,4.623682879474428,invalid zone
+c059,ES-2024-04-09-01,skip,skipped: other reason,30m,1,0.0,0,True,False,95.61437803195582,"this seems like a moving train. lots of selling, no real place where buyers came in to stop them"
+c060,ES-2024-03-01-00,skip,skipped: other reason,1h,1,0.0,0,False,True,3.5036620266569987,we don't trade the open
+c062,ES-2024-02-27-00,skip,skipped: other reason,30m,2,0.0,12,False,True,5.083155521286859,all sellers buyers are clearly not interested 
+c063,ES-2024-06-07-02,skip,skipped: invalid zone,1h,1,5.5,208,False,True,5.347836697830094,"invalid zone, price hung around too long in the zone"
+c064,ES-2024-06-05-02,skip,skipped: invalid zone,30m,1,0.0,0,False,True,196.74175366222858,"price blew through the zone. no longer valid after this clip. Lots of absorption, but sellers did not follow through"
+c065,ES-2024-07-30-03,skip,skipped: invalid zone,15m,3,1.25,12,True,True,5.555647396511501,invalid zone
+c067,MES-2024-04-11-00,skip,skipped: other reason,30m,1,0.0,0,False,True,1.2860390516122182,"even though 5182 third retest was in hindsight a decent entry, there was no big absorption. The only thing was that cvd was increasing, but it didn't seem like enough buyers were fighting. I guess I was wrong."
+c068,ES-2024-08-01-11,skip,skipped: other reason,15m,4,3.75,40,True,True,45.106173753870856,just didn't see a good entry. nothing really lined up
+c069,ES-2024-02-29-01,long,took the trade,1h,1,0.0,0,False,True,2.6698156540261375,"price in the zone restest, cvd higher high, big sell on the first drop but sellers stopped pushing on the second drop."
+c070,ES-2024-04-12-04,skip,skipped: invalid zone,15m,2,1.25,11,True,False,0.5904498338037067,invalid zone
+c071,ES-2024-04-08-04,skip,skipped: invalid zone,30m,5,6.5,42,True,True,8.884668312138981,invalid zone
+c072,ES-2024-09-24-03,short,took the trade,1h,1,0.0,0,True,False,1.5229099256462522,"price makes higher high in the zone, cvd stays the same it looks like. absorption, and then some sellers start to come in "
+c073,MES-2024-09-24-01,skip,skipped: invalid zone,15m,4,7.5,42,True,False,90.5608472708861,invalid zone
+c074,ES-2024-08-01-01,skip,skipped: other reason,30m,3,4.25,13,False,True,7.542431229154269,"news day, also price is chopping inside the zone"
+c075,ES-2024-04-12-01,long,took the trade,30m,2,0.0,1,False,True,25.99549923280875,price retests the zone. cvd much higher low. Absorption happened on the first push down and those big resting orders absorbed the bids but price didn't push more down. I wanted the restest to see if buyers actually cared about this zone
+c077,ES-2024-06-05-00,skip,skipped: invalid zone,30m,1,0.0,0,False,True,0.6369514521625307,invalid zone. why is a demand zone above price??
+c080,ES-2024-07-29-02,short,took the trade,30m,2,6.75,30,True,True,6.509753821425968,"price hit absorption at the zone, came back with a retest, sellers started coming in. cvd a little lower, buyers didn't push up the first push, and even less are coming in on the second"
+c081,ES-2024-04-11-05,skip,skipped: other reason,4h,2,10.75,933,False,False,49.13669616791937,"didn't see price re-enter the zone, I saw a lot of absorption. kind of too much actually. it was hard to tell when sellers were going to start coming in"
+c083,MES-2024-04-12-01,long,took the trade,30m,2,0.0,1,False,True,25.99549617038833,"slippage on this one, but you see price hit absorption the first time, then bounced immediately upon hitting the zone. cvd higher low. good trade, but because price moved too fast I hit slippage."
+c085,ES-2024-02-29-02,short,took the trade,1h,1,0.0,0,False,False,2.4443600673807993,"lots of absorption right at the zone. sellers started coming in a little after for confirmation. there are also a lot of resting orders that got filled at areound 13:20, and then immediately put more resting orders on the same level"
+c086,ES-2024-04-09-05,long,took the trade,30m,2,7.25,38,True,False,100.13799836913745,"sellers attempted to push lower into the zone, but cvd kind of stayed stagnant despite price moving lower. Some buyers started coming back in"
+c089,ES-2024-06-07-03,skip,skipped: invalid zone,1h,1,5.5,258,False,True,6.250631056096819,invalid zone. price hanging out too much in the zone
+c090,ES-2024-06-05-03,short,took the trade,4h,1,0.0,0,False,False,312.95000273406504,lots of resting selling orders seem to be holding the line. big buyers attempted to push up but failed. some sellers started coming in after that
+c091,ES-2024-07-31-00,skip,skipped: other reason,30m,1,0.0,7,False,False,167.5006061585744,this is premarket and the open.
+c092,ES-2024-06-04-03,skip,skipped: invalid zone,1h,4,5.0,3,True,True,5.473961356282234,invalid zone
+c095,ES-2024-08-01-05,long,took the trade,1h,2,0.0,0,True,False,23.609811886681452,"hits the zone, makes a double low with cvd on a slightly higher low and absorption. sellers couldn't push much lower than the big set of resting orders around that level. Another note is that this is no longer a valid zone because the small chart shows price was already underneath the zone. I traded this because the zone is basically just a level of interest since price tested from underneath, broke above then retested. this trade is just a restest of that level "
+c096,ES-2024-09-23-01,skip,skipped: other reason,30m,2,1.0,10,True,False,0.2952170889907413,too much chop around the zone. 
+c098,ES-2024-06-04-10,short,took the trade,4h,1,0.0,0,False,False,25.34782781071133,price went to restest the big set of resting orders three times. third time is when we see those orders fill and see absorption. then sellers immediately come in on the delta
+c099,ES-2024-03-01-01,skip,skipped: other reason,1h,2,0.0,7,False,True,4.000000806980663,this is a news day
+c101,ES-2024-06-03-00,skip,skipped: other reason,30m,3,0.0,113,False,True,6.500002729098002,news day
+c102,ES-2024-07-30-00,skip,skipped: other reason,2h,2,0.0,30,False,False,22.522559769617185,premarket -> open
+c103,ES-2024-03-01-02,skip,skipped: other reason,1h,3,6.25,11,False,True,4.095827795730697,news day
+c104,MES-2024-09-24-00,skip,skipped: invalid zone,30m,5,7.5,11,True,True,6.518357703089714,invalid zone
+c106,ES-2024-09-23-00,short,took the trade,30m,1,0.0,0,True,False,0.022783994144863554,absorption at first push up into resting orders. cvd rose a bit but price stayed the same. hidden sellers are taking the orders. then more sellers come in
+c107,ES-2024-07-30-05,long,took the trade,15m,2,0.0,20,True,True,105.4216013702419,"big selling delta into the low with resting orders. no obvious absorption, but the resting orders were sold into and price held. then buyers started coming in"
+c109,MES-2024-01-24-00,skip,skipped: other reason,30m,1,0.0,0,False,False,0.2845227015680737,not much confirmation 
+c110,ES-2024-04-12-00,long,took the trade,30m,2,0.0,0,False,True,25.87036757124795,"price hit the resting orders with absorption and sellers didn't push down. buyers started coming in after that. cvd is also much higher low than it was on the way down, indicating buyers are gaining interest here"
+c111,ES-2024-06-04-05,short,took the trade,1h,5,5.0,7,True,True,5.6661507434977425,
+c112,MES-2024-03-01-00,skip,skipped: other reason,1h,1,0.0,0,False,True,3.50366265171104,
+c113,ES-2024-04-11-06,short,took the trade,4h,2,10.75,956,False,False,50.09270263155302,
+c114,MES-2024-05-02-01,skip,skipped: other reason,2h,2,0.0,69,False,False,19.017332201864985,
+c115,MES-2024-04-03-01,short,took the trade,30m,1,0.0,0,True,True,25.2502399567763,
+c116,ES-2024-02-29-00,skip,skipped: other reason,15m,1,0.0,0,True,False,0.38748811152246265,
+c117,ES-2024-09-23-02,skip,skipped: other reason,15m,1,0.0,0,True,False,0.2509580818812052,
+c118,ES-2024-06-04-06,long,took the trade,30m,2,0.0,1,True,False,0.3062969218360053,
+c119,ES-2024-08-01-02,long,took the trade,15m,1,0.0,0,True,False,0.3495703881978989,
+c120,ES-2024-02-29-03,short,took the trade,1h,1,0.0,21,False,False,4.009886377387577,
+c121,ES-2024-06-04-02,short,took the trade,1h,3,5.0,3,True,True,5.290751356283824,
+c122,ES-2024-04-08-05,skip,skipped: other reason,15m,2,3.25,50,True,False,2.8010233583052955,
+c123,ES-2024-06-04-08,short,took the trade,1h,7,5.0,17,True,True,8.482598459124565,
+c124,ES-2024-06-05-01,short,took the trade,1h,5,0.0,3,False,False,192.5690546513266,
+c125,ES-2024-07-29-03,long,took the trade,15m,4,4.25,35,True,True,5.961080568896399,
+c126,ES-2024-04-08-06,skip,skipped: other reason,15m,2,3.25,50,True,False,3.2243389785289764,
+c127,ES-2024-02-28-01,short,took the trade,15m,4,0.5,13,True,True,5.645133044719696,
+c128,ES-2024-02-26-00,long,took the trade,1h,2,0.0,0,True,True,0.7910463886128531,
+c129,MES-2024-04-12-00,skip,skipped: other reason,30m,2,0.0,0,False,True,25.869881319138738,
+c130,ES-2024-06-04-00,skip,skipped: other reason,1h,1,0.0,0,True,True,4.808502154681418,
+c131,ES-2024-02-28-02,skip,skipped: other reason,30m,1,0.0,0,True,True,7.4803181229697335,
+c132,ES-2024-04-12-03,short,took the trade,15m,1,0.0,0,True,False,0.2783646082878113,
+c133,ES-2024-04-08-02,long,took the trade,15m,1,0.0,0,True,False,1.1064526240030925,
+c134,ES-2024-09-26-03,skip,skipped: other reason,15m,3,1.75,9,False,True,9.186206132504676,
+c135,MES-2024-01-22-00,skip,skipped: other reason,30m,1,0.0,0,False,True,0.5406689225302802,
+c136,ES-2024-02-27-01,short,took the trade,30m,3,0.0,32,True,False,23.459246767030823,
+c137,MES-2024-07-31-01,skip,skipped: other reason,30m,2,0.0,7,False,False,168.03609717912144,
+c138,ES-2024-07-29-06,short,took the trade,2h,1,0.0,0,False,False,1.2198532005813387,
+c139,ES-2024-04-12-02,long,took the trade,30m,3,0.0,1,False,True,27.32018017868201,
+c140,ES-2024-07-29-07,skip,skipped: other reason,2h,1,0.0,11,False,False,1.5176866031355327,
+c141,MES-2024-04-03-00,skip,skipped: other reason,30m,1,0.0,0,True,True,1.1121276313728756,
+c142,MES-2024-03-01-02,skip,skipped: other reason,1h,3,6.25,11,False,True,4.095823772417175,
+c143,ES-2024-04-11-00,skip,skipped: other reason,30m,1,0.0,0,False,True,1.285912282400661,
+c144,ES-2024-07-29-09,short,took the trade,2h,1,0.0,18,False,False,1.905094398856163,
+c145,ES-2024-09-25-02,skip,skipped: other reason,15m,1,0.0,0,True,False,0.13716054042180378,
+c146,MES-2024-01-22-01,long,took the trade,30m,2,0.75,27,False,True,3.0373198939694297,
+c147,ES-2024-07-30-04,skip,skipped: other reason,4h,5,0.0,131,True,False,94.02238790916071,
+c148,ES-2024-02-28-04,short,took the trade,1h,1,0.0,0,True,False,0.44326265858279335,
+c149,ES-2024-08-01-07,skip,skipped: other reason,15m,1,0.0,0,True,True,43.60000862174564,
+c150,ES-2024-04-09-03,long,took the trade,4h,1,0.0,1,False,False,93.79441701352596,
+c151,ES-2024-04-09-00,skip,skipped: other reason,30m,7,6.5,46,True,True,30.97184725675318,
+c152,ES-2024-09-25-03,skip,skipped: other reason,30m,3,5.75,6,True,True,10.641687013506889,
+c153,ES-2024-09-26-02,skip,skipped: other reason,15m,2,0.0,0,False,True,8.904063039686944,
+c154,MES-2024-05-02-02,skip,skipped: other reason,2h,2,6.0,90,False,False,19.655373212562665,
+c155,MES-2025-03-11-00,skip,skipped: other reason,15m,1,0.0,0,True,True,11.820027649468846,
+r001,ES-2024-06-03-01,short,took the trade,1h,1,0.0,0,True,False,1.683589817682902,"a little bit of an early entry, but first test into the zone showed absorption of price at resting orders under the zone, then absorption in the zone. cvd shows a giant burst of green but price didn't move much. then proce moved down a little, then back up into the zone with barely any buying delta. got short when red bubbles started coming in more"
+r002,MES-2024-05-31-00,skip,skipped: other reason,4h,2,0.0,23,True,False,16.668880067335234,price went into the zone but nothing on the orderflow showed any confirmation for an entry
+r003,ES-2024-02-28-00,skip,skipped: other reason,15m,3,0.5,11,True,True,5.1958476523558295,"price moved into the zone with absorption but sellers started to come in a little too late, after price was already well below the zone. It looks like price comes back eventually, but the chart doesn't continue "
+r004,MES-2024-02-28-01,skip,skipped: other reason,15m,4,0.5,13,True,True,5.645180036359363,no order book confirmation
+r005,ES-2024-06-04-01,skip,skipped: other reason,1h,2,0.0,0,True,True,5.000305764476458,news day
+r006,ES-2024-07-30-01,skip,skipped: other reason,1h,1,0.0,0,True,False,0.021336445874638028,news day
+r007,MES-2024-02-23-00,skip,skipped: other reason,30m,1,0.0,0,True,True,2.567432615293397,"price went below the zone, not much orderbook confirmation"
+r008,ES-2024-04-11-04,skip,skipped: other reason,15m,2,0.0,0,True,False,3.3142581362194483,news day
+r009,ES-2024-09-26-00,long,took the trade,30m,3,0.0,8,True,True,5.507718367775281,"some absorption, cvd still high, resting orders filled but price didn't move more down"
+r010,ES-2024-07-29-05,skip,skipped: other reason,4h,3,0.0,3,True,False,70.53261648754278,lots of absorption but sellers were still in control
+r011,ES-2024-08-01-03,skip,skipped: other reason,15m,1,0.0,0,True,True,5.0735356236828695,sellers in control
+r012,ES-2024-04-11-03,skip,skipped: other reason,15m,1,0.0,0,True,False,3.083444382879469,no confirmation
+r013,MES-2024-02-28-00,skip,skipped: other reason,15m,3,0.5,11,True,True,5.195840186609162,no confirmation
+r014,ES-2024-06-06-00,short,took the trade,30m,1,0.0,0,True,False,0.2173554210530387,"second test of the zone shows absorption, lower cvd, buyer volume lower on the restest"
+r015,ES-2024-02-26-03,short,took the trade,15m,2,0.0,0,True,False,1.0118195484744177,"lots of absorption in the zone. after the peak, sellers started stepping in on the cvd"
+r016,ES-2024-09-25-00,skip,skipped: other reason,30m,1,0.0,0,True,True,9.510708128081427,news day
+r017,ES-2024-07-30-02,long,took the trade,15m,2,0.0,9,True,True,5.280637386242549,second push at the bottom broke through a little bit but on lower seller volume. waited to see buyers step in
+r018,ES-2024-08-01-04,skip,skipped: other reason,15m,2,0.0,0,True,True,5.101351909306314,"sellers broke through the zone, they are in control"
+r019,MES-2024-04-29-00,long,took the trade,15m,2,0.0,0,True,True,2.2059155170785054,"big seller push on the second attempt lower, but buyers ate those and then stepped in "
+r020,ES-2024-06-04-04,skip,skipped: other reason,30m,1,0.0,0,True,False,0.10287987934218512,"missed the entry. I see after the fact that there was absorption, and cvd increased a bit. and more absorption on the way up when buyers came in."
+r021,ES-2024-04-11-01,skip,skipped: invalid zone,15m,1,0.0,0,True,False,1.445423074695799,"id say this zone is no longer valid, price already pushed past this zone in both directions."
+r022,ES-2024-08-01-06,long,took the trade,1h,2,0.0,2,True,False,23.69389470371935,"looks like this was an early entry. but restest with absorption, price push lower and cvd higher low. all the normal entry indicators, I just took it too early."
+r023,ES-2024-07-30-07,skip,skipped: other reason,30m,1,0.0,1,True,False,0.5023944601747725,no real confirmation
+r024,ES-2024-07-31-02,skip,skipped: other reason,1h,1,0.0,0,True,False,2.707896505660481,"I saw confirmation here a bit, bit I didn't take the trade. I think I was waiting for a restest of the zone again. I feel like if I was watching my normal bookmap/charts I might have actually taken this one"
+r025,ES-2024-07-30-06,short,took the trade,30m,1,0.0,0,True,False,0.3694925898975796,"Big buying on the first attempt to break up. second attempt shows slow buying volume, then sellers start to com in a bit more."
+r026,ES-2024-02-26-04,short,took the trade,15m,3,0.0,1,True,False,1.7254162524143855,"only one shallow test of the zone but lots of absorption on the way up. then we see more resting orders come in that get filled, but all that buying did not push price up. sellers seem strong here. "
+r027,ES-2024-09-26-04,short,took the trade,15m,1,0.0,0,True,False,3.269068649874793,higher cvd but price is actually moving lower at the zone. showing sellers are in control. buyers cannot break up. then a little dip showing sellers are starting to come in
+r028,ES-2024-02-26-02,short,took the trade,15m,1,0.0,0,True,False,0.6057628469334708,"absorption at the zone, big buying but no follow through"
+r029,MES-2024-07-19-00,skip,skipped: other reason,4h,3,0.0,5,True,True,4.686887822681003,"could have been a good trade, but no indication of big absorption "
+r030,MES-2024-07-23-00,skip,skipped: other reason,30m,1,0.0,0,True,False,0.7877426301108467,sellers in control here
+r031,ES-2024-07-29-00,skip,skipped: other reason,15m,2,0.0,27,True,True,5.264376046790017,we don't trade the open

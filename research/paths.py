@@ -55,6 +55,8 @@ def trade_path(price, seconds) -> tuple[np.ndarray, np.ndarray]:
     """Path through a sequence of trades (repeated prices collapse to one point)."""
     p = np.asarray(price, dtype=np.int64)
     t = np.asarray(seconds, dtype=float)
+    if len(p) == 0:
+        return p, t
     keep = np.concatenate([[True], np.diff(p) != 0])
     p, t = p[keep], t[keep]
     return _expand(p, t, np.ones(max(len(p) - 1, 0), dtype=bool))

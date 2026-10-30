@@ -1,0 +1,52 @@
+exit,who,trades,win_rate,net_usd,same_as_you
+(your own exits),you (journal),78,0.3717948717948718,1114.8799999999997,
+"2-pt stop, 4-pt target",bot A every level test,54,0.2222222222222222,-2994.6,4.0
+"2-pt stop, 4-pt target",bot A every level test + your two filters,46,0.2608695652173913,-1995.4,5.0
+"2-pt stop, 4-pt target",bot B line held at the level,43,0.20930232558139536,-2558.2,1.0
+"2-pt stop, 4-pt target",bot B line held at the level + your two filters,38,0.2631578947368421,-1621.2,1.0
+"2-pt stop, 4-pt target",bot C line held + eaten + stacking,38,0.18421052631578946,-2558.7,1.0
+"2-pt stop, 4-pt target",bot C line held + eaten + stacking + your two filters,32,0.21875,-1809.3,1.0
+"2-pt stop, 4-pt target",bot D full read (C + delta + absorption),16,0.1875,-1060.9,0.0
+"2-pt stop, 4-pt target",bot D full read (C + delta + absorption) + your two filters,13,0.15384615384615385,-998.7,0.0
+"2-pt stop, 4-pt target","bot E eaten + stacking, no line needed",53,0.24528301886792453,-2557.2,4.0
+"2-pt stop, 4-pt target","bot E eaten + stacking, no line needed + your two filters",46,0.2391304347826087,-2307.9,5.0
+"3-pt stop, 7-pt target",bot A every level test,54,0.16666666666666666,-4832.1,4.0
+"3-pt stop, 7-pt target",bot A every level test + your two filters,46,0.21739130434782608,-2920.4,5.0
+"3-pt stop, 7-pt target",bot B line held at the level,42,0.23809523809523808,-2508.3,1.0
+"3-pt stop, 7-pt target",bot B line held at the level + your two filters,38,0.2631578947368421,-1808.7,1.0
+"3-pt stop, 7-pt target",bot C line held + eaten + stacking,37,0.21621621621621623,-2658.8,1.0
+"3-pt stop, 7-pt target",bot C line held + eaten + stacking + your two filters,32,0.25,-1784.3,1.0
+"3-pt stop, 7-pt target",bot D full read (C + delta + absorption),16,0.125,-1773.4,0.0
+"3-pt stop, 7-pt target",bot D full read (C + delta + absorption) + your two filters,13,0.23076923076923078,-736.2,0.0
+"3-pt stop, 7-pt target","bot E eaten + stacking, no line needed",53,0.20754716981132076,-3632.2,4.0
+"3-pt stop, 7-pt target","bot E eaten + stacking, no line needed + your two filters",46,0.1956521739130435,-3432.9,5.0
+"stop 1 pt past the test, target 2x the risk",bot A every level test,54,0.25925925925925924,-2369.6,4.0
+"stop 1 pt past the test, target 2x the risk",bot A every level test + your two filters,46,0.2826086956521739,-1770.4,5.0
+"stop 1 pt past the test, target 2x the risk",bot B line held at the level,42,0.21428571428571427,-2620.8,1.0
+"stop 1 pt past the test, target 2x the risk",bot B line held at the level + your two filters,38,0.2894736842105263,-1371.2,1.0
+"stop 1 pt past the test, target 2x the risk",bot C line held + eaten + stacking,37,0.1891891891891892,-2633.8,1.0
+"stop 1 pt past the test, target 2x the risk",bot C line held + eaten + stacking + your two filters,32,0.25,-1596.8,1.0
+"stop 1 pt past the test, target 2x the risk",bot D full read (C + delta + absorption),16,0.125,-1498.4,0.0
+"stop 1 pt past the test, target 2x the risk",bot D full read (C + delta + absorption) + your two filters,13,0.15384615384615385,-1086.2,0.0
+"stop 1 pt past the test, target 2x the risk","bot E eaten + stacking, no line needed",53,0.2641509433962264,-2382.2,4.0
+"stop 1 pt past the test, target 2x the risk","bot E eaten + stacking, no line needed + your two filters",46,0.2608695652173913,-2120.4,5.0
+"stop 1 pt past the test, STRATEGY.md targets",bot A every level test,47,0.1276595744680851,-1756.5500000000002,4.0
+"stop 1 pt past the test, STRATEGY.md targets",bot A every level test + your two filters,41,0.12195121951219512,-1939.6499999999999,3.0
+"stop 1 pt past the test, STRATEGY.md targets",bot B line held at the level,36,0.1111111111111111,-2175.15,1.0
+"stop 1 pt past the test, STRATEGY.md targets",bot B line held at the level + your two filters,32,0.125,-1625.55,1.0
+"stop 1 pt past the test, STRATEGY.md targets",bot C line held + eaten + stacking,30,0.13333333333333333,-864.5,1.0
+"stop 1 pt past the test, STRATEGY.md targets",bot C line held + eaten + stacking + your two filters,26,0.15384615384615385,-314.9000000000001,1.0
+"stop 1 pt past the test, STRATEGY.md targets",bot D full read (C + delta + absorption),11,0.09090909090909091,-1141.4,0.0
+"stop 1 pt past the test, STRATEGY.md targets",bot D full read (C + delta + absorption) + your two filters,10,0.1,-1004.0000000000001,0.0
+"stop 1 pt past the test, STRATEGY.md targets","bot E eaten + stacking, no line needed",44,0.11363636363636363,-2269.35,4.0
+"stop 1 pt past the test, STRATEGY.md targets","bot E eaten + stacking, no line needed + your two filters",38,0.13157894736842105,-1444.9499999999998,2.0
+"stop 3 pts past the level, STRATEGY.md targets",bot A every level test,37,0.2702702702702703,832.45,3.0
+"stop 3 pts past the level, STRATEGY.md targets",bot A every level test + your two filters,32,0.25,199.45000000000022,1.0
+"stop 3 pts past the level, STRATEGY.md targets",bot B line held at the level,27,0.2222222222222222,-484.7999999999997,1.0
+"stop 3 pts past the level, STRATEGY.md targets",bot B line held at the level + your two filters,24,0.20833333333333334,-491.3499999999999,1.0
+"stop 3 pts past the level, STRATEGY.md targets",bot C line held + eaten + stacking,21,0.19047619047619047,-190.39999999999992,1.0
+"stop 3 pts past the level, STRATEGY.md targets",bot C line held + eaten + stacking + your two filters,18,0.16666666666666666,-196.9499999999999,1.0
+"stop 3 pts past the level, STRATEGY.md targets",bot D full read (C + delta + absorption),6,0.0,-1436.9,0.0
+"stop 3 pts past the level, STRATEGY.md targets",bot D full read (C + delta + absorption) + your two filters,5,0.0,-1199.5,0.0
+"stop 3 pts past the level, STRATEGY.md targets","bot E eaten + stacking, no line needed",34,0.23529411764705882,-307.84999999999985,4.0
+"stop 3 pts past the level, STRATEGY.md targets","bot E eaten + stacking, no line needed + your two filters",29,0.2413793103448276,229.1500000000001,1.0
