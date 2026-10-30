@@ -1,0 +1,106 @@
+clip,decision,group,tf,test,through_after_pts,minutes_inside,traded_both_before,formed_overnight,hours_old,note
+c001,short,took the trade,30m,2,0.0,7,False,False,168.03621129804188,"price came up into the zone twice. this is the second time. cvd lower high, and we see a bunch of selling start to come in right after that big buying burst around 5548. "
+c002,skip,skipped: invalid zone,15m,3,3.0,21,True,True,1.2758560480011834,skipped because the previous day shows that this zone is no longer valid. price already blew past this zone both up and down. 
+c003,skip,skipped: invalid zone,15m,3,0.5,11,True,True,5.195840186609162,this zone is not valid. price has already blown past this zone in both directions as shown on the smaller chart (previous day)
+c004,skip,skipped: invalid zone,30m,1,0.0,1,True,False,0.5023944601747725,price already went past this zone. it is no longer valid
+c005,skip,skipped: invalid zone,30m,1,0.0,0,True,False,0.7877426301108467,this cannot be a demand zone if price is hanging out below it. 
+c006,skip,skipped: invalid zone,15m,2,0.0,9,True,True,5.280637386242549,zone not valid
+c007,long,took the trade,15m,3,0.5,1,True,True,12.130039994385507,cvd higher low big sell volume but price didn't move down that much
+c008,skip,skipped: invalid zone,15m,1,0.0,0,False,True,8.585516740878424,zone invalid. price is so far below this demand zone how is this still on the chart?
+c009,short,took the trade,30m,1,0.0,0,True,True,8.500951960881551,"price hit the zone, lots of absorption"
+c011,short,took the trade,1h,2,0.0,1,True,False,2.0272338536050585,big selling started to come in. absorption right as price hit the level the first time. retest of the zone
+c012,skip,skipped: other reason,1h,2,0.0,7,False,True,4.000003585285611,"news day, volume exploded at 10am. it's too soon on this chart to make a decision"
+c013,skip,skipped: invalid zone,15m,2,0.0,0,True,True,2.2059155170785054,zone is invalid
+c014,skip,skipped: invalid zone,30m,2,3.75,1,True,True,9.681921001407835,this zone is insanely invalid. price blows past this in both directions. this should no longer be on the chart
+c015,skip,skipped: invalid zone,30m,5,7.5,11,True,True,6.518362911277348,invalid zone
+c016,skip,skipped: invalid zone,15m,3,3.25,56,True,False,4.142240202228228,invalid zone
+c017,unsure,not sure,15m,4,7.5,42,True,False,90.56084691789415,"Price moved too fast into the zone. this could have been a good trade, but I don't really see anything special on the zone touch. I was expecting a restest, but we didn't get that"
+c019,long,took the trade,2h,3,6.0,100,False,False,20.535102438529332,green volume coming in. seller delta is not as strong as it was on the way down into the zone. price also bounced at where the resting order was
+c020,unsure,not sure,30m,1,7.25,26,True,False,96.40194694432947,"this zone isn't exactly valid, but price could jump higher in this area just because there looks liek there might be a different but valid zone here."
+c021,skip,skipped: other reason,1h,1,3.5,136,True,False,4.5625283394919505,price is trading inside the zone for a bit. this is not a valid supply zone anymore.
+c022,skip,skipped: other reason,1h,3,0.0,2,True,True,1.2502587187952465,not a valid zone
+c023,skip,skipped: invalid zone,15m,5,4.25,40,True,True,6.183460909393099,zone not valid
+c024,long,took the trade,4h,1,0.0,0,False,False,93.72459690597323,"buyer delta is coming in after what I can only assume is a long a fast drop of price. price touches zone, then bounces up with a higher low of cvd"
+c025,skip,skipped: invalid zone,1h,1,0.75,48,False,True,2.2435813252131145,"price is hanging out in the zone, it's been here too long, zone is probably no longer valid"
+c026,short,took the trade,30m,1,0.0,0,True,True,8.501221082541678,
+c027,skip,skipped: other reason,4h,1,0.0,0,False,True,1.2204522920979395,"too much selling. price has already hit this zone too much
+"
+c028,skip,skipped: invalid zone,1h,8,5.0,21,True,True,8.676725395123164,invalid zone
+c029,skip,skipped: invalid zone,15m,1,0.0,0,True,False,3.269068649874793,zone invalid
+c030,skip,skipped: invalid zone,30m,1,0.0,0,True,False,0.3694925898975796,zone completely invalid. how is this still a supply zone if price already jumped way above it?
+c031,skip,skipped: invalid zone,30m,1,0.0,0,True,True,9.510708128081427,invalid
+c032,skip,skipped: invalid zone,30m,3,6.5,42,True,True,6.174820344845454,invalid zone
+c033,skip,skipped: invalid zone,15m,2,0.0,0,True,False,3.3142581362194483,invalid zone
+c034,skip,skipped: invalid zone,15m,2,0.0,0,True,True,5.101351909306314,price completely blows past the zone. which is partially invalid because price was below this zone 
+c035,skip,skipped: invalid zone,30m,4,6.5,42,True,True,8.73207286523448,invalid zone
+c036,long,took the trade,15m,3,0.0,2,True,True,44.17422703464826,price retests zone with a big cvd shift to buyer side. absorption here on the way to this bottom
+c037,skip,skipped: invalid zone,1h,2,0.0,0,True,True,5.000305764476458,zone invalid
+c038,skip,skipped: invalid zone,30m,3,0.0,8,True,True,5.507718367775281,zone invalid. demand zone is above price?
+c040,skip,skipped: invalid zone,1h,1,5.5,261,False,True,6.40761024441984,"price in the zone too long, no longer valid"
+c041,skip,skipped: invalid zone,1h,2,0.0,2,True,False,23.69389470371935,invalid zone
+c042,unsure,not sure,2h,1,0.0,11,False,False,1.592684187690417,"zone is valid, but a lot of buyers and sellers fighting up here. hard to tell which direction"
+c043,skip,skipped: other reason,15m,2,0.5,1,True,True,12.036779863635699,"price is moving too fast here, there's no absorption "
+c044,skip,skipped: other reason,30m,1,0.0,7,False,False,167.50061547875404,this is at the open and before it. we dont trade the open
+c045,skip,skipped: other reason,30m,2,0.0,3,False,True,7.190149887336625,"too close to the open, volume a little crazy"
+c046,short,took the trade,1h,1,0.0,0,False,True,1.2903930217689938,cvd lower high but price went higher with absorption
+c047,skip,skipped: invalid zone,15m,5,7.5,42,True,False,91.11100258039103,zone not valid
+c049,long,took the trade,15m,3,3.75,37,True,True,45.00002112236288,"absorption at the low, cvd sees more selling but price stays steady. "
+c050,skip,skipped: other reason,1h,3,0.0,41,True,False,68.49528625720077,"a lot of absorption and big buyers without a move, but sellers never came in on the cvd to confirm the reversal. "
+c051,long,took the trade,15m,5,7.5,42,True,False,91.11100775447157,price hit the zone on big selling and absorption. and then a lot of buying came in
+c052,skip,skipped: invalid zone,15m,3,4.25,33,True,True,5.5952507821718855,invalid zone
+c053,long,took the trade,15m,2,0.0,0,True,True,44.06143654074934,"selling hit into the zone, buyers started coming in shortly after cvd dipped and is now starting to come back up"
+c054,skip,skipped: invalid zone,1h,6,5.0,16,True,True,7.7996846525536645,invalid zone
+c055,skip,skipped: invalid zone,15m,1,0.0,0,True,False,3.083444382879469,invalid zone
+c056,skip,skipped: invalid zone,15m,4,3.25,57,True,False,4.623682879474428,invalid zone
+c057,skip,skipped: invalid zone,15m,3,0.5,11,True,True,5.1958476523558295,invalid zone
+c058,skip,skipped: invalid zone,1h,1,0.0,0,True,False,1.683589817682902,invalid zone
+c059,skip,skipped: other reason,30m,1,0.0,0,True,False,95.61437803195582,"this seems like a moving train. lots of selling, no real place where buyers came in to stop them"
+c060,skip,skipped: other reason,1h,1,0.0,0,False,True,3.5036620266569987,we don't trade the open
+c061,skip,skipped: invalid zone,1h,1,0.0,0,True,False,0.021336445874638028,invalid zone
+c062,skip,skipped: other reason,30m,2,0.0,12,False,True,5.083155521286859,all sellers buyers are clearly not interested 
+c063,skip,skipped: invalid zone,1h,1,5.5,208,False,True,5.347836697830094,"invalid zone, price hung around too long in the zone"
+c064,skip,skipped: invalid zone,30m,1,0.0,0,False,True,196.74175366222858,"price blew through the zone. no longer valid after this clip. Lots of absorption, but sellers did not follow through"
+c065,skip,skipped: invalid zone,15m,3,1.25,12,True,True,5.555647396511501,invalid zone
+c066,skip,skipped: invalid zone,4h,2,0.0,23,True,False,16.668880067335234,invalid zone
+c067,skip,skipped: other reason,30m,1,0.0,0,False,True,1.2860390516122182,"even though 5182 third retest was in hindsight a decent entry, there was no big absorption. The only thing was that cvd was increasing, but it didn't seem like enough buyers were fighting. I guess I was wrong."
+c068,skip,skipped: other reason,15m,4,3.75,40,True,True,45.106173753870856,just didn't see a good entry. nothing really lined up
+c069,long,took the trade,1h,1,0.0,0,False,True,2.6698156540261375,"price in the zone restest, cvd higher high, big sell on the first drop but sellers stopped pushing on the second drop."
+c070,skip,skipped: invalid zone,15m,2,1.25,11,True,False,0.5904498338037067,invalid zone
+c071,skip,skipped: invalid zone,30m,5,6.5,42,True,True,8.884668312138981,invalid zone
+c072,short,took the trade,1h,1,0.0,0,True,False,1.5229099256462522,"price makes higher high in the zone, cvd stays the same it looks like. absorption, and then some sellers start to come in "
+c073,skip,skipped: invalid zone,15m,4,7.5,42,True,False,90.5608472708861,invalid zone
+c074,skip,skipped: other reason,30m,3,4.25,13,False,True,7.542431229154269,"news day, also price is chopping inside the zone"
+c075,long,took the trade,30m,2,0.0,1,False,True,25.99549923280875,price retests the zone. cvd much higher low. Absorption happened on the first push down and those big resting orders absorbed the bids but price didn't push more down. I wanted the restest to see if buyers actually cared about this zone
+c076,skip,skipped: invalid zone,1h,1,0.0,0,True,False,2.707896505660481,invalid zone
+c077,skip,skipped: invalid zone,30m,1,0.0,0,False,True,0.6369514521625307,invalid zone. why is a demand zone above price??
+c078,skip,skipped: invalid zone,15m,2,0.0,0,True,False,1.0118195484744177,invalid zone
+c079,skip,skipped: invalid zone,15m,2,0.0,27,True,True,5.264376046790017,invalid zone
+c080,short,took the trade,30m,2,6.75,30,True,True,6.509753821425968,"price hit absorption at the zone, came back with a retest, sellers started coming in. cvd a little lower, buyers didn't push up the first push, and even less are coming in on the second"
+c081,skip,skipped: other reason,4h,2,10.75,933,False,False,49.13669616791937,"didn't see price re-enter the zone, I saw a lot of absorption. kind of too much actually. it was hard to tell when sellers were going to start coming in"
+c082,skip,skipped: invalid zone,15m,1,0.0,0,True,True,5.0735356236828695,invalid zone
+c083,long,took the trade,30m,2,0.0,1,False,True,25.99549617038833,"slippage on this one, but you see price hit absorption the first time, then bounced immediately upon hitting the zone. cvd higher low. good trade, but because price moved too fast I hit slippage."
+c084,skip,skipped: invalid zone,30m,1,0.0,0,True,False,0.2173554210530387,invalid zone
+c085,short,took the trade,1h,1,0.0,0,False,False,2.4443600673807993,"lots of absorption right at the zone. sellers started coming in a little after for confirmation. there are also a lot of resting orders that got filled at areound 13:20, and then immediately put more resting orders on the same level"
+c086,long,took the trade,30m,2,7.25,38,True,False,100.13799836913745,"sellers attempted to push lower into the zone, but cvd kind of stayed stagnant despite price moving lower. Some buyers started coming back in"
+c087,skip,skipped: invalid zone,30m,1,0.0,0,True,False,0.10287987934218512,invalid zone
+c088,skip,skipped: invalid zone,15m,1,0.0,0,True,False,1.445423074695799,invalid zone
+c089,skip,skipped: invalid zone,1h,1,5.5,258,False,True,6.250631056096819,invalid zone. price hanging out too much in the zone
+c090,short,took the trade,4h,1,0.0,0,False,False,312.95000273406504,lots of resting selling orders seem to be holding the line. big buyers attempted to push up but failed. some sellers started coming in after that
+c091,skip,skipped: other reason,30m,1,0.0,7,False,False,167.5006061585744,this is premarket and the open.
+c092,skip,skipped: invalid zone,1h,4,5.0,3,True,True,5.473961356282234,invalid zone
+c093,skip,skipped: invalid zone,4h,3,0.0,5,True,True,4.686887822681003,invalid zone
+c094,skip,skipped: invalid zone,15m,1,0.0,0,True,False,0.6057628469334708,invalid zone
+c095,long,took the trade,1h,2,0.0,0,True,False,23.609811886681452,"hits the zone, makes a double low with cvd on a slightly higher low and absorption. sellers couldn't push much lower than the big set of resting orders around that level. Another note is that this is no longer a valid zone because the small chart shows price was already underneath the zone. I traded this because the zone is basically just a level of interest since price tested from underneath, broke above then retested. this trade is just a restest of that level "
+c096,skip,skipped: other reason,30m,2,1.0,10,True,False,0.2952170889907413,too much chop around the zone. 
+c097,skip,skipped: invalid zone,4h,3,0.0,3,True,False,70.53261648754278,invalid zone
+c098,short,took the trade,4h,1,0.0,0,False,False,25.34782781071133,price went to restest the big set of resting orders three times. third time is when we see those orders fill and see absorption. then sellers immediately come in on the delta
+c099,skip,skipped: other reason,1h,2,0.0,7,False,True,4.000000806980663,this is a news day
+c100,skip,skipped: invalid zone,15m,4,0.5,13,True,True,5.645180036359363,invalid zone
+c101,skip,skipped: other reason,30m,3,0.0,113,False,True,6.500002729098002,news day
+c102,skip,skipped: other reason,2h,2,0.0,30,False,False,22.522559769617185,premarket -> open
+c103,skip,skipped: other reason,1h,3,6.25,11,False,True,4.095827795730697,news day
+c104,skip,skipped: invalid zone,30m,5,7.5,11,True,True,6.518357703089714,invalid zone
+c105,skip,skipped: invalid zone,30m,1,0.0,0,True,True,2.567432615293397,invalid zone
+c106,short,took the trade,30m,1,0.0,0,True,False,0.022783994144863554,absorption at first push up into resting orders. cvd rose a bit but price stayed the same. hidden sellers are taking the orders. then more sellers come in
+c107,long,took the trade,15m,2,0.0,20,True,True,105.4216013702419,"big selling delta into the low with resting orders. no obvious absorption, but the resting orders were sold into and price held. then buyers started coming in"
+c108,skip,skipped: invalid zone,15m,3,0.0,1,True,False,1.7254162524143855,invalid zone

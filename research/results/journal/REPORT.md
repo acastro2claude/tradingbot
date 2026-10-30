@@ -563,6 +563,50 @@ The bot works on 1-minute candles: a zone test, entry on the first close 1 point
 - Random entries with the same exits lose too. A risk structure multiplies an edge in the entries; it cannot create one.
 - Holding to 12 while delta continues barely changes the result. When price has already gone 10 points, the trade is usually a winner either way.
 
+## 18. The zone replay page: the owner's decisions on 104 clips (`replay_scores.csv`, `replay_invalid.csv`, Oct 2026)
+
+**What the owner saw.** 155 zone tests (the 23 ES days of 2024 and the owner's 20 busiest MES journal days), each replayed in 2-second frames from 10 minutes before the test to 5 minutes after: book heatmap, volume bubbles, delta, absorption bursts and a 15-minute context chart. The date was hidden. The owner decided 104: long 13, short 11, skip 77, not sure 3.
+
+**Scoring** (`research/replay_score.py`): the owner's entry is the last price when they pressed the button, plus 1 tick of slippage. Stops and the 15:59 close pay 1 tick; targets fill 1 tick through. 10 MES = $50 a point, $12.40 costs per trade. "Bot's entry" is the zone bot's first 1-point turn off the same test. "Random" is 20 random moments in the 5 minutes after the test, random side, averaged per clip.
+
+| Entries | Trades | Winners | Per trade, 4/10 | Net, 4/10 | Per trade, 4 → 10 or 12 |
+|---|---|---|---|---|---|
+| The owner | 24 | 38% | +$25 | +$602 | +$32 |
+| Bot's entry, the 24 clips the owner traded | 24 | 33% | −$7 | −$160 | −$13 |
+| Bot's entry, the 75 clips the owner skipped | 75 | 24% | −$50 | −$3,768 | −$51 |
+| Random, the 24 clips the owner traded | | | −$22 | | −$21 |
+| Random, every clip | | | −$61 | | −$62 |
+
+- **All 24 trades were in the zone's direction:** long at demand, short at supply.
+- **Where the difference comes from:**
+  - **Which clips:** the bot's own entry loses $7 a trade on the clips the owner took and $50 on the ones skipped.
+  - **The entry price:** the owner entered a median 105 seconds after the test, at a better price than the bot's first turn in 17 of 24 trades (1.2 points on average). With 4/10 that changed only one trade (8 winners vs 7). With a 3-point stop and 7-point target it changed more (12 winners vs 5; +$70 vs −$68 a trade). That exit was not picked in advance, so it is only a hint.
+- **Not proven.** One winner more or less moves the total by about $700. The 95% range for +$25 a trade is −$111 to +$161. Several hundred trades would be needed to prove it, which is why the next step is turning the owner's reasons into rules and testing those on all days.
+- **A look-ahead check.** The last candle of the context chart could end up to 5 minutes after the test. On 6 of the 24 trades it reached past the owner's entry. 4 of those 6 lost, and without them the result is +$29 a trade, so it did not flatter the owner. Fixed: the context chart now ends before the clip starts.
+
+**Why the owner skipped.** 56 of the 77 skips say the zone is invalid: "price already blew past this zone both up and down (previous day)", "demand zone above price", "price hung around too long in the zone". `research/replay_invalid.py` measures each clip:
+
+| Owner's call | Clips | Price traded 5+ points on both sides of the zone before it formed | Zone age at the test (median) | Price traded past the far edge after it formed | 30+ minutes inside before the test |
+|---|---|---|---|---|---|
+| Invalid zone | 56 | 88% | 5 hours | 45% | 23% |
+| Other skips | 21 | 33% | 7 hours | 33% | 29% |
+| Took the trade | 24 | 58% | 24 hours | 25% | 21% |
+
+- The clearest difference is what price did **before** the zone formed. Most zones called invalid formed overnight, a few hours before the test, in an area price had traded through both ways in the previous two days.
+- **A display issue:** the context chart shaded the zone across all the days shown, including the days before the zone existed. So the owner may have read those earlier moves as price blowing through the zone. Fixed: the shading now starts at the candle where the zone formed. Whether earlier price action should count is the owner's call (TBD).
+- Time spent inside the zone does not separate the groups by this measure.
+- **The bot's entry by zone age** (102 clips, 4/10): zones 12+ hours old +$51 a trade (31 clips), younger zones −$77 (71 clips). This is a hint worth testing on all days, not a result.
+
+**Other owner rules in the notes:**
+- **The open:** all 19 clips before 10:00 ET were skipped ("we don't trade the open", "premarket → open", "too close to the open, volume a little crazy" at 09:41).
+- **News:** 5 clips at 10:00–10:05 were skipped as news days. These were the 10:00 ISM releases (1 Mar, 3 Jun and 1 Aug 2024).
+- **Other skips:** a "moving train" with no buyers stopping it; chop at the zone; "nothing lined up"; lots of absorption without the other side coming in.
+- **Why the owner took trades:**
+  - CVD makes a higher low at demand (lower high at supply) as price retests.
+  - Absorption as price hits the zone, then the other side comes in.
+  - A weaker second push into the zone.
+  - Resting orders holding the line.
+
 ## Caveats
 
 - The read is my translation of the owner's description. Every threshold above is a proposal, and the owner's eye may weigh things differently.

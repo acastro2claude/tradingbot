@@ -15,7 +15,8 @@ date is not shown on the page.
 Writes data/derived/replay/tests/<id>.json (the clips, too big for git), the trades of each
 MES day to data/derived/replay_trades/ (for scoring the owner's entries later), and
 research/results/journal/replay_tests.csv (the list of tests, committed).
-Run from the repo root:   python -m research.replay_export      (--backfill-vwap: add the volume bubbles' prices to old clips)
+Run from the repo root:   python -m research.replay_export      (--backfill-vwap: add the volume bubbles' prices to old
+clips; --fix-context: trim the context chart of old clips and add when the zone formed)
 """
 
 from __future__ import annotations
@@ -23,6 +24,7 @@ from __future__ import annotations
 import base64
 import json
 from multiprocessing import Pool
+from types import SimpleNamespace
 
 import numpy as np
 import pandas as pd
@@ -87,6 +89,28 @@ def backfill_vwap() -> None:
     print("added vwap to", len(tests), "clips")
 
 
+def fix_context() -> None:
+    """Clips exported before Oct 30 2026: drop context candles that end after the clip starts (they
+    showed up to a few minutes past the test) and add when the zone formed (the page now draws the
+    zone band from then on, not across the days before it existed)."""
+    s = load_settings()
+    _, sessions, zones, candles = es_zones(s)
+    offsets = sessions.groupby("contract")["offset_ticks"].first()
+    ctx = candles[s["replay"]["context_minutes"]]
+    tests = pd.read_csv(OUT / "replay_tests.csv")
+    for r in tests.itertuples():
+        path = REPLAY_DIR / f"{r.id}.json"
+        c = json.loads(path.read_text())
+        es = r.contract if r.market == "ES" else "ES" + r.contract[3:]
+        z = zone_of(SimpleNamespace(time=r.time, direction=r.direction, edge=r.edge), zones, int(offsets[es]))
+        c["zone"]["formed"] = z["formed"]
+        keep = set(ctx.loc[ctx["end"] <= c["start_epoch"], "start"].astype(int))
+        k = [i for i, st in enumerate(c["context"]["start"]) if st in keep]
+        c["context"] = {key: [v[i] for i in k] for key, v in c["context"].items()}
+        path.write_text(json.dumps(c, separators=(",", ":")))
+    print("fixed the context chart of", len(tests), "clips")
+
+
 def clip(book, typ: float, bursts: pd.DataFrame, x, meta: dict, ctx_candles: pd.DataFrame, off: int, R: dict,
          bubble_min: float) -> dict:
     fs, half = R["frame_seconds"], int(round(R["half_range_points"] / 0.25))
@@ -119,14 +143,13 @@ def clip(book, typ: float, bursts: pd.DataFrame, x, meta: dict, ctx_candles: pd.
     agg = pd.DataFrame(dict(f=f, p=px, b=buy, v=sz)).groupby(["f", "p", "b"])["v"].sum().reset_index()
     agg = agg[agg["v"] >= bubble_min].nlargest(R["max_bubbles"], "v")
     bu = bursts[(bursts["time"] >= t_a) & (bursts["time"] < t_b)]
-    first_before = ctx_candles["start"] < t_a
-    c = ctx_candles[first_before]
+    c = ctx_candles[ctx_candles["end"] <= t_a]                  # only candles finished before the clip starts
     return dict(
         id=meta["id"], market=meta["market"], contract=meta["contract"], weekday=meta["weekday"],
         test_time_et=meta["time_et"], direction=int(x.direction), frame_seconds=fs, frames=n,
         test_frame=int(R["before_seconds"] // fs), start_epoch=t_a, price_lo=int(p_lo), rows=len(prices),
         zone=dict(kind="demand" if x.direction == 1 else "supply", near=int(x.edge), lo=int(x.lo), hi=int(x.hi),
-                  tf=meta["tf"], pattern=meta["pattern"], test=meta["zone_test"]),
+                  tf=meta["tf"], pattern=meta["pattern"], test=meta["zone_test"], formed=meta["formed"]),
         heat=b64(heat), close=close.tolist(), high=hi.tolist(), low=lo.tolist(), buy=bv.tolist(), sell=sv.tolist(),
         vwap=vwap,
         bubbles=agg[["f", "p", "b", "v"]].astype(int).values.tolist(),
@@ -194,4 +217,9 @@ def main() -> None:
 
 if __name__ == "__main__":
     import sys
-    backfill_vwap() if "--backfill-vwap" in sys.argv else main()
+    if "--backfill-vwap" in sys.argv:
+        backfill_vwap()
+    elif "--fix-context" in sys.argv:
+        fix_context()
+    else:
+        main()

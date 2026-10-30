@@ -120,6 +120,11 @@ Source A and source B (1e, the owner's current method) are both tested. The data
   - The higher timeframe wins. On the same timeframe, the earlier zone wins.
   - A zone that would form over a winning zone is not marked.
   - A lower-timeframe zone stops counting when a higher-timeframe zone forms over it. The lower one usually shows up first, while the higher one's base is still forming.
+- **Invalid zones (owner, replay page, Oct 2026):** the owner called 56 of 104 replayed zones invalid. Not yet in the bot's rules:
+  - Price already blew past the zone, often both ways ("previous day").
+  - Demand with price trading below it, or supply with price above it.
+  - Price hanging inside the zone too long.
+  - **TBD (question to the owner):** does price action from before the zone formed count? Most zones called invalid formed overnight, a few hours before the test, in an area price had traded through both ways in the previous two days (88% of them, vs 58% of the zones traded). The page's side chart shaded each zone across those earlier days too, as if it already existed (fixed).
 - **On 2024 ES data:** about 16 zones a week across the five timeframes, after overlaps (40 before the basing-candle and chop rules).
   - Per week: 1.3 four-hour, 1.2 two-hour, 1.6 one-hour, 4.6 thirty-minute and 7 fifteen-minute.
   - Median height in points: 10.5 (4-hour), 10 (2-hour), 5.5 (1-hour), 3.75 (30-minute), 2.25 (15-minute).
@@ -204,6 +209,21 @@ Example: a long at a demand zone that has previous days' POCs inside it (a near-
 - **No trade** in chop with no clear movement.
 - **Targets:** the next POC, the far side of the chop, or about 3/4 of the way across today's value area (the 70% volume node).
 - **Continuation trades:** the owner also takes a retest of a chop zone in the direction of the move already made (delta rising, little aggression either way). This is not part of the bot's reversal setup. **TBD:** whether to add it.
+
+**From the replay page (24 trades and 77 skips, Oct 2026):**
+- Every trade was in the zone's direction.
+- Reasons to take a trade:
+  - CVD makes a higher low at demand (a lower high at supply) as price retests the zone.
+  - Absorption as price hits the zone, then the other side comes in.
+  - A weaker second push into the zone.
+  - Resting orders holding the line.
+- Reasons to skip:
+  - The zone is invalid (section 1b).
+  - The open ("we don't trade the open").
+  - News spikes.
+  - A "moving train" with nobody stopping it.
+  - Chop at the zone.
+  - Absorption without the other side coming in.
 
 - In 2024 the owner most likely watched the ES heatmap in Bookmap, even when trading MES.
 - The journal replay shows the entry usually comes once price has already started to turn (median 0.5 points in the trade's direction in the last 5 seconds).
@@ -308,7 +328,8 @@ Every number below is an adjustable setting. The defaults come from this spec.
 | Session | 18:00–17:00 ET | Full Globex session |
 | No new entries after | 16:30 ET | |
 | Close open trade at | 16:50 ET | 10 minutes before the session close |
-| News events | CPI, jobs report, Fed decisions | |
+| No entries before | 10:00 ET | Owner: "we don't trade the open". The owner skipped all 19 replay clips before 10:00. 10:00 proposed, TBD |
+| News events | CPI, jobs report, Fed decisions | Also the 10:00 ET releases such as ISM (proposed: the owner skipped 10:00 news spikes on the replay page) |
 | News blackout for entries | 15 min before to 30 min after | Fed days: until the press conference ends |
 | Close open trade before news | 5 min before the release | |
 | POC lookback | 20 sessions | |
@@ -386,6 +407,12 @@ Every number below is an adjustable setting. The defaults come from this spec.
    - **The owner's risk structure (Oct 2026):** "a 4 point stop loss, but let winners run to about 10-12 points depending on market conditions (mostly meaning delta is heavily continuing in our direction, and aggressive buyers/sellers are still moving the same direction)."
      - The owner's journal (Apr 2024 on): 34% winners, average win 5.8 points, average loss 2.3.
      - Tested on all days and on 2026 tick data, the zone bot still loses with 4/10, 4/12 and the delta-based 10-or-12 exit (24–25% winners, about 31% needed). Random entries with the same exits lose too: the exits multiply an edge in the entries but cannot create one. Details: REPORT.md section 17.
+   - **Replay page (Oct 2026, 104 clips of zone tests, date hidden):**
+     - The owner took 24 trades, all in the zone's direction: 38% winners, +$25 per trade with 4/10 (+$602), +$32 with the 10-or-12 hold.
+     - The bot's own entry on the same clips: −$7 per trade. On the 75 clips the owner skipped: −$50. Random entries on the clips the owner took: −$22.
+     - Most of the difference is which clips the owner takes. The owner's entry price was also about 1 point better than the bot's.
+     - 24 trades don't prove it (95% range −$111 to +$161 per trade).
+     - Most skips (56 of 77) were "invalid zone". Details: REPORT.md section 18.
    - **All days, Feb 2024 – Oct 2026 (588 sessions, 1-minute candles):** the zone bot matches random entries in every year, quarter and type of day. For example, 27% winners vs 28% random with 2/4, and only 2–4 of 33 months up. Details: REPORT.md section 16.
 
    **First look (Oct 2026, full MES book for the owner's 20 busiest journal days in 2024–2025, 163 trades):** the owner's entries came once price had already started their way. Compared with random moments that had the same move, the orders in the path of the trade were being pulled faster than they were added more often (51% vs 40%). Big resting lines next to the entry were rare, and on their own they did not hold price. None of the book readings tested separated winners from losers. These 20 days were also the owner's losing days (26% win rate, −$6,015), and the journal trades are mostly ES while this book is MES. Details: `research/results/journal/REPORT.md`.

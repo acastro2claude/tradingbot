@@ -89,7 +89,7 @@ kbd { font: 0.78rem var(--mono); border: 1px solid var(--line); border-radius: 4
         <li>White line: last price. Bubbles: all the volume traded every 2 seconds, at its average price, like Bookmap's volume dots. Bigger = more contracts. Green = buyers outweighed sellers (buyer delta), red = sellers outweighed buyers; the stronger the imbalance, the stronger the colour, and grey = about even.</li>
         <li>Diamonds: absorption bursts like your add-on (50+ ES or 100+ MES contracts at one price within 0.01 s). Purple = aggressive buyers absorbed by sellers (bearish). Yellow = aggressive sellers absorbed by buyers (bullish; green on your add-on). The size is written next to the bigger ones.</li>
         <li>Shaded band: the zone being tested (its timeframe and test number are on the right). Bottom panel: delta every 10 seconds and cumulative delta.</li>
-        <li>The small chart on the right: 15-minute candles of the last sessions up to the start of the clip, with the zone.</li>
+        <li>The small chart on the right: 15-minute candles of the last sessions up to the start of the clip. The zone is shaded from the candle where it formed.</li>
         <li>Your entry is recorded at the time and price shown when you press. Results are scored later with your risk structure; you won't see them here.</li>
       </ul>
     </details>
@@ -283,7 +283,10 @@ function drawCtx() {
   let lo = Math.min(...c.l, z.lo), hi = Math.max(...c.h, z.hi); const pad = (hi - lo) * 0.05 + 2; lo -= pad; hi += pad;
   const pw = w - 52, sx = k => ((k + 0.5) / n) * pw, sy = v => 6 + (hi - v) / (hi - lo) * (h - 12), bw = Math.max(1, pw / n * 0.6);
   const zc = z.kind === "demand" ? css("--demand") : css("--supply");
-  g.globalAlpha = 0.25; g.fillStyle = zc; g.fillRect(0, sy(z.hi), pw, Math.max(sy(z.lo) - sy(z.hi), 2)); g.globalAlpha = 1;
+  // the zone band starts at the candle where the zone formed, not before it existed
+  let k0 = 0; if (z.formed != null) { k0 = c.start.findIndex(st => st > z.formed) - 1; if (k0 < 0) k0 = c.start[0] > z.formed ? 0 : n - 1; }
+  const x0 = Math.max(0, sx(k0) - pw / n / 2);
+  g.globalAlpha = 0.25; g.fillStyle = zc; g.fillRect(x0, sy(z.hi), pw - x0, Math.max(sy(z.lo) - sy(z.hi), 2)); g.globalAlpha = 1;
   for (let k = 0; k < n; k++) { const x = sx(k); g.strokeStyle = "#c9d3dd"; g.lineWidth = 1;
     g.beginPath(); g.moveTo(x, sy(c.h[k])); g.lineTo(x, sy(c.l[k])); g.stroke();
     const top = sy(Math.max(c.o[k], c.c[k])), bot = sy(Math.min(c.o[k], c.c[k]));

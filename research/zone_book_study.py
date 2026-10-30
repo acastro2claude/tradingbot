@@ -61,10 +61,11 @@ def zone_of(test, zones: pd.DataFrame, off: int) -> dict:
     m = zones[(zones["created"] <= test.time) & (zones["dies"] > test.time)
               & ((zones["kind"] == "demand") == (test.direction == 1)) & (zones["near"] - off == test.edge)]
     if m.empty:
-        return dict(tf=None, pattern=None, zone_test=np.nan, height=np.nan)
+        return dict(tf=None, pattern=None, zone_test=np.nan, height=np.nan, formed=np.nan)
     z = m.sort_values("timeframe").iloc[-1]
     n = sum(1 for x in z.tests if x <= test.time + 60)
-    return dict(tf=NAMES[z.timeframe], pattern=z.pattern, zone_test=max(n, 1), height=(z.high - z.low) * 0.25)
+    return dict(tf=NAMES[z.timeframe], pattern=z.pattern, zone_test=max(n, 1), height=(z.high - z.low) * 0.25,
+                formed=float(z.formed))
 
 
 def one_day(row) -> pd.DataFrame | None:
