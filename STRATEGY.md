@@ -314,7 +314,8 @@ Low-volume days produce smaller moves, so the bot takes less risk on them.
     - **Proposed (TBD):** after the first 30 minutes, entries resume once the last 5 minutes' volume is back under 1.5× normal for that time of day (the average of the last 20 sessions), and at the latest 60 minutes after the release.
   - **Journal check (Oct 2026):** skipping entries in the 10 minutes after a news volume spike (08:30, 10:00 or 14:00 ET minute at 3× or more the 10 minutes before) would have added +$1,309 to the owner's 2024–25 journal, in both halves. Proposed default: 10 minutes after any such spike.
 - **Open:** no trades too soon after the 09:30 ET open (owner, Oct 2026 review). **TBD:** how long to wait.
-  - Default events: CPI, the jobs report (nonfarm payrolls) and Fed rate decisions. On Fed days, the block lasts until the press conference ends.
+  - Default events: CPI, the jobs report (nonfarm payrolls) and Fed rate decisions.
+  - **Fed decision days: no trading at all, the whole session** (owner, 30 Oct 2026: "those days are crazy"). In the owner's journal from Q2 2024 on, the 13 trades on Fed days came out about even (−$17), against +$19 a trade on other days.
   - The bot reads release dates and times from a calendar file built from the official schedules (BLS and the Federal Reserve). The backtest skips the same windows.
 
 ## 5. Bot settings
@@ -332,7 +333,8 @@ Every number below is an adjustable setting. The defaults come from this spec.
 | Close open trade at | 16:50 ET | 10 minutes before the session close |
 | No entries before | 10:00 ET | Owner: "we don't trade the open". The owner skipped all 19 replay clips before 10:00. 10:00 proposed, TBD |
 | News events | CPI, jobs report, Fed decisions | Also the 10:00 ET releases such as ISM (proposed: the owner skipped 10:00 news spikes on the replay page). Owner: only the time around a release, not the whole day |
-| News blackout for entries | 15 min before to 30–60 min after | Owner: until volume settles, usually 30 min to an hour. Proposed: after 30 min, resume once 5-minute volume is under 1.5× normal for that time of day; at most 60 min. Fed days: until the press conference ends |
+| News blackout for entries | 15 min before to 30–60 min after | Owner: until volume settles, usually 30 min to an hour. Proposed: after 30 min, resume once 5-minute volume is under 1.5× normal for that time of day; at most 60 min |
+| Fed decision days | No trading at all | Owner: "those days are crazy" |
 | Close open trade before news | 5 min before the release | |
 | POC lookback | 20 sessions | |
 | POC cluster width | TBD | |

@@ -20,7 +20,8 @@ no_new_entries_after_et = "16:30"
 close_open_trade_at_et = "16:50"
 news_events = ["CPI", "jobs report", "Fed decision"]
 news_blackout_before_min = 15
-news_blackout_after_min = 30     # at least this long. Fed days: until the press conference ends
+news_blackout_after_min = 30     # at least this long
+no_trading_days = ["Fed decision"]        # owner (30 Oct 2026): no trading at all on Fed days, "those days are crazy"
 # Owner (30 Oct 2026): skip only around the news; trade again once volume settles, usually 30-60 minutes after.
 news_blackout_max_after_min = 60          # proposed, TBD
 news_settle_window_min = 5                # proposed: volume over the last 5 minutes ...

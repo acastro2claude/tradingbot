@@ -121,12 +121,19 @@ def _hhmm_to_ts(session: pd.Timestamp, hhmm: str) -> float:
 
 
 def news_windows(path: Path, s: dict) -> dict:
-    """Per session date: list of (no-entry start, no-entry end, flatten time) in epoch seconds."""
+    """Per session date: list of (no-entry start, no-entry end, flatten time) in epoch seconds.
+
+    Events in [bot] no_trading_days (Fed decisions) block the whole session, 18:00 the evening
+    before to 17:00."""
     bot = s["bot"]
     cal = pd.read_csv(path)
     out = {}
     for r in cal.itertuples():
         day = pd.Timestamp(r.date)
+        if r.event in bot["no_trading_days"]:
+            start = _hhmm_to_ts(day - pd.Timedelta(days=1), "18:00")
+            out.setdefault(day, []).append((start, _hhmm_to_ts(day, "17:00"), start))
+            continue
         rel = _hhmm_to_ts(day, r.time_et)
         out.setdefault(day, []).append((rel - bot["news_blackout_before_min"] * 60,
                                         max(_hhmm_to_ts(day, r.blackout_until_et),
