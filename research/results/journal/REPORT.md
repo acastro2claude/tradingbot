@@ -563,7 +563,7 @@ The bot works on 1-minute candles: a zone test, entry on the first close 1 point
 - Random entries with the same exits lose too. A risk structure multiplies an edge in the entries; it cannot create one.
 - Holding to 12 while delta continues barely changes the result. When price has already gone 10 points, the trade is usually a winner either way.
 
-## 18. The zone replay page: the owner's decisions on 104 clips (`replay_scores.csv`, `replay_invalid.csv`, Oct 2026)
+## 18. The zone replay page: the owner's decisions on 155 clips (`replay_scores.csv`, `replay_invalid.csv`, Oct 2026)
 
 **What the owner saw.** 155 zone tests (the 23 ES days of 2024 and the owner's 20 busiest MES journal days), each replayed in 2-second frames from 10 minutes before the test to 5 minutes after: book heatmap, volume bubbles, delta, absorption bursts and a 15-minute context chart. The date was hidden. The owner decided 104: long 13, short 11, skip 77, not sure 3.
 
@@ -610,6 +610,28 @@ The bot works on 1-minute candles: a zone test, entry on the first close 1 point
   - Absorption as price hits the zone, then the other side comes in.
   - A weaker second push into the zone.
   - Resting orders holding the line.
+
+**Second sitting (30 Oct 2026): all 155 clips decided, plus a second look at 31.** The owner decided the remaining 51 clips and took a second look at the 31 clips first called invalid only because of the old context chart. The first 6 new clips have notes; the last 45 were decided about one a minute, without notes, at the end of a long session.
+
+| Sample | Clips | Trades | Winners | Per trade, 4/10 | Net, 4/10 | Bot's entry, clips traded / skipped | Random, clips traded |
+|---|---|---|---|---|---|---|---|
+| First sitting (rules read from these) | 73 | 24 | 38% | +$25 | +$602 | −$7 / −$35 | −$12 |
+| Second look on the fixed chart | 31 | 11 | 36% | +$47 | +$514 | −$15 / −$107 | −$45 |
+| New clips, second sitting | 51 | 24 | 21% | −$84 | −$2,023 | −$163 / −$143 | −$42 |
+| All | 155 | 59 | 31% | −$15 | −$907 | −$70 / −$81 | −$30 |
+
+(The first-sitting row has 73 clips because the 31 second-look clips now count under the second look.)
+
+- **The second look found trades the bug had hidden.** On the fixed chart the owner traded 11 of the 31 zones first called invalid and made +$47 a trade. Only 1 of the 31 was still called invalid.
+- **Careful vs rushed.**
+  - The 38 trades with notes made +$30 a trade (+$1,154).
+  - The 21 trades from the 45 clips decided quickly without notes made −$98 a trade (4 winners).
+  - On those 45 clips the owner took 47% of the clips (33–35% when careful). The clips taken were no better than the ones skipped for the bot's entry (−$163 vs −$143), while in the careful sittings the skipped clips were clearly worse.
+- **The new clips were also harder for everyone:** the bot's entry won 10% of them, against 29% in the first sitting. So part of the loss is the clips, part is likely the rushed picks. The two can't be separated on 45 clips.
+- **Still not proven either way.** The careful trades' +$30 a trade has a 95% range of roughly −$80 to +$140.
+- **More notes:**
+  - Of 25 clips before 10:00 ET, the owner skipped 22. The 3 taken (09:30, 09:42 and 09:47) won 1.
+  - "News day" skips also came at 13:00 (11 Apr and 25 Sep 2024), not only at 10:00. Whether "news day" means the whole day or the time around a release is TBD.
 
 ## Caveats
 

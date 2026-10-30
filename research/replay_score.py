@@ -7,7 +7,9 @@ same clip (first 1-point turn off the test, research.level_test_book.TestReader.
 and random entries (random second from the test to 5 minutes after it, random side). Costs:
 $12.40 per trade (10 MES = 1 ES at $50 a point).
 
-Reads the decisions saved from the page (ArtifactData list -> data/derived/replay/decisions/).
+Reads the decisions saved from the page (ArtifactData list -> data/derived/replay/decisions/). Results
+are split by sitting: the first 104 decisions (the rules were read from these), the second look
+at 31 clips on the fixed chart, and the new clips of the second sitting (a fresh check).
 Writes research/results/journal/replay_scores.csv and replay_score_summary.csv.
 Run from the repo root:   python -m research.replay_score
 """
@@ -30,6 +32,14 @@ from research.settings import load_settings
 
 DECISIONS = DERIVED / "replay" / "decisions" / "replay_decisions"
 EXITS = {"4/10": "4/10", "4 then 10 or 12": "dynamic"}
+# The owner's sittings: the first ended 30 Oct 2026 03:13 UTC, the second started 13:21 UTC
+SECOND_SITTING_FROM = "2026-10-30T12:00:00Z"
+
+
+def sample(saved_at: str, rnd: int) -> str:
+    if saved_at < SECOND_SITTING_FROM:
+        return "first sitting"
+    return "second look (fixed chart)" if rnd == 2 else "new clips, second sitting"
 TICK = 0.25
 
 
@@ -76,8 +86,8 @@ def main() -> None:
         dt, flat = load_day(market, contract, day), et(day, FLAT_ET)
         for r in g.itertuples():
             zd = int(r.direction)
-            row = dict(clip=r.clip_id, decision=r.decision, market=market, day=day, tf=r.tf, zone_test=r.zone_test,
-                       zone_dir=zd)
+            row = dict(clip=r.clip_id, decision=r.decision, sample=sample(r.saved_at, r.round), market=market, day=day,
+                       tf=r.tf, zone_test=r.zone_test, zone_dir=zd)
             if r.decision in ("long", "short"):
                 od = 1 if r.decision == "long" else -1
                 row["with_zone"] = od == zd
@@ -101,24 +111,26 @@ def main() -> None:
 
     usd = lambda pts: pts * ES_POINT - cost  # noqa: E731
     out = []
-    took = x["decision"].isin(["long", "short"])
-    for ex in ["4/10", "4 then 10 or 12", "2/4", "3/7"]:
-        def add(name, v):
-            v = v.dropna()
-            out.append(dict(exit=ex, group=name, trades=len(v), win_rate=(v > 0).mean() if len(v) else np.nan,
-                            avg_points=v.mean() if len(v) else np.nan,
-                            usd_per_trade=usd(v.mean()) if len(v) else np.nan, net_usd=usd(v).sum() if len(v) else 0.0))
-        add("your trades", x.loc[took, f"you {ex}"])
-        add("bot entry, clips you traded", x.loc[took, f"bot {ex}"])
-        add("bot entry, clips you skipped", x.loc[x["decision"] == "skip", f"bot {ex}"])
-        add("bot entry, every clip you decided", x[f"bot {ex}"])
-        add("random entries (average per clip), clips you traded", x.loc[took, f"random {ex}"])
-        add("random entries (average per clip), all clips", x[f"random {ex}"])
+    for smp in ["all", "first sitting", "second look (fixed chart)", "new clips, second sitting"]:
+        y = x if smp == "all" else x[x["sample"] == smp]
+        took = y["decision"].isin(["long", "short"])
+        for ex in ["4/10", "4 then 10 or 12", "2/4", "3/7"]:
+            def add(name, v):
+                v = v.dropna()
+                out.append(dict(sample=smp, exit=ex, group=name, trades=len(v),
+                                win_rate=(v > 0).mean() if len(v) else np.nan, avg_points=v.mean() if len(v) else np.nan,
+                                usd_per_trade=usd(v.mean()) if len(v) else np.nan,
+                                net_usd=usd(v).sum() if len(v) else 0.0))
+            add("your trades", y.loc[took, f"you {ex}"])
+            add("bot entry, clips you traded", y.loc[took, f"bot {ex}"])
+            add("bot entry, clips you skipped", y.loc[y["decision"] == "skip", f"bot {ex}"])
+            add("bot entry, every clip you decided", y[f"bot {ex}"])
+            add("random entries (average per clip), clips you traded", y.loc[took, f"random {ex}"])
+            add("random entries (average per clip), all clips", y[f"random {ex}"])
     table = pd.DataFrame(out)
     table.to_csv(OUT / "replay_score_summary.csv", index=False)
     pd.set_option("display.width", 250)
-    print(table.round(2).to_string())
-    print(x.loc[took, ["clip", "decision", "tf", "zone_test", "you 4/10", "you 4 then 10 or 12", "bot 4/10"]].round(2).to_string())
+    print(table[table["exit"].isin(["4/10", "4 then 10 or 12"])].round(2).to_string())
 
 
 if __name__ == "__main__":

@@ -124,7 +124,7 @@ Source A and source B (1e, the owner's current method) are both tested. The data
   - Price already blew past the zone, often both ways ("previous day").
   - Demand with price trading below it, or supply with price above it.
   - Price hanging inside the zone too long.
-  - Only what happens **after** the zone forms counts (owner, Oct 2026). The page's side chart had shaded each zone across the days before it existed (fixed). 31 of the 56 invalid calls were judged on price action from before the zone formed; the owner is taking a second look at those on the fixed chart.
+  - Only what happens **after** the zone forms counts (owner, Oct 2026). The page's side chart had shaded each zone across the days before it existed (fixed). 31 of the 56 invalid calls were judged on price action from before the zone formed. On the fixed chart the owner traded 11 of those 31 (+$47 a trade), and only 1 was still called invalid.
 - **On 2024 ES data:** about 16 zones a week across the five timeframes, after overlaps (40 before the basing-candle and chop rules).
   - Per week: 1.3 four-hour, 1.2 two-hour, 1.6 one-hour, 4.6 thirty-minute and 7 fifteen-minute.
   - Median height in points: 10.5 (4-hour), 10 (2-hour), 5.5 (1-hour), 3.75 (30-minute), 2.25 (15-minute).
@@ -329,7 +329,7 @@ Every number below is an adjustable setting. The defaults come from this spec.
 | No new entries after | 16:30 ET | |
 | Close open trade at | 16:50 ET | 10 minutes before the session close |
 | No entries before | 10:00 ET | Owner: "we don't trade the open". The owner skipped all 19 replay clips before 10:00. 10:00 proposed, TBD |
-| News events | CPI, jobs report, Fed decisions | Also the 10:00 ET releases such as ISM (proposed: the owner skipped 10:00 news spikes on the replay page) |
+| News events | CPI, jobs report, Fed decisions | Also the 10:00 ET releases such as ISM (proposed: the owner skipped 10:00 news spikes on the replay page). The owner also skipped two clips at 13:00 as "news day". TBD: does a news day mean the whole day? |
 | News blackout for entries | 15 min before to 30 min after | Fed days: until the press conference ends |
 | Close open trade before news | 5 min before the release | |
 | POC lookback | 20 sessions | |
@@ -413,6 +413,10 @@ Every number below is an adjustable setting. The defaults come from this spec.
      - Most of the difference is which clips the owner takes. The owner's entry price was also about 1 point better than the bot's.
      - 24 trades don't prove it (95% range −$111 to +$161 per trade).
      - Most skips (56 of 77) were "invalid zone". Details: REPORT.md section 18.
+     - **All 155 clips (second sitting, 30 Oct):** 59 trades, 31% winners, −$15 per trade.
+       - The trades decided carefully, with notes, made +$30 per trade (38 trades). That includes +$47 on 11 zones first called invalid because of the chart bug.
+       - The last 45 clips were decided quickly, without notes: −$98 per trade on 21 trades. Those clips were also hard for the bot's entry (10% winners).
+       - Not proven either way.
    - **All days, Feb 2024 – Oct 2026 (588 sessions, 1-minute candles):** the zone bot matches random entries in every year, quarter and type of day. For example, 27% winners vs 28% random with 2/4, and only 2–4 of 33 months up. Details: REPORT.md section 16.
 
    **First look (Oct 2026, full MES book for the owner's 20 busiest journal days in 2024–2025, 163 trades):** the owner's entries came once price had already started their way. Compared with random moments that had the same move, the orders in the path of the trade were being pulled faster than they were added more often (51% vs 40%). Big resting lines next to the entry were rare, and on their own they did not hold price. None of the book readings tested separated winners from losers. These 20 days were also the owner's losing days (26% win rate, −$6,015), and the journal trades are mostly ES while this book is MES. Details: `research/results/journal/REPORT.md`.
