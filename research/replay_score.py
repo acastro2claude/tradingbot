@@ -44,17 +44,24 @@ TICK = 0.25
 
 
 def fixed_exit(dt: DayTrades, t_in: float, fill: int, d: int, flat: float, stop_pts: float, tgt_pts: float) -> float:
+    return fixed_exit_t(dt, t_in, fill, d, flat, stop_pts, tgt_pts)[0]
+
+
+def fixed_exit_t(dt: DayTrades, t_in: float, fill: int, d: int, flat: float, stop_pts: float,
+                 tgt_pts: float) -> tuple[float, float]:
+    """Ticks per contract and the exit time. Stops (touched) and the flat close pay the slippage;
+    the target fills 1 tick through."""
     i, j = int(np.searchsorted(dt.t, t_in, "right")), int(np.searchsorted(dt.t, flat, "right"))
-    px = dt.px[i:j]
+    px, tt = dt.px[i:j], dt.t[i:j]
     if not len(px):
-        return 0.0
+        return 0.0, t_in
     s, t = round(stop_pts / TICK), round(tgt_pts / TICK)
     ks = np.flatnonzero((px - (fill - d * s)) * d <= 0)
     kt = np.flatnonzero((px - (fill + d * t)) * d >= 1)
     ks, kt = (ks[0] if len(ks) else len(px)), (kt[0] if len(kt) else len(px))
     if ks == kt == len(px):
-        return float((px[-1] - fill) * d - SLIP_TICKS)
-    return float(-s - SLIP_TICKS) if ks <= kt else float(t)
+        return float((px[-1] - fill) * d - SLIP_TICKS), float(tt[-1])
+    return (float(-s - SLIP_TICKS), float(tt[ks])) if ks <= kt else (float(t), float(tt[kt]))
 
 
 def all_exits(dt, t_in, price, d, flat) -> dict:

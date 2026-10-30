@@ -432,6 +432,11 @@ Every number below is an adjustable setting. The defaults come from this spec.
        - The trades decided carefully, with notes, made +$30 per trade (38 trades). That includes +$47 on 11 zones first called invalid because of the chart bug.
        - The last 45 clips were decided quickly, without notes: −$98 per trade on 21 trades. Those clips were also hard for the bot's entry (10% winners).
        - Not proven either way.
+   - **5-point vs 4-point stop and at most 2 trades a day (owner's test, Oct 2026):**
+     - On the replay trades, the 5-point stop saved 3 trades that were stopped at −4 and then reached +10 (careful trades +$66 vs +$30 a trade).
+     - On the owner's 371 real journal trades from Q2 2024, re-run with fixed brackets, 5/10 and 4/10 come out the same (−$8 a trade; +$4 vs −$1 from 10:00). The owner's own exits did better than any fixed bracket (+$22 a trade from 10:00).
+     - At most 2 trades a day cut the profit in almost every version (the owner's own exits from 10:00: +$5,977 → +$1,720), because the later trades of the day were the better ones.
+     - The owner decides the stop and the cap. Details: REPORT.md section 19.
    - **All days, Feb 2024 – Oct 2026 (588 sessions, 1-minute candles):** the zone bot matches random entries in every year, quarter and type of day. For example, 27% winners vs 28% random with 2/4, and only 2–4 of 33 months up. Details: REPORT.md section 16.
 
    **First look (Oct 2026, full MES book for the owner's 20 busiest journal days in 2024–2025, 163 trades):** the owner's entries came once price had already started their way. Compared with random moments that had the same move, the orders in the path of the trade were being pulled faster than they were added more often (51% vs 40%). Big resting lines next to the entry were rare, and on their own they did not hold price. None of the book readings tested separated winners from losers. These 20 days were also the owner's losing days (26% win rate, −$6,015), and the journal trades are mostly ES while this book is MES. Details: `research/results/journal/REPORT.md`.

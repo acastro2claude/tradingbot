@@ -1,0 +1,60 @@
+clip,day,sample,careful,decision,heat_before_10
+c128,2024-02-26,"new clips, second sitting",False,long,
+r015,2024-02-26,second look (fixed chart),True,short,0.75
+r026,2024-02-26,second look (fixed chart),True,short,0.25
+r028,2024-02-26,second look (fixed chart),True,short,2.75
+c136,2024-02-27,"new clips, second sitting",False,short,
+c026,2024-02-28,first sitting,True,short,2.75
+c127,2024-02-28,"new clips, second sitting",False,short,
+c148,2024-02-28,"new clips, second sitting",False,short,2.75
+c069,2024-02-29,first sitting,True,long,0.25
+c085,2024-02-29,first sitting,True,short,
+c120,2024-02-29,"new clips, second sitting",False,short,
+c133,2024-04-08,"new clips, second sitting",False,long,
+c024,2024-04-09,first sitting,True,long,4.5
+c086,2024-04-09,first sitting,True,long,0.5
+c150,2024-04-09,"new clips, second sitting",False,long,3.25
+c048,2024-04-11,"new clips, second sitting",True,short,
+c113,2024-04-11,"new clips, second sitting",False,short,
+c075,2024-04-12,first sitting,True,long,0.25
+c110,2024-04-12,"new clips, second sitting",True,long,0.75
+c132,2024-04-12,"new clips, second sitting",False,short,6.25
+c139,2024-04-12,"new clips, second sitting",False,long,
+c011,2024-06-03,first sitting,True,short,
+r001,2024-06-03,second look (fixed chart),True,short,
+c098,2024-06-04,first sitting,True,short,5.0
+c111,2024-06-04,"new clips, second sitting",False,short,2.0
+c118,2024-06-04,"new clips, second sitting",False,long,17.25
+c121,2024-06-04,"new clips, second sitting",False,short,6.75
+c123,2024-06-04,"new clips, second sitting",False,short,
+c090,2024-06-05,first sitting,True,short,
+c124,2024-06-05,"new clips, second sitting",False,short,
+r014,2024-06-06,second look (fixed chart),True,short,
+c046,2024-06-07,first sitting,True,short,
+c080,2024-07-29,first sitting,True,short,1.5
+c125,2024-07-29,"new clips, second sitting",False,long,26.5
+c138,2024-07-29,"new clips, second sitting",False,short,6.5
+c144,2024-07-29,"new clips, second sitting",False,short,5.75
+c107,2024-07-30,first sitting,True,long,24.25
+r017,2024-07-30,second look (fixed chart),True,long,
+r025,2024-07-30,second look (fixed chart),True,short,
+c001,2024-07-31,first sitting,True,short,
+c036,2024-08-01,first sitting,True,long,4.75
+c049,2024-08-01,first sitting,True,long,2.0
+c053,2024-08-01,first sitting,True,long,9.75
+c095,2024-08-01,first sitting,True,long,
+c119,2024-08-01,"new clips, second sitting",False,long,
+r022,2024-08-01,second look (fixed chart),True,long,
+c106,2024-09-23,first sitting,True,short,10.5
+c051,2024-09-24,first sitting,True,long,4.0
+c072,2024-09-24,first sitting,True,short,
+r009,2024-09-26,second look (fixed chart),True,long,
+r027,2024-09-26,second look (fixed chart),True,short,
+c146,2024-01-22,"new clips, second sitting",False,long,
+c009,2024-02-28,first sitting,True,short,
+c010,2024-02-28,"new clips, second sitting",True,short,
+c007,2025-03-11,first sitting,True,long,
+c115,2024-04-03,"new clips, second sitting",False,short,
+c083,2024-04-12,first sitting,True,long,1.75
+r019,2024-04-29,second look (fixed chart),True,long,2.5
+c019,2024-05-02,first sitting,True,long,0.75

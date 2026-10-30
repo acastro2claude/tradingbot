@@ -380,6 +380,14 @@ delta_window_seconds = 60        # proposed: "delta continuing" = delta over the
 aggressor_ratio = 1.0            # ...and our side's aggressive volume over that minute is at least the other side's
 random_per_day = 50
 
+[replay_stops]
+# Owner (Oct 2026): "I want to see if increasing the stop loss would help here. Some of the trades I took I
+# noticed would hit a close stop loss, but then would continue in my direction... a 5 point stop to a 10 point
+# reward? Two trade a day max regardless of win or lose." research/replay_stops.py, on the replay trades.
+exits = [[4.0, 10.0], [5.0, 10.0]]       # [stop, target] in points
+stop_curve = [3.0, 4.0, 5.0, 6.0, 8.0]   # stops tried with the 10-point target, for context only
+max_trades_per_day = 2                   # owner: win or lose; one trade at a time
+
 [replay]
 # Zone replay page (research/replay_export.py, research/replay_page.py). Display settings, not bot settings.
 before_seconds = 600             # the replay starts 10 minutes before the zone test

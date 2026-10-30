@@ -633,6 +633,38 @@ The bot works on 1-minute candles: a zone test, entry on the first close 1 point
   - Of 25 clips before 10:00 ET, the owner skipped 22. The 3 taken (09:30, 09:42 and 09:47) won 1.
   - "News day" skips also came at 13:00 (11 Apr and 25 Sep 2024), not only at 10:00. The owner: skip only around the time of the news, then trade again once volume settles, usually 30 minutes to an hour later.
 
+## 19. A wider stop (5 vs 4 points) and at most 2 trades a day (`replay_stops_*.csv`, `journal_stops_*.csv`, Oct 2026)
+
+**Owner:** "Some of the trades I took I noticed would hit a close stop loss, but then would continue in my direction... a 5 point stop to a 10 point reward? Two trade a day max regardless of win or lose." Money everywhere: 10 MES ($50 a point), $12.40 costs per trade.
+
+**On the 59 replay trades** (`research/replay_stops.py`, tick data):
+
+| Trades | 4/10 | 5/10 |
+|---|---|---|
+| Careful (38) | +$30 a trade | +$66 a trade |
+| Quick, last 45 clips (21) | −$98 | −$131 |
+| All (59) | −$15 | −$4 |
+
+- 3 trades were stopped at −4 and then reached +10; with a 5-point stop they win. No trade won at 4 and lost at 5.
+- Of the 29 trades that reached +10 before the close, 17 went at most 4 points against first, 3 went 4–5, and 9 more than 5.
+- So the gain is 3 trades. The 2-a-day cap can't be judged here: the clips of one day were seen out of order and often overlap.
+
+**On the owner's real journal** (`research/journal_stops.py`): the real entries (time, price, side) with the exit replaced by a fixed bracket, on ES 1-minute bars. A bar that reaches both counts as a loss; the bracket starts on the bar after the entry minute. 507 of 513 trades (6 left out: another contract month or after 15:59). From Q2 2024 on (371 trades):
+
+| Exit | Per trade, no cap | Per trade, 2 a day | Entries from 10:00 only, no cap | From 10:00, 2 a day |
+|---|---|---|---|---|
+| The owner's own exits | +$9 | −$13 | +$22 (+$5,977, 4 of 4 quarters up) | +$10 |
+| 3/10 | −$9 | −$28 | +$11 | −$2 |
+| 4/10 | −$8 | −$28 | −$1 | −$21 |
+| 5/10 | −$8 | −$26 | +$4 | −$14 |
+| 6/10 | −$12 | −$26 | −$4 | −$11 |
+| 8/10 | −$22 | −$28 | −$11 | +$24 |
+
+- **5 vs 4 points is a wash.** 17 more trades become +10 winners and none flip the other way, but each of the ~240 losers costs 1 point ($50) more. The order of the stop sizes jumps around between columns, so the differences between 3 and 6 points are noise.
+- **The owner's own exits beat every fixed bracket** on the same entries (+$22 vs at most +$11 a trade from 10:00).
+- **At most 2 trades a day costs money** in almost every version: the owner's own exits from 10:00 go from +$5,977 to +$1,720. The owner's later trades of the day are the better ones (section 10), and the cap keeps the first two.
+- **Starting at 10:00 helps clearly:** the owner's own exits go from +$9 to +$22 a trade.
+
 ## Caveats
 
 - The read is my translation of the owner's description. Every threshold above is a proposal, and the owner's eye may weigh things differently.
