@@ -318,7 +318,7 @@ Low-volume days produce smaller moves, so the bot takes less risk on them.
     - Fed decisions (whole day off, below)
   - **My reading of that list (proposed):**
     - Jobs: nonfarm payrolls (08:30 ET) and ADP (08:15), plus weekly jobless claims (08:30 Thursdays).
-    - PMI: ISM manufacturing and services (10:00).
+    - PMI: the owner means "US Manufacturing PMI": S&P Global's, at 09:45, both the early (flash) and the final reading. ISM Manufacturing comes out at 10:00 on the same morning as the final, so it falls in the same block. Services PMIs are not included (proposed).
     - Job openings: JOLTS (10:00).
   - **Owner (30 Oct 2026):** skip only around the time of the news, not the whole day. Trade again once volume settles down, usually 30 minutes to an hour after the release; "then price tends to act rationally again."
     - **Proposed (TBD):** after the first 30 minutes, entries resume once the last 5 minutes' volume is back under 1.5× normal for that time of day (the average of the last 20 sessions), and at the latest 60 minutes after the release.
@@ -343,7 +343,7 @@ Every number below is an adjustable setting. The defaults come from this spec.
 | No new entries after | 16:30 ET | |
 | Close open trade at | 16:50 ET | 10 minutes before the session close |
 | No entries before | 10:00 ET | Owner: "we don't trade the open". The owner skipped all 19 replay clips before 10:00. 10:00 proposed, TBD |
-| News events | CPI, employment and jobs reports, PMI, job openings, Fed decisions | Owner (30 Oct 2026). Read as: payrolls, ADP, weekly jobless claims, ISM manufacturing and services, JOLTS (proposed). Only the time around a release, not the whole day |
+| News events | CPI, employment and jobs reports, PMI, job openings, Fed decisions | Owner (30 Oct 2026). Read as: payrolls, ADP, weekly jobless claims, US Manufacturing PMI (S&P Global, 09:45, flash and final) with ISM Manufacturing (10:00), JOLTS (proposed). Only the time around a release, not the whole day |
 | News blackout for entries | 15 min before to 30–60 min after | Owner: until volume settles, usually 30 min to an hour. Proposed: after 30 min, resume once 5-minute volume is under 1.5× normal for that time of day; at most 60 min |
 | Fed decision days | No trading at all | Owner: "those days are crazy" |
 | Close open trade before news | 5 min before the release | |

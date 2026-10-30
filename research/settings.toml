@@ -19,8 +19,9 @@ daily_loss_limit_usd = 800
 no_new_entries_after_et = "16:30"
 close_open_trade_at_et = "16:50"
 # Owner (30 Oct 2026): CPI, employment and jobs reports, PMI, job openings, Fed decisions.
-# Read as (proposed): payrolls, ADP, weekly jobless claims, ISM manufacturing and services PMI, JOLTS.
-news_events = ["CPI", "jobs report", "ADP employment", "jobless claims", "ISM manufacturing PMI", "ISM services PMI",
+# PMI = "US Manufacturing PMI" (owner): S&P Global, 09:45 ET, flash and final; ISM Manufacturing (10:00) comes
+# the same morning as the final. Read as (proposed): payrolls, ADP, weekly jobless claims, those PMIs, JOLTS.
+news_events = ["CPI", "jobs report", "ADP employment", "jobless claims", "US Manufacturing PMI", "ISM Manufacturing PMI",
                "JOLTS job openings", "Fed decision"]
 news_blackout_before_min = 15
 news_blackout_after_min = 30     # at least this long
