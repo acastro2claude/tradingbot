@@ -665,6 +665,35 @@ The bot works on 1-minute candles: a zone test, entry on the first close 1 point
 - **At most 2 trades a day costs money** in almost every version: the owner's own exits from 10:00 go from +$5,977 to +$1,720. The owner's later trades of the day are the better ones (section 10), and the cap keeps the first two.
 - **Starting at 10:00 helps clearly:** the owner's own exits go from +$9 to +$22 a trade.
 
+## 20. Staying off Topstep's loss limit: daily rules and size (`topstep_risk.csv`, Oct 2026)
+
+**The owner's goal:** never hit Topstep's loss limit, which loses the account. The limit trails the best end-of-day balance by the same amount at all times (owner), so winning never buys room. The owner wants at most 2 trades a day for this.
+
+**The test** (`research/topstep_risk.py`): the owner's real journal trades from Q2 2024 (real entries and exits, one trade at a time) go through a Topstep 50K account:
+- Maximum Loss Limit $2,000, trailing the best end-of-day balance.
+- Trading stops for the day at −$1,000 (the Daily Loss Limit).
+- Under each daily rule, the trading days are drawn in random order to play 10,000 Combines.
+- Pass = the balance closes a day $3,000 up before it touches the limit.
+
+| Entries from 10:00, owner's exits | 10 MES: pass / fail | Days to pass (median) | 5 MES: pass / fail | Days to pass |
+|---|---|---|---|---|
+| No extra rule (Topstep's −$1,000 day only) | 70% / 30% | 32 | 92% / 7% | 85 |
+| At most 2 trades a day | 39% / 61% | 41 | 45% / 42% | 131 |
+| Stop after 2 losing trades | 27% / 73% | 39 | 25% / 65% | 132 |
+| Stop at −$500 on the day | 44% / 56% | 32 | 92% / 7% | 85 |
+
+- **The daily caps make failing more likely, not less.**
+  - The trailing limit is hit by a run of losing days, not by one bad day. Topstep's own −$1,000 day already caps a single day, and the owner's worst day from 10:00 was −$774 at 10 MES.
+  - A cap doesn't stop a run of capped losing days, but it cuts the good days that reach the target. With the 2-trade cap, profit from 10:00 drops from +$5,977 to +$1,720.
+- **Size is the strongest lever.** At 5 MES a loss costs half, so the same $2,000 holds twice as many losses: 92% pass instead of 70%. It takes longer, about 85 trading days instead of 32.
+- **Entries before 10:00 hurt a lot:** with them, the 10 MES pass rate is 35% with no rule and 8% with the 2-trade cap.
+- **In the real order of the 11 months,** 10 MES from 10:00 would have lost the account once, with or without the cap; 5 MES never.
+- **Caveats:**
+  - Random day order ignores streaks of bad days, so real odds are somewhat worse.
+  - Open-trade drawdown and Topstep's consistency target are not modelled.
+  - With a cap, the owner might pick trades differently; this test can't show that.
+  - Topstep's rules should be checked on the owner's own dashboard.
+
 ## Caveats
 
 - The read is my translation of the owner's description. Every threshold above is a proposal, and the owner's eye may weigh things differently.

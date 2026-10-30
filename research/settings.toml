@@ -388,6 +388,24 @@ exits = [[4.0, 10.0], [5.0, 10.0]]       # [stop, target] in points
 stop_curve = [3.0, 4.0, 5.0, 6.0, 8.0]   # stops tried with the 10-point target, for context only
 max_trades_per_day = 2                   # owner: win or lose; one trade at a time
 
+[topstep_risk]
+# Owner (Oct 2026): Topstep closes the account at its loss limit; "the 2 cap a day is to prevent that from
+# happening". research/topstep_risk.py replays the journal through a Topstep account under each daily rule.
+# Topstep help center (checked Oct 2026): Maximum Loss Limit 2,000 / 3,000 / 4,500 for 50K / 100K / 150K, trailing
+# the best end-of-day balance; Daily Loss Limit 1,000 / 2,000 / 3,000 (a stop
+# for the day, possibly optional now). The owner's account size is TBD.
+start_balance_usd = 50000
+max_loss_limits_usd = [2000, 3000]       # 50K and 100K accounts, same 10 MES size
+mll_stops_at_start_balance = false       # owner: the limit always trails the best end-of-day balance by the same
+                                         # amount ("the loss limit is always the same"); some Topstep pages say it
+                                         # stops rising at the starting balance (true here would model that)
+daily_loss_limit_usd = 1000              # 50K: trading stops for the day
+day_rules = ["none", "2 trades", "2 losses", "-500 on the day"]   # stop for the day after ...
+sizes_mes = [10, 5]                      # contracts per trade compared (the plan trades 10)
+profit_targets_usd = [3000, 6000]        # Combine targets for 50K and 100K (paired with max_loss_limits_usd)
+combine_sims = 10000                     # Combines simulated per rule, days drawn at random from the journal
+combine_max_days = 250                   # a simulated Combine that has neither passed nor failed by then is "still open"
+
 [replay]
 # Zone replay page (research/replay_export.py, research/replay_page.py). Display settings, not bot settings.
 before_seconds = 600             # the replay starts 10 minutes before the zone test

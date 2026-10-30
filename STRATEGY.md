@@ -306,6 +306,14 @@ Low-volume days produce smaller moves, so the bot takes less risk on them.
 - **Fast markets:** during news or sharp moves, a stop can fill well past its price. A single loss can then be bigger than these numbers.
 - **Maximum entry distance (TBD):** skip the trade if price is already too far from the level, for example more than 4 points away, so the risk never goes past about 7 points.
 - **Daily loss limit:** a backup dollar limit for when more than one trade a day is allowed. Proposed: $800, about two full losses.
+- **Topstep account (owner, Oct 2026):** the owner trades a Topstep account. Hitting its loss limit loses the account, and starting over costs money, so staying off the limit comes first.
+  - **Maximum Loss Limit:** $2,000 (50K account), $3,000 (100K), $4,500 (150K). The owner: it trails the best end-of-day balance by the same amount at all times, "so we cannot let up just because we are winning."
+  - **Daily Loss Limit:** $1,000 (50K); hitting it ends the trading day.
+  - **TBD:** the owner's account size.
+  - The owner wants at most **2 trades a day** to stay off the limit.
+  - **Tested on the owner's journal (REPORT.md section 20):** with the owner's entries from 10:00 at 10 MES, a 50K Combine passes 70% of the time with no extra rule, 39% with the 2-trade cap. At 5 MES: 92% with no extra rule, at about 85 trading days instead of 32.
+    - A run of losing days hits a trailing limit, not one bad day. Topstep's −$1,000 day already caps a single day.
+    - The owner decides the cap and the size.
 - **Protective orders:** send the stop and the first target as soon as the entry fills, so the trade stays protected if the bot or the computer goes down. Check that the stop is held by the broker or the exchange, not only by NinjaTrader on the computer.
 - **End of day:** close any open trade at **16:50 ET**, 10 minutes before the 17:00 ET session close. No new entries after **16:30 ET**. On holiday early-close days, the same rules apply relative to the early close.
 - **Major news:** no new entries from **15 minutes before to 30 minutes after** a major release. Close an open trade **5 minutes before** the release, because stops can slip badly when the numbers come out.
