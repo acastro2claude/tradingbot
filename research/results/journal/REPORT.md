@@ -739,6 +739,7 @@ The bot works on 1-minute candles: a zone test, entry on the first close 1 point
 - **Same picture at 5 points.**
 - **A stop-limit saves little and adds a rare, large risk.** The average slippage it avoids is under $2 a stop on 5 MES. The rare unfilled stop happens in the fastest moves, sudden headlines like 11 Jun 2026 13:28 or the Fed release, and can cost more than a third of the 100K account's $3,000 limit on one trade.
 - **Middle ground (proposed):** stop at 4 points, limit at 5 points, and the bot exits at market if it isn't filled within 2 seconds. That safety net runs on the computer, not at the exchange.
+- **The owner's decision:** a stop-market 4.5 points from the entry.
 
 ## Caveats
 
