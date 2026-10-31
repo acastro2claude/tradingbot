@@ -450,6 +450,11 @@ Every number below is an adjustable setting. The defaults come from this spec.
        - The trades decided carefully, with notes, made +$30 per trade (38 trades). That includes +$47 on 11 zones first called invalid because of the chart bug.
        - The last 45 clips were decided quickly, without notes: −$98 per trade on 21 trades. Those clips were also hard for the bot's entry (10% winners).
        - Not proven either way.
+   - **The owner's entry read, coded from the tape (Oct 2026, REPORT.md section 22):**
+     - Coded: absorption at the zone then the other side comes in; a retest with a CVD higher low or a weaker push. Filters: no entries before 10:00, after news spikes, or on Fed days.
+     - On the 110 careful replay decisions, the coded read took 72 clips (35 of the owner's 38), and lost $14 a trade. The owner made +$17.
+     - Where the owner took the trade too, the result was nearly always the same. The difference is in which zone tests get traded: on the clips the read took and the owner skipped ("sellers in control", "no confirmation"), the read mostly lost.
+     - Not yet captured by rules. Not tested on new days for that reason.
    - **5-point vs 4-point stop and at most 2 trades a day (owner's test, Oct 2026):**
      - On the replay trades, the 5-point stop saved 3 trades that were stopped at −4 and then reached +10 (careful trades +$66 vs +$30 a trade).
      - On the owner's 371 real journal trades from Q2 2024, re-run with fixed brackets, 5/10 and 4/10 come out the same (−$8 a trade; +$4 vs −$1 from 10:00). The owner's own exits did better than any fixed bracket (+$22 a trade from 10:00).

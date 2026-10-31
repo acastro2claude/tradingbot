@@ -741,6 +741,30 @@ The bot works on 1-minute candles: a zone test, entry on the first close 1 point
 - **Middle ground (proposed):** stop at 4 points, limit at 5 points, and the bot exits at market if it isn't filled within 2 seconds. That safety net runs on the computer, not at the exchange.
 - **The owner's decision:** a stop-market 4.5 points from the entry.
 
+## 22. The owner's entry read, coded from the tape, against the owner's replay picks (`entry_read_replay*.csv`, Oct 2026)
+
+**The question:** can the owner's judgment at a zone be written down as rules? `research/entry_read.py` codes the owner's replay notes from trades with the buyer/seller side (no order book). Long at demand; supply is the mirror. Settings: [entry_read]; every number is a proposal.
+- **A, "absorption, then buyers come in":** a seller burst at the zone (the owner's absorption markers), price no more than 1 point below it, then buyers outtrade sellers over the last 20 s (1.2x, delta up), and price turns 1 point off the low.
+- **B, "retest with a CVD higher low / weaker push":** a second push to within 1.5 points of the first low; there the CVD low is higher, or the selling is under 0.7x the first push. Entry on a 1-point turn.
+- **Filters from the owner's skip reasons:** no entries before 10:00, none within 30 minutes after a 08:30/10:00/14:00 volume spike, no Fed days.
+- **Scoring:** 4.5-point stop-market, 10-point target, 5 MES ($25 a point, $6.20 costs). Judged on the 110 careful decisions (the 45 quick ones left out).
+
+| Careful decisions (110 clips) | Takes | Owner's takes matched | Agreement | Winners | Per trade |
+|---|---|---|---|---|---|
+| The owner | 38 | | | 39% | +$17 |
+| Version 1: read + filters + zone-invalid filter | 50 | 30 of 38 | 75% | 22% | −$47 |
+| Version 2: read + filters, B needs buyers in | 72 | 35 of 38 | 64% | 31% | −$14 |
+| Filters + the bot's first-turn entry | 77 | 35 of 38 | 59% | 27% | −$25 |
+
+- **Timing hardly matters with a 4.5/10 bracket.** Where both took a clip, the read entered about a minute earlier than the owner but got the same result in 28 of 30.
+- **The money is in which tests get traded.**
+  - Version 1, on the 20 clips the read took and the owner skipped: the read won 2 (−$88 a trade).
+  - The owner's notes there: "sellers in control", "no confirmation", "moving train", news at 13:00, "price blew through the zone".
+  - Version 2: 37 such clips, −$25 a trade.
+- **The zone-invalid filter of version 1 was wrong.** It removed 5 owner trades at zones price had traded 1 point through or hung in for 30 minutes since they formed, and all 5 won. The owner's own idea of an invalid zone is narrower. Version 2 drops this filter.
+- **Why the read can't pick:** with no filters it fires on 99 of 110 clips. Within 5 minutes of a zone test the tape almost always shows a moment where buyers step in and price turns a point. What the owner sees on the clips they skip ("sellers in control", "no confirmation", resting orders) isn't captured by these tape rules.
+- **Version 2 was tuned on the same clips,** so its agreement is flattering. No version made money even so. The plan was to test on unseen days (MES 2026) only if the read matched the owner; it doesn't, so that test was not run.
+
 ## Caveats
 
 - The read is my translation of the owner's description. Every threshold above is a proposal, and the owner's eye may weigh things differently.

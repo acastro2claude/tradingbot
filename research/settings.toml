@@ -420,6 +420,42 @@ instant_seconds = 0.005                  # stop-market fill: the worst trade pri
 sweep_seconds = 0.5                      # pessimistic: the worst price within half a second
 come_back_seconds = 10                   # an unfilled stop-limit: does price come back to the limit within this time?
 
+[entry_read]
+# The owner's entry read at a zone, coded from the tape (trades with the aggressor side; no order book), from the
+# owner's replay notes (Oct 2026). research/entry_read.py. Every number here is a proposal (TBD) unless marked owner.
+# Long at demand described below; supply is the mirror.
+look_back_seconds = 60           # the push into the zone counts from 60 s before the test
+window_seconds = 300             # entries up to 5 minutes after the test (the replay clips' length)
+turn_points = 1.0                # the entry: price has turned 1 point off the low
+break_points = 2.0               # "sellers in control": 2 points past the zone's far edge ends the read
+# Signal A, "absorption, then buyers come in": a burst of aggressive selling (ES 50 / MES 100 contracts at one
+# price within 0.01 s, like the owner's add-on) at the zone; price has not gone more than hold_points below it; and
+# over the last other_side_seconds buyers' aggressive volume is at least other_side_ratio x sellers', delta up.
+burst_zone_points = 1.0          # the burst within 1 point of the zone (above the near edge to below the far edge)
+hold_points = 1.0
+other_side_seconds = 20
+other_side_ratio = 1.2
+# Signal B, "retest with a CVD higher low" or "weaker retest": price bounces bounce_points off the first low, comes
+# back within retest_points of it (at most hold_points lower), and on that second push either the CVD low is higher
+# than at the first low, or the aggressive selling into it is under weaker_push_ratio of the first push.
+bounce_points = 1.0
+retest_points = 1.5
+weaker_push_ratio = 0.7
+other_side_for_retest = true     # version 2: signal B also needs the other side to come in (the owner skipped retests
+                                 # while "sellers in control"); version 1 did not check it
+# Filters (owner's skip reasons)
+entry_from_et = "10:00"          # owner: "we don't trade the open" (10:00 proposed)
+news_minutes = ["08:30", "10:00", "14:00"]   # a release minute with volume >= 3x the median of the 10 minutes before
+news_spike_ratio = 3.0
+news_block_minutes = 30          # owner: until volume settles, usually 30 min to an hour (30 proposed here)
+use_zone_invalid_filter = false  # version 1 used it; it removed the owner's 5 best replay trades (all +10), so it is off
+invalid_through_points = 1.0     # (when on) zone invalid once price traded 1 point past the far edge after it formed...
+invalid_inside_minutes = 30      # ...or hung inside it (30 one-minute closes inside before the test)
+fed_days = ["2024-01-31", "2024-03-20", "2024-05-01", "2024-06-12", "2024-07-31", "2024-09-18", "2024-11-07",
+            "2024-12-18", "2025-01-29", "2025-03-19", "2025-05-07", "2025-06-18", "2025-07-30", "2025-09-17",
+            "2025-10-29", "2025-12-10", "2026-01-28", "2026-03-18", "2026-04-29", "2026-06-17", "2026-07-29",
+            "2026-09-16", "2026-10-28"]   # owner: no trading on Fed decision days (FOMC calendar)
+
 [replay]
 # Zone replay page (research/replay_export.py, research/replay_page.py). Display settings, not bot settings.
 before_seconds = 600             # the replay starts 10 minutes before the zone test

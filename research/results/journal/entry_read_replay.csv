@@ -1,0 +1,156 @@
+clip,market,day,owner,careful,zone_dir,tf,zone_test,filter,read_signal,read_takes,read_vs_test_s,read_points,first_turn_points,owner_vs_test_s,owner_points,owner_takes
+c022,ES,2024-02-26,skip,True,1,1h,3,,A absorption then other side,True,23.068612337112427,-4.75,-4.75,,,False
+c128,ES,2024-02-26,long,False,1,1h,2,before 10:00,"B retest, CVD higher low",False,75.23300099372864,-4.75,-4.75,124.0,-4.75,True
+r015,ES,2024-02-26,short,True,-1,15m,2,,A absorption then other side,True,51.44962549209595,10.0,10.0,80.0,10.0,True
+r026,ES,2024-02-26,short,True,-1,15m,3,,A absorption then other side,True,27.50149130821228,10.0,10.0,170.0,10.0,True
+r028,ES,2024-02-26,short,True,-1,15m,1,,A absorption then other side,True,21.253751039505005,10.0,10.0,88.0,10.0,True
+c062,ES,2024-02-27,skip,True,1,30m,2,before 10:00,A absorption then other side,False,278.64012336730957,-4.75,-4.75,,,False
+c136,ES,2024-02-27,short,False,-1,30m,3,,A absorption then other side,True,53.71163868904114,-4.75,-4.75,92.0,-4.75,True
+c026,ES,2024-02-28,short,True,-1,30m,1,,"B retest, weaker push",True,45.60410284996033,10.0,10.0,14.0,10.0,True
+c127,ES,2024-02-28,short,False,-1,15m,4,,A absorption then other side,True,62.52103900909424,-4.75,-4.75,108.0,-4.75,True
+c131,ES,2024-02-28,skip,False,-1,30m,1,,A absorption then other side,True,21.85475730895996,-4.75,-4.75,,,False
+c148,ES,2024-02-28,short,False,-1,1h,1,,"B retest, CVD higher low",True,249.25442910194397,10.0,10.0,260.0,10.0,True
+r003,ES,2024-02-28,skip,True,-1,15m,3,before 10:00,A absorption then other side,False,76.94845151901245,-4.75,-4.75,,,False
+c069,ES,2024-02-29,long,True,1,1h,1,,"B retest, CVD higher low",True,26.66364550590515,10.0,10.0,65.99999976158142,10.0,True
+c085,ES,2024-02-29,short,True,-1,1h,1,,A absorption then other side,True,25.303757429122925,-4.75,-4.75,46.0,-4.75,True
+c116,ES,2024-02-29,skip,False,1,15m,1,,A absorption then other side,True,32.04279851913452,-4.75,-4.75,,,False
+c120,ES,2024-02-29,short,False,-1,1h,1,,A absorption then other side,True,86.40904140472412,-4.75,-4.75,102.0,-4.75,True
+c060,ES,2024-03-01,skip,True,-1,1h,1,before 10:00,"B retest, CVD higher low",False,81.8167040348053,-4.75,-4.75,,,False
+c099,ES,2024-03-01,skip,True,-1,1h,2,after a news spike,,False,,,-4.75,,,False
+c103,ES,2024-03-01,skip,True,-1,1h,3,after a news spike,A absorption then other side,False,22.019935369491577,-4.75,-4.75,,,False
+c016,ES,2024-04-08,skip,True,1,15m,3,,A absorption then other side,True,24.935271978378296,-4.75,-4.75,,,False
+c032,ES,2024-04-08,skip,True,1,30m,3,before 10:00,A absorption then other side,False,29.646758556365967,10.0,10.0,,,False
+c035,ES,2024-04-08,skip,True,1,30m,4,,A absorption then other side,True,13.53768515586853,10.0,10.0,,,False
+c050,ES,2024-04-08,skip,True,-1,1h,3,,A absorption then other side,True,53.96947407722473,-4.75,-4.75,,,False
+c056,ES,2024-04-08,skip,True,1,15m,4,,A absorption then other side,True,48.741633892059326,-4.75,-4.75,,,False
+c071,ES,2024-04-08,skip,True,1,30m,5,,A absorption then other side,True,44.19407629966736,10.0,10.0,,,False
+c122,ES,2024-04-08,skip,False,1,15m,2,,"B retest, CVD higher low",True,46.31591010093689,-4.75,-4.75,,,False
+c126,ES,2024-04-08,skip,False,1,15m,2,,A absorption then other side,True,44.379677295684814,-4.75,-4.75,,,False
+c133,ES,2024-04-08,long,False,1,15m,1,,A absorption then other side,True,21.770553588867188,-4.75,-4.75,94.0,-4.75,True
+c020,ES,2024-04-09,unsure,True,1,30m,1,,,False,,,-4.75,,,False
+c024,ES,2024-04-09,long,True,1,4h,1,,"B retest, weaker push",True,54.451138496398926,-4.75,-4.75,66.00000023841858,-4.75,True
+c059,ES,2024-04-09,skip,True,1,30m,1,,A absorption then other side,True,21.23908495903015,-4.75,-4.75,,,False
+c086,ES,2024-04-09,long,True,1,30m,2,,A absorption then other side,True,52.20587110519409,-4.75,10.0,236.0,10.0,True
+c150,ES,2024-04-09,long,False,1,4h,1,,A absorption then other side,True,24.098751306533813,-4.75,-4.75,50.0,10.0,True
+c151,ES,2024-04-09,skip,False,1,30m,7,,,False,,,-4.75,,,False
+c048,ES,2024-04-11,short,True,-1,15m,1,,A absorption then other side,True,65.53436851501465,-4.75,-4.75,-266.0,-4.75,True
+c081,ES,2024-04-11,skip,True,-1,4h,2,after a news spike,A absorption then other side,False,24.893795490264893,6.75,-4.75,,,False
+c113,ES,2024-04-11,short,False,-1,4h,2,,A absorption then other side,True,45.27052640914917,5.75,5.5,214.0,6.25,True
+c143,ES,2024-04-11,skip,False,1,30m,1,,A absorption then other side,True,28.71578335762024,10.0,10.0,,,False
+r008,ES,2024-04-11,skip,True,-1,15m,2,,,False,,,-4.75,,,False
+r012,ES,2024-04-11,skip,True,-1,15m,1,,A absorption then other side,True,18.600221633911133,-4.75,-4.75,,,False
+r021,ES,2024-04-11,skip,True,-1,15m,1,,"B retest, CVD higher low",True,50.47693109512329,-4.75,-4.75,,,False
+c070,ES,2024-04-12,skip,True,-1,15m,2,,"B retest, CVD higher low",True,79.38059830665588,-4.75,-4.75,,,False
+c075,ES,2024-04-12,long,True,1,30m,2,,A absorption then other side,True,22.20276188850403,10.0,10.0,20.0,10.0,True
+c110,ES,2024-04-12,long,True,1,30m,2,,A absorption then other side,True,26.676743507385254,10.0,10.0,50.0,10.0,True
+c132,ES,2024-04-12,short,False,-1,15m,1,,"B retest, weaker push",True,98.8874101638794,-4.75,-4.75,190.0,-4.75,True
+c139,ES,2024-04-12,long,False,1,30m,3,,"B retest, CVD higher low",True,55.351356744766235,-4.75,-4.75,282.0,-4.75,True
+c011,ES,2024-06-03,short,True,-1,1h,2,,A absorption then other side,True,24.95812702178955,-4.75,-4.75,126.0,-4.75,True
+c101,ES,2024-06-03,skip,True,-1,30m,3,,"B retest, weaker push",True,83.99017524719238,10.0,-4.75,,,False
+r001,ES,2024-06-03,short,True,-1,1h,1,,A absorption then other side,True,25.076656341552734,-4.75,-4.75,68.0,-4.75,True
+c028,ES,2024-06-04,skip,True,-1,1h,8,,A absorption then other side,True,126.78857755661011,-4.75,-4.75,,,False
+c054,ES,2024-06-04,skip,True,-1,1h,6,,A absorption then other side,True,76.13525080680847,10.0,10.0,,,False
+c092,ES,2024-06-04,skip,True,-1,1h,4,after a news spike,A absorption then other side,False,54.73911738395691,-4.75,-4.75,,,False
+c098,ES,2024-06-04,short,True,-1,4h,1,,A absorption then other side,True,168.81988143920898,10.0,-4.75,276.0,-4.75,True
+c111,ES,2024-06-04,short,False,-1,1h,5,,A absorption then other side,True,52.85732340812683,10.0,10.0,150.0,10.0,True
+c118,ES,2024-06-04,long,False,1,30m,2,,A absorption then other side,True,20.33108139038086,-4.75,-4.75,12.0,-4.75,True
+c121,ES,2024-06-04,short,False,-1,1h,3,after a news spike,A absorption then other side,False,20.295117378234863,-4.75,-4.75,210.0,-4.75,True
+c123,ES,2024-06-04,short,False,-1,1h,7,,"B retest, weaker push",True,115.64554715156555,-4.75,,142.0,-4.75,True
+c130,ES,2024-06-04,skip,False,-1,1h,1,before 10:00,A absorption then other side,False,20.392243146896362,-4.75,-4.75,,,False
+r005,ES,2024-06-04,skip,True,-1,1h,2,after a news spike,,False,,,-4.75,,,False
+r020,ES,2024-06-04,skip,True,1,30m,1,,"B retest, CVD higher low",True,30.632434368133545,-4.75,-4.75,,,False
+c064,ES,2024-06-05,skip,True,-1,30m,1,,A absorption then other side,True,131.68681597709656,-4.75,-4.75,,,False
+c077,ES,2024-06-05,skip,True,1,30m,1,before 10:00,A absorption then other side,False,21.974772214889526,-4.75,-4.75,,,False
+c090,ES,2024-06-05,short,True,-1,4h,1,,A absorption then other side,True,203.99015736579895,-4.75,-4.75,210.0,-4.75,True
+c124,ES,2024-06-05,short,False,-1,1h,5,,A absorption then other side,True,151.4032552242279,-4.75,-4.75,112.0,-4.75,True
+r014,ES,2024-06-06,short,True,-1,30m,1,,A absorption then other side,True,13.520484209060669,-4.75,-4.75,196.0,-4.75,True
+c025,ES,2024-06-07,skip,True,-1,1h,1,,A absorption then other side,True,35.107229232788086,-4.75,-4.75,,,False
+c040,ES,2024-06-07,skip,True,-1,1h,1,,A absorption then other side,True,21.60312008857727,-4.75,-4.75,,,False
+c046,ES,2024-06-07,short,True,-1,1h,1,,A absorption then other side,True,163.58512163162231,-4.75,-4.75,280.0,-4.75,True
+c063,ES,2024-06-07,skip,True,-1,1h,1,after a news spike,"B retest, CVD higher low",False,66.78788781166077,-4.75,-4.75,,,False
+c089,ES,2024-06-07,skip,True,-1,1h,1,,A absorption then other side,True,20.728198051452637,-4.75,-4.75,,,False
+c023,ES,2024-07-29,skip,True,1,15m,5,,A absorption then other side,True,216.54072618484497,-4.75,-4.75,,,False
+c042,ES,2024-07-29,unsure,True,-1,2h,1,,A absorption then other side,True,29.3369243144989,-4.75,-4.75,,,False
+c052,ES,2024-07-29,skip,True,1,15m,3,before 10:00,A absorption then other side,False,79.09718418121338,10.0,10.0,,,False
+c080,ES,2024-07-29,short,True,-1,30m,2,,A absorption then other side,True,44.88624286651611,10.0,10.0,90.0,10.0,True
+c125,ES,2024-07-29,long,False,1,15m,4,,A absorption then other side,True,70.10995197296143,-4.75,-4.75,136.0,-4.75,True
+c138,ES,2024-07-29,short,False,-1,2h,1,,A absorption then other side,True,72.52847790718079,-4.75,-4.75,133.99999976158142,-4.75,True
+c140,ES,2024-07-29,skip,False,-1,2h,1,,A absorption then other side,True,48.32822871208191,-4.75,-4.75,,,False
+c144,ES,2024-07-29,short,False,-1,2h,1,,A absorption then other side,True,146.6601641178131,-4.75,-4.75,164.0,-4.75,True
+r010,ES,2024-07-29,skip,True,1,4h,3,,A absorption then other side,True,21.580644845962524,-4.75,-4.75,,,False
+r031,ES,2024-07-29,skip,True,1,15m,2,before 10:00,,False,,,-4.75,,,False
+c065,ES,2024-07-30,skip,True,1,15m,3,,A absorption then other side,True,33.66937255859375,-4.75,-4.75,,,False
+c102,ES,2024-07-30,skip,True,-1,2h,2,before 10:00,A absorption then other side,False,90.78482937812805,-4.75,-4.75,,,False
+c107,ES,2024-07-30,long,True,1,15m,2,,A absorption then other side,True,21.235067129135132,-4.75,-4.75,232.0,-4.75,True
+c147,ES,2024-07-30,skip,False,1,4h,5,,A absorption then other side,True,81.40352702140808,-4.75,,,,False
+r006,ES,2024-07-30,skip,True,1,1h,1,,,False,,,-4.75,,,False
+r017,ES,2024-07-30,long,True,1,15m,2,,A absorption then other side,True,64.70540952682495,-4.75,-4.75,186.0,-4.75,True
+r023,ES,2024-07-30,skip,True,-1,30m,1,,A absorption then other side,True,12.379943370819092,-4.75,-4.75,,,False
+r025,ES,2024-07-30,short,True,-1,30m,1,,A absorption then other side,True,21.82667636871338,-4.75,-4.75,90.0,-4.75,True
+c001,ES,2024-07-31,short,True,-1,30m,2,Fed day,A absorption then other side,False,21.63932704925537,-4.75,-4.75,250.0,-4.75,True
+c091,ES,2024-07-31,skip,True,-1,30m,1,Fed day,A absorption then other side,False,144.81782913208008,-4.75,10.0,,,False
+r024,ES,2024-07-31,skip,True,1,1h,1,Fed day,A absorption then other side,False,25.572579622268677,10.0,10.0,,,False
+c036,ES,2024-08-01,long,True,1,15m,3,,A absorption then other side,True,60.78267526626587,-4.75,-4.75,188.0,-4.75,True
+c045,ES,2024-08-01,skip,True,-1,30m,2,before 10:00,A absorption then other side,False,42.460405588150024,-4.75,-4.75,,,False
+c049,ES,2024-08-01,long,True,1,15m,3,,"B retest, CVD higher low",True,21.923959493637085,-4.75,10.0,-394.0000002384186,10.0,True
+c053,ES,2024-08-01,long,True,1,15m,2,,A absorption then other side,True,69.82845330238342,-4.75,-4.75,78.0,-4.75,True
+c068,ES,2024-08-01,skip,True,1,15m,4,,"B retest, weaker push",True,34.77448606491089,10.0,10.0,,,False
+c074,ES,2024-08-01,skip,True,-1,30m,3,,"B retest, weaker push",True,41.24757504463196,10.0,-4.75,,,False
+c095,ES,2024-08-01,long,True,1,1h,2,,A absorption then other side,True,39.677207946777344,-4.75,-4.75,96.0,-4.75,True
+c119,ES,2024-08-01,long,False,1,15m,1,,"B retest, CVD higher low",True,98.54660248756409,-4.75,-4.75,100.0,-4.75,True
+c149,ES,2024-08-01,skip,False,1,15m,1,,A absorption then other side,True,20.968961715698242,10.0,10.0,,,False
+r011,ES,2024-08-01,skip,True,1,15m,1,,A absorption then other side,True,20.2717547416687,-4.75,-4.75,,,False
+r018,ES,2024-08-01,skip,True,1,15m,2,,"B retest, CVD higher low",True,58.13312649726868,-4.75,-4.75,,,False
+r022,ES,2024-08-01,long,True,1,1h,2,,A absorption then other side,True,116.9790666103363,-4.75,-4.75,-242.0,-4.75,True
+c096,ES,2024-09-23,skip,True,-1,30m,2,,,False,,,-4.75,,,False
+c106,ES,2024-09-23,short,True,-1,30m,1,,A absorption then other side,True,19.97762107849121,-4.75,-4.75,160.0,-4.75,True
+c117,ES,2024-09-23,skip,False,-1,15m,1,,A absorption then other side,True,23.550905227661133,-4.75,10.0,,,False
+c015,ES,2024-09-24,skip,True,1,30m,5,before 10:00,A absorption then other side,False,59.89351940155029,-4.75,-4.75,,,False
+c017,ES,2024-09-24,unsure,True,1,15m,4,after a news spike,A absorption then other side,False,20.951095581054688,-4.75,10.0,,,False
+c021,ES,2024-09-24,skip,True,-1,1h,1,,A absorption then other side,True,204.8979778289795,-4.75,-4.75,,,False
+c051,ES,2024-09-24,long,True,1,15m,5,,A absorption then other side,True,58.37208390235901,-4.75,10.0,131.99999976158142,10.0,True
+c072,ES,2024-09-24,short,True,-1,1h,1,,A absorption then other side,True,19.52426767349243,-4.75,-4.75,138.0,-4.75,True
+c014,ES,2024-09-25,skip,True,1,30m,2,,A absorption then other side,True,63.08439493179321,-4.75,-4.75,,,False
+c145,ES,2024-09-25,skip,False,-1,15m,1,,A absorption then other side,True,133.22205448150635,-4.75,-4.75,,,False
+c152,ES,2024-09-25,skip,False,1,30m,3,,A absorption then other side,True,112.92675137519836,-4.75,-4.75,,,False
+r016,ES,2024-09-25,skip,True,1,30m,1,,,False,,,,,,False
+c008,ES,2024-09-26,skip,True,1,15m,1,after a news spike,A absorption then other side,False,20.139732837677002,-4.75,-4.75,,,False
+c134,ES,2024-09-26,skip,False,1,15m,3,,"B retest, CVD higher low",True,59.657922983169556,-4.75,-4.75,,,False
+c153,ES,2024-09-26,skip,False,1,15m,2,after a news spike,A absorption then other side,False,162.3730571269989,-4.75,-4.75,,,False
+r009,ES,2024-09-26,long,True,1,30m,3,before 10:00,"B retest, CVD higher low",False,76.21387600898743,-4.75,-4.75,102.0,-4.75,True
+r027,ES,2024-09-26,short,True,-1,15m,1,,"B retest, weaker push",True,28.35286045074463,-1.5,-0.75,124.0,-1.5,True
+c135,MES,2024-01-22,skip,False,-1,30m,1,before 10:00,A absorption then other side,False,28.59187889099121,-4.75,-4.75,,,False
+c146,MES,2024-01-22,long,False,1,30m,2,,A absorption then other side,True,30.64838171005249,-4.75,-4.75,30.0,-4.75,True
+c109,MES,2024-01-24,skip,True,-1,30m,1,,"B retest, weaker push",True,114.71827435493469,-4.75,-4.75,,,False
+r007,MES,2024-02-23,skip,True,1,30m,1,,,False,,,-2.25,,,False
+c018,MES,2024-02-27,skip,True,1,30m,2,before 10:00,A absorption then other side,False,126.38048887252808,-4.75,-4.75,,,False
+c009,MES,2024-02-28,short,True,-1,30m,1,,A absorption then other side,True,46.572940826416016,1.5,0.75,114.0,1.75,True
+c010,MES,2024-02-28,short,True,-1,30m,1,,A absorption then other side,True,28.960642337799072,-4.75,-4.75,30.0,-4.75,True
+r004,MES,2024-02-28,skip,True,-1,15m,4,,A absorption then other side,True,137.35186910629272,-4.75,-4.75,,,False
+r013,MES,2024-02-28,skip,True,-1,15m,3,before 10:00,A absorption then other side,False,36.97532820701599,-4.75,-4.75,,,False
+c039,MES,2024-02-29,skip,True,1,15m,1,,A absorption then other side,True,35.50645208358765,-4.75,-4.75,,,False
+c012,MES,2024-03-01,skip,True,-1,1h,2,after a news spike,,False,,,,,,False
+c112,MES,2024-03-01,skip,False,-1,1h,1,before 10:00,"B retest, weaker push",False,86.81445384025574,-4.75,-4.75,,,False
+c142,MES,2024-03-01,skip,False,-1,1h,3,after a news spike,"B retest, CVD higher low",False,22.034419298171997,-4.75,-4.75,,,False
+c007,MES,2025-03-11,long,True,1,15m,3,,"B retest, CVD higher low",True,48.85602021217346,-4.75,-4.75,88.0,-4.75,True
+c043,MES,2025-03-11,skip,True,1,15m,2,,"B retest, weaker push",True,24.592490911483765,10.0,10.0,,,False
+c155,MES,2025-03-11,skip,False,1,15m,1,,,False,,,-4.75,,,False
+c115,MES,2024-04-03,short,False,-1,30m,1,after a news spike,A absorption then other side,False,38.13615560531616,-2.75,-4.75,100.0,-4.75,True
+c141,MES,2024-04-03,skip,False,-1,30m,1,before 10:00,A absorption then other side,False,26.340527057647705,-4.75,-4.75,,,False
+c067,MES,2024-04-11,skip,True,1,30m,1,,"B retest, weaker push",True,22.259414196014404,10.0,10.0,,,False
+c083,MES,2024-04-12,long,True,1,30m,2,,"B retest, CVD higher low",True,23.213786602020264,10.0,10.0,32.0,10.0,True
+c129,MES,2024-04-12,skip,False,1,30m,2,,A absorption then other side,True,51.42725110054016,10.0,10.0,,,False
+r019,MES,2024-04-29,long,True,1,15m,2,before 10:00,"B retest, weaker push",False,68.70413851737976,10.0,-4.75,220.00000023841858,10.0,True
+c002,MES,2024-05-02,skip,True,1,15m,3,before 10:00,"B retest, weaker push",False,56.918227195739746,-4.75,-4.75,,,False
+c019,MES,2024-05-02,long,True,1,2h,3,,"B retest, CVD higher low",True,31.631221294403076,10.0,10.0,22.0,10.0,True
+c114,MES,2024-05-02,skip,False,1,2h,2,,"B retest, CVD higher low",True,80.60407328605652,-4.75,-4.75,,,False
+c154,MES,2024-05-02,skip,False,1,2h,2,,"B retest, weaker push",True,21.656434774398804,-4.75,-4.75,,,False
+c027,MES,2024-05-31,skip,True,1,4h,1,,A absorption then other side,True,45.37174844741821,-4.75,-4.75,,,False
+r002,MES,2024-05-31,skip,True,-1,4h,2,before 10:00,"B retest, weaker push",False,66.03175759315491,10.0,10.0,,,False
+r029,MES,2024-07-19,skip,True,-1,4h,3,before 10:00,"B retest, CVD higher low",False,32.20383834838867,10.0,10.0,,,False
+r030,MES,2024-07-23,skip,True,1,30m,1,,"B retest, weaker push",True,158.12653160095215,10.0,-4.75,,,False
+c044,MES,2024-07-31,skip,True,-1,30m,1,Fed day,,False,,,10.0,,,False
+c137,MES,2024-07-31,skip,False,-1,30m,2,Fed day,"B retest, weaker push",False,56.05015516281128,-4.75,-4.75,,,False
+c047,MES,2024-09-24,skip,True,1,15m,5,,A absorption then other side,True,52.3907105922699,10.0,10.0,,,False
+c073,MES,2024-09-24,skip,True,1,15m,4,after a news spike,"B retest, CVD higher low",False,188.94982481002808,-4.75,10.0,,,False
+c104,MES,2024-09-24,skip,True,1,30m,5,before 10:00,"B retest, CVD higher low",False,70.91226887702942,-4.75,-4.75,,,False
