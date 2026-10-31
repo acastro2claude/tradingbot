@@ -20,6 +20,10 @@ Settings: [entry_read]. Everything there is a proposal.
 
 Checked against the owner's replay decisions:   python -m research.entry_read
 Writes research/results/journal/entry_read_replay.csv and entry_read_replay_summary.csv.
+With the order book (--book, run after the plain run): a signal counts only if, at that second, the
+holding side (bids for a long) has a line in the zone area (2x the day's typical size per price) and
+the resting size there is at least what it was when the push began ("resting orders holding the
+line", refilled; not "being pulled"). Writes entry_read_book_replay.csv and entry_read_book_summary.csv.
 """
 
 from __future__ import annotations
@@ -52,8 +56,17 @@ def hm(text: str) -> int:
     return h * 60 + m
 
 
-def read_test(dt: DayTrades, bursts: pd.DataFrame, T: float, d: int, near: int, far: int) -> dict | None:
-    """The first entry the read gives at one zone test, or None. Prices in ticks, times in seconds."""
+def read_test(dt: DayTrades, bursts: pd.DataFrame, T: float, d: int, near: int, far: int,
+              confirm=None) -> dict | None:
+    """The first entry the read gives at one zone test, or None. Prices in ticks, times in seconds.
+
+    confirm: optional check at the moment a signal fires (the order book); it returns a dict with "ok".
+    When it says no, the read keeps watching for a later moment."""
+    def ok(now):
+        if confirm is None:
+            return True, {}
+        info = confirm(now)
+        return info["ok"], info
     t0, t1 = T - E["look_back_seconds"], T + E["window_seconds"]
     secs = np.arange(int(t0), int(t1) + 1)
     i = np.searchsorted(dt.t, secs, "left")                  # trades before each second start
@@ -92,7 +105,9 @@ def read_test(dt: DayTrades, bursts: pd.DataFrame, T: float, d: int, near: int, 
         if len(bb):
             bp = int(bb["price"].iloc[-1]) * d
             if low >= bp - hold and other_in and last - low >= turn:
-                return dict(signal="A absorption then other side", entry_time=float(now), entry_y=int(last))
+                good, info = ok(now)
+                if good:
+                    return dict(signal="A absorption then other side", entry_time=float(now), entry_y=int(last), **info)
         # B: retest with a CVD higher low or a weaker push
         if phase == "push1" and last - low >= bounce:
             L1, C1 = low, cvd[low_k + 1]
@@ -114,9 +129,37 @@ def read_test(dt: DayTrades, bursts: pd.DataFrame, T: float, d: int, near: int, 
                 S2 = cp[L2_k + 1] - cp[top_k]
                 if C2 > C1 or S2 < E["weaker_push_ratio"] * S1:
                     why = "B retest, CVD higher low" if C2 > C1 else "B retest, weaker push"
-                    return dict(signal=why, entry_time=float(now), entry_y=int(last))
+                    good, info = ok(now)
+                    if good:
+                        return dict(signal=why, entry_time=float(now), entry_y=int(last), **info)
+                    continue                                  # the book doesn't confirm yet: keep watching
                 L1, C1, S1, phase, top_k = L2, C2, S2, "bounced", b   # no divergence: this low is the new reference
     return None
+
+
+def book_confirm(book, typ: float, d: int, near: int, far: int, T: float):
+    """The owner's book check at a signal: a line on the holding side in the zone area, not being pulled."""
+    from research.level_test_book import TestReader as BookReader, _hold_depth
+    from research.orderbook import ASK, BID
+    side = BID if d == 1 else ASK
+    lo, hi = min(near, far), max(near, far)
+    a_lo, a_hi = lo - ticks(E["book_area_points"]), hi + ticks(E["book_area_points"])
+    reader = BookReader(book, typ, pd.DataFrame(columns=["direction", "price", "end_time", "contracts"]))
+    r0 = book.row(T - E["look_back_seconds"])
+
+    start = _hold_depth(book, side, r0, r0, a_lo, a_hi)
+    start_size = int(start.sum()) if start.size else 0
+
+    def check(now: float) -> dict:
+        r = book.row(now)
+        depth = _hold_depth(book, side, r, r, a_lo, a_hi)
+        line = float(depth.max()) / typ if depth.size else 0.0
+        change = (int(depth.sum()) if depth.size else 0) - start_size
+        added, pulled, filled = reader.flows(r0 + 1, r, side, a_lo, a_hi)
+        return dict(ok=bool(line >= E["book_line_multiple"] and change >= E["book_min_depth_change"]),
+                    book_line=line, book_depth_change=change, book_added=int(added), book_pulled=int(pulled),
+                    book_eaten=int(filled))
+    return check
 
 
 def news_blocks(minute_volume: pd.Series) -> list[tuple[int, int]]:
@@ -152,6 +195,91 @@ def filters(day: str, T: float, minute_vol: pd.Series, through: float, inside: f
     if E["use_zone_invalid_filter"] and (through >= E["invalid_through_points"] or inside >= E["invalid_inside_minutes"]):
         return "zone already traded through or hung in"
     return None
+
+
+def book_day(job: tuple) -> list[dict]:
+    """--book: one day's order book; the read with and without the book check at each decided clip."""
+    from research.orderbook import build_book, load_mbo
+    from research.orderbook_study import typical_depth
+    (market, contract, day, file, end), clips = job
+    book = build_book(load_mbo(file), int(et(day, "08:00")), int(end))
+    typ = typical_depth(book)
+    tr = day_trades_df(market, contract, day)
+    dt = DayTrades(trades=tr)
+    R = S["replay"]
+    bmin = R["burst_min_es"] if market == "ES" else R["burst_min_mes"]
+    bursts = find_bursts(tr["t"].to_numpy(), tr["price"].to_numpy().astype(np.int64), tr["size"].to_numpy(),
+                         tr["side"].to_numpy(), R["burst_seconds"], bmin)
+    bursts["direction"] = np.where(bursts["side"] == "B", -1, 1)
+    flat, stop, target = et(day, FLAT_ET), S["bot"]["stop_points"], S["run_winners"]["target_points"]
+    rows = []
+    for c in clips:
+        zd, T = c["zone_dir"], c["time"]
+        far = c["lo"] if zd == 1 else c["hi"]
+        chk = book_confirm(book, typ, zd, c["edge"], far, T)
+        row = dict(clip=c["clip"])
+        for name, conf in (("tape", None), ("book", chk)):
+            got = read_test(dt, bursts, T, zd, c["edge"], far, confirm=conf)
+            row[f"{name}_signal"] = got["signal"] if got else None
+            if got:
+                fill = got["entry_y"] * zd + zd * SLIP_TICKS
+                row[f"{name}_points"] = fixed_exit_t(dt, got["entry_time"], fill, zd, flat, stop, target)[0] * TICK
+                row[f"{name}_vs_test_s"] = got["entry_time"] - T
+                for k in ("book_line", "book_depth_change", "book_added", "book_pulled", "book_eaten"):
+                    if k in got:
+                        row[k] = got[k]
+        tape_sig = row.get("tape_signal")                                  # the book's reading at the tape signal
+        if tape_sig is not None:
+            info = chk(T + row["tape_vs_test_s"])
+            row.update(tape_line=info["book_line"], tape_depth_change=info["book_depth_change"],
+                       tape_pulled=info["book_pulled"], tape_eaten=info["book_eaten"], tape_added=info["book_added"],
+                       tape_book_ok=info["ok"])
+        rows.append(row)
+    print(f"{day} {market}: {len(clips)} clips", flush=True)
+    return rows
+
+
+def main_book() -> None:
+    """The read with the order book check, on the replay clips (their days have the full book)."""
+    from multiprocessing import Pool
+
+    from research.replay_export import days as book_days
+    x = pd.read_csv(OUT / "entry_read_replay.csv")
+    tests = pd.read_csv(OUT / "replay_clip_ids.csv").merge(pd.read_csv(OUT / "replay_tests.csv"), on="id")
+    x = x.merge(tests[["public_id", "contract", "time", "edge", "lo", "hi"]], left_on="clip", right_on="public_id")
+    files = {(b["market"], b["contract"], b["day"]): (b["file"], b["end"]) for b in book_days()}
+    jobs = []
+    for (market, contract, day), g in x.groupby(["market", "contract", "day"]):
+        if (market, contract, day) not in files:
+            continue
+        f, end = files[(market, contract, day)]
+        jobs.append(((market, contract, day, f, end), g[["clip", "zone_dir", "time", "edge", "lo", "hi"]].to_dict("records")))
+    with Pool(3) as pool:
+        parts = pool.map(book_day, jobs)
+    b = pd.DataFrame([r for p in parts for r in p])
+    y = x.drop(columns=["public_id", "contract", "time", "edge", "lo", "hi"]).merge(b, on="clip", how="left")
+    y.to_csv(OUT / "entry_read_book_replay.csv", index=False)
+    cost = CONTRACTS * S["backtest"]["commission_per_contract_round_trip"]
+    usd = lambda v: v * S["market"]["point_value_usd"] * CONTRACTS - cost  # noqa: E731
+    out = []
+    for name, m in {"careful decisions": y["careful"], "all decisions": y["careful"].notna()}.items():
+        z = y[m]
+        passes = z["filter"].isna()
+        for label, take, col in (("tape read + filters", passes & z["tape_signal"].notna(), "tape_points"),
+                                 ("tape read + book + filters", passes & z["book_signal"].notna(), "book_points")):
+            both = (take & z["owner_takes"]).sum()
+            pts = z.loc[take, col]
+            out.append(dict(sample=name, rule=label, clips=len(z), rule_takes=int(take.sum()),
+                            owner_takes=int(z["owner_takes"].sum()), both_take=int(both),
+                            agreement=(take == z["owner_takes"]).mean(), win_rate=(pts > 0).mean(),
+                            usd_per_trade=usd(pts).mean(), net_usd=usd(pts).sum()))
+        o = z.loc[z["owner_takes"], "owner_points"].dropna()
+        out.append(dict(sample=name, rule="the owner", clips=len(z), rule_takes=len(o), win_rate=(o > 0).mean(),
+                        usd_per_trade=usd(o).mean(), net_usd=usd(o).sum()))
+    t = pd.DataFrame(out)
+    t.to_csv(OUT / "entry_read_book_summary.csv", index=False)
+    pd.set_option("display.width", 250)
+    print(t.round(2).to_string())
 
 
 def main() -> None:
@@ -244,4 +372,5 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    import sys
+    main_book() if "--book" in sys.argv else main()

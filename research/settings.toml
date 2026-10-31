@@ -443,6 +443,15 @@ retest_points = 1.5
 weaker_push_ratio = 0.7
 other_side_for_retest = true     # version 2: signal B also needs the other side to come in (the owner skipped retests
                                  # while "sellers in control"); version 1 did not check it
+# Order book confirmation (python -m research.entry_read --book; the owner's notes: "resting orders holding the line",
+# "resting orders were being pulled off the order book as price moved downward", "no order book confirmation").
+# A signal counts only if, at that second, the holding side (bids for a long) has a line in the zone area and the
+# resting size there is at least what it was when the push began (refilled or stacked, not pulled or eaten away).
+# Otherwise the read keeps watching. (The first run used added minus pulled; that is always positive because of
+# the constant adding and cancelling near price, so it checked nothing.)
+book_area_points = 1.0           # the zone area: from 1 point outside the far edge to 1 point past the near edge
+book_line_multiple = 2.0         # a line = at least 2x the day's typical resting size per price (same as [book_study])
+book_min_depth_change = 0        # resting size in the zone area now minus when the push began (contracts), at least this
 # Filters (owner's skip reasons)
 entry_from_et = "10:00"          # owner: "we don't trade the open" (10:00 proposed)
 news_minutes = ["08:30", "10:00", "14:00"]   # a release minute with volume >= 3x the median of the 10 minutes before

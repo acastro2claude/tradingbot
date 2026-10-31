@@ -47,3 +47,25 @@ def test_no_trade_while_sellers_stay_in_control():
         rows += [(100.0 + 2 * k, 400 + (k % 6), 1, "B"), (100.5 + 2 * k, 400 + (k % 6), 5, "A")]
     dt, b = tape(rows)
     assert read_test(dt, b, T, 1, NEAR, FAR) is None
+
+
+def small_book(added: int, pulled: int, size_later: int = 50):
+    from research.orderbook import BID, Book
+    bid = np.zeros((400, 40), dtype=np.int64)
+    bid[:, 398 - 380] = 50                                                  # a 50-lot line of bids at 99.50, inside the zone
+    bid[100:, 398 - 380] = size_later                                       # what is left of it from t = 100
+    flows = pd.DataFrame(dict(sec=[50], side=[BID], price=[398], added=[added], pulled=[pulled], filled=[10]))
+    trades = pd.DataFrame(dict(t=[0.0], price=[400], size=[1], side=["A"]))
+    return Book(t0=0, lo=380, bid=bid, ask=np.zeros_like(bid), flows=flows, trades=trades)
+
+
+def test_book_confirms_a_line_that_holds():
+    from research.entry_read import book_confirm
+    info = book_confirm(small_book(added=100, pulled=20, size_later=60), 10.0, 1, NEAR, FAR, T)(150.0)
+    assert info["ok"] and info["book_line"] == 6.0 and info["book_depth_change"] == 10
+
+
+def test_book_rejects_bids_being_pulled():
+    from research.entry_read import book_confirm
+    info = book_confirm(small_book(added=100, pulled=200, size_later=30), 10.0, 1, NEAR, FAR, T)(150.0)
+    assert not info["ok"] and info["book_depth_change"] == -20
