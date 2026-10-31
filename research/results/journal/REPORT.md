@@ -685,6 +685,16 @@ The bot works on 1-minute candles: a zone test, entry on the first close 1 point
 - **The daily caps make failing more likely, not less.**
   - The trailing limit is hit by a run of losing days, not by one bad day. Topstep's own −$1,000 day already caps a single day, and the owner's worst day from 10:00 was −$774 at 10 MES.
   - A cap doesn't stop a run of capped losing days, but it cuts the good days that reach the target. With the 2-trade cap, profit from 10:00 drops from +$5,977 to +$1,720.
+- **"No extra rule" still has a daily limit:** Topstep's own −$1,000 Daily Loss Limit (no new trades once the day's closed trades reach −$1,000). It never triggered on these days: the owner's worst day from 10:00 was −$774 at 10 MES (2.9 trades a day on average, at most 8). If the account has no Daily Loss Limit (Topstep may have made it optional), the bot needs its own.
+- **The calculation, step by step:**
+  1. The owner's 269 journal trades from Q2 2024 entered at 10:00 or later, one at a time, on 95 days.
+  2. Dollars per trade = points × $5 × contracts − $1.24 × contracts. For example, a 4.25-point loss is −$224.90 at 10 MES and −$112.45 at 5 MES.
+  3. Each day, the trades in order, until the day's rule stops trading.
+  4. The account starts at $50,000. The floor is the best end-of-day balance minus $2,000; it only moves up. The account is lost when the balance after any trade is at or below the floor, and passes when a day closes at $53,000 or more.
+  5. Each of the 10,000 Combines draws days at random from the 95 real days (a day can come up again) and plays until it passes or is lost.
+- **Why size matters:** at 10 MES the average day is +$62 with a typical swing of ±$338, so the $2,000 limit is about 6 typical swings. At 5 MES both halve (+$31, ±$169), so the same limit is about 12 swings.
+  - The worst run of days in the real order was −$2,243 at 10 MES (the account is lost) and −$1,122 at 5 MES.
+  - For a limit that doesn't trail, the standard formula is P(pass) = (1 − e^(−aL)) / (1 − e^(−a(L+T))), with a = 2 × average day ÷ swing². That gives 89% at 10 MES and 99% at 5 MES; halving the size doubles a, the same as doubling the room. The trailing limit brings these down to the simulated 70% and 92%.
 - **Size is the strongest lever.** At 5 MES a loss costs half, so the same $2,000 holds twice as many losses: 92% pass instead of 70%. It takes longer, about 85 trading days instead of 32.
 - **Entries before 10:00 hurt a lot:** with them, the 10 MES pass rate is 35% with no rule and 8% with the 2-trade cap.
 - **In the real order of the 11 months,** 10 MES from 10:00 would have lost the account once, with or without the cap; 5 MES never.
