@@ -669,35 +669,47 @@ The bot works on 1-minute candles: a zone test, entry on the first close 1 point
 
 **The owner's goal:** never hit Topstep's loss limit, which loses the account. The limit trails the best end-of-day balance by the same amount at all times (owner), so winning never buys room. The owner wants at most 2 trades a day for this.
 
-**The test** (`research/topstep_risk.py`): the owner's real journal trades from Q2 2024 (real entries and exits, one trade at a time) go through a Topstep 50K account:
-- Maximum Loss Limit $2,000, trailing the best end-of-day balance.
-- Trading stops for the day at −$1,000 (the Daily Loss Limit).
-- Under each daily rule, the trading days are drawn in random order to play 10,000 Combines.
-- Pass = the balance closes a day $3,000 up before it touches the limit.
+**The test** (`research/topstep_risk.py`): the owner's real journal trades from Q2 2024 (real entries and exits, one trade at a time) go through a Topstep account. The owner's last Combine was a **100K** account:
+- **100K:** Maximum Loss Limit $3,000, trailing the best end-of-day balance; trading stops for the day at −$2,000 (Daily Loss Limit); pass = a day closes $6,000 up.
+- **50K:** $2,000 limit, −$1,000 day, $3,000 target.
+- Under each daily rule, the trading days are drawn in random order to play 10,000 Combines (up to 500 trading days each).
 
-| Entries from 10:00, owner's exits | 10 MES: pass / fail | Days to pass (median) | 5 MES: pass / fail | Days to pass |
+**100K account**, entries from 10:00, owner's exits:
+
+| Daily rule | 10 MES: pass / fail | Days to pass (median) | 5 MES: pass / fail | Days to pass |
 |---|---|---|---|---|
-| No extra rule (Topstep's −$1,000 day only) | 70% / 30% | 32 | 92% / 7% | 85 |
-| At most 2 trades a day | 39% / 61% | 41 | 45% / 42% | 131 |
-| Stop after 2 losing trades | 27% / 73% | 39 | 25% / 65% | 132 |
-| Stop at −$500 on the day | 44% / 56% | 32 | 92% / 7% | 85 |
+| None besides Topstep's −$2,000 day | 81% / 19% | 78 | 98% / 2% | 182 |
+| Stop at −$1,000 on the day | 81% / 19% | 78 | 98% / 2% | 182 |
+| Stop at −$500 on the day | 44% / 56% | 86 | 98% / 2% | 182 |
+| At most 2 trades a day | 37% / 63% | 115 | 41% / 34% (25% still open) | 327 |
+| Stop after 2 losing trades | 19% / 81% | 117 | 14% / 65% | 342 |
 
+**50K account**, same trades:
+
+| Daily rule | 10 MES: pass / fail | Days to pass (median) | 5 MES: pass / fail | Days to pass |
+|---|---|---|---|---|
+| None besides Topstep's −$1,000 day | 71% / 29% | 32 | 93% / 7% | 84 |
+| At most 2 trades a day | 40% / 60% | 41 | 54% / 46% | 144 |
+| Stop after 2 losing trades | 27% / 73% | 39 | 30% / 70% | 145 |
+| Stop at −$500 on the day | 45% / 55% | 31 | 93% / 7% | 84 |
+
+- **The −$1,000 daily stop costs nothing on these days:** the owner's worst day from 10:00 was −$774 at 10 MES, so it never triggered. A −$500 stop at 10 MES does cut days that later recovered.
+- **In the real order of the 11 months,** 10 MES from 10:00 would not have lost a 100K account (it would have lost a 50K account once).
 - **The daily caps make failing more likely, not less.**
-  - The trailing limit is hit by a run of losing days, not by one bad day. Topstep's own −$1,000 day already caps a single day, and the owner's worst day from 10:00 was −$774 at 10 MES.
+  - The trailing limit is hit by a run of losing days, not by one bad day. A daily dollar stop already caps a single day, and the owner's worst day from 10:00 was −$774 at 10 MES.
   - A cap doesn't stop a run of capped losing days, but it cuts the good days that reach the target. With the 2-trade cap, profit from 10:00 drops from +$5,977 to +$1,720.
-- **"No extra rule" still has a daily limit:** Topstep's own −$1,000 Daily Loss Limit (no new trades once the day's closed trades reach −$1,000). It never triggered on these days: the owner's worst day from 10:00 was −$774 at 10 MES (2.9 trades a day on average, at most 8). If the account has no Daily Loss Limit (Topstep may have made it optional), the bot needs its own.
+- **"No extra rule" still has a daily limit:** Topstep's own Daily Loss Limit (no new trades once the day's closed trades reach −$2,000 on 100K, −$1,000 on 50K). It never triggered on these days: the owner's worst day from 10:00 was −$774 at 10 MES (2.9 trades a day on average, at most 8). If the account has no Daily Loss Limit (Topstep may have made it optional), the bot needs its own.
 - **The calculation, step by step:**
   1. The owner's 269 journal trades from Q2 2024 entered at 10:00 or later, one at a time, on 95 days.
   2. Dollars per trade = points × $5 × contracts − $1.24 × contracts. For example, a 4.25-point loss is −$224.90 at 10 MES and −$112.45 at 5 MES.
   3. Each day, the trades in order, until the day's rule stops trading.
-  4. The account starts at $50,000. The floor is the best end-of-day balance minus $2,000; it only moves up. The account is lost when the balance after any trade is at or below the floor, and passes when a day closes at $53,000 or more.
+  4. The account starts at $100,000 (or $50,000). The floor is the best end-of-day balance minus $3,000 ($2,000); it only moves up. The account is lost when the balance after any trade is at or below the floor, and passes when a day closes at $106,000 ($53,000) or more.
   5. Each of the 10,000 Combines draws days at random from the 95 real days (a day can come up again) and plays until it passes or is lost.
-- **Why size matters:** at 10 MES the average day is +$62 with a typical swing of ±$338, so the $2,000 limit is about 6 typical swings. At 5 MES both halve (+$31, ±$169), so the same limit is about 12 swings.
+- **Why size matters:** at 10 MES the average day is +$62 with a typical swing of ±$338, so the 100K account's $3,000 limit is about 9 typical swings (50K: about 6). At 5 MES both halve (+$31, ±$169), so the same limit is about 18 swings (50K: about 12). The target takes about $6,000 ÷ $62 ≈ 97 average days at 10 MES and twice that at 5 MES.
   - The worst run of days in the real order was −$2,243 at 10 MES (the account is lost) and −$1,122 at 5 MES.
-  - For a limit that doesn't trail, the standard formula is P(pass) = (1 − e^(−aL)) / (1 − e^(−a(L+T))), with a = 2 × average day ÷ swing². That gives 89% at 10 MES and 99% at 5 MES; halving the size doubles a, the same as doubling the room. The trailing limit brings these down to the simulated 70% and 92%.
-- **Size is the strongest lever.** At 5 MES a loss costs half, so the same $2,000 holds twice as many losses: 92% pass instead of 70%. It takes longer, about 85 trading days instead of 32.
-- **Entries before 10:00 hurt a lot:** with them, the 10 MES pass rate is 35% with no rule and 8% with the 2-trade cap.
-- **In the real order of the 11 months,** 10 MES from 10:00 would have lost the account once, with or without the cap; 5 MES never.
+  - For a limit that doesn't trail, the standard formula is P(pass) = (1 − e^(−aL)) / (1 − e^(−a(L+T))), with a = 2 × average day ÷ swing². On 50K that gives 89% at 10 MES and 99% at 5 MES; on 100K, 96% and over 99%. Halving the size doubles a, the same as doubling the room. The trailing limit brings these down to the simulated 71% and 93% (50K), 81% and 98% (100K).
+- **Size is the strongest lever.** At 5 MES a loss costs half, so the same limit holds twice as many losses: on 100K, 98% pass instead of 81%. It takes longer: about 182 trading days instead of 78 (50K: 84 instead of 32).
+- **Entries before 10:00 hurt a lot:** with them, the 100K pass rate at 10 MES is 45% with no rule and 2% with the 2-trade cap.
 - **Caveats:**
   - Random day order ignores streaks of bad days, so real odds are somewhat worse.
   - Open-trade drawdown and Topstep's consistency target are not modelled.

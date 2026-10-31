@@ -309,9 +309,11 @@ Low-volume days produce smaller moves, so the bot takes less risk on them.
 - **Topstep account (owner, Oct 2026):** the owner trades a Topstep account. Hitting its loss limit loses the account, and starting over costs money, so staying off the limit comes first.
   - **Maximum Loss Limit:** $2,000 (50K account), $3,000 (100K), $4,500 (150K). The owner: it trails the best end-of-day balance by the same amount at all times, "so we cannot let up just because we are winning."
   - **Daily Loss Limit:** $1,000 (50K); hitting it ends the trading day.
-  - **TBD:** the owner's account size.
+  - **Account size:** the owner's last Combine was a **100K** account: limit $3,000, Daily Loss Limit $2,000, target $6,000.
   - The owner wants at most **2 trades a day** to stay off the limit.
-  - **Tested on the owner's journal (REPORT.md section 20):** with the owner's entries from 10:00 at 10 MES, a 50K Combine passes 70% of the time with no extra rule, 39% with the 2-trade cap. At 5 MES: 92% with no extra rule, at about 85 trading days instead of 32.
+  - **Tested on the owner's journal (REPORT.md section 20):** with the owner's entries from 10:00, a 100K Combine passes:
+    - at 10 MES: 81% with a −$1,000 daily stop (the same as no extra rule), 37% with the 2-trade cap; median 78 trading days to pass
+    - at 5 MES: 98%, but a median of 182 trading days to pass
     - A run of losing days hits a trailing limit, not one bad day. Topstep's −$1,000 day already caps a single day.
     - The owner decides the cap and the size.
 - **Protective orders:** send the stop and the first target as soon as the entry fills, so the trade stays protected if the bot or the computer goes down. Check that the stop is held by the broker or the exchange, not only by NinjaTrader on the computer.

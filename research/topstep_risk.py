@@ -5,9 +5,11 @@ that from happening". This replays the owner's real journal trades (research.jou
 entries; the owner's own exits or a fixed 4/10 or 5/10 bracket; 10 or 5 MES, $1.24 costs per
 contract) through a Topstep account. Settings: [topstep_risk].
 
+Accounts ([topstep_risk] accounts): 100K (limit $3,000, target $6,000, daily limit $2,000; the owner's
+last Combine) and 50K ($2,000, $3,000, $1,000).
 Per day, in entry order, one trade at a time; the day ends at the first of:
-  - the day rule: none / 2 trades taken / 2 losing trades / -$500 on the day
-  - Topstep's daily loss limit (-$1,000 on the day, counted on closed trades)
+  - the day rule: none / 2 trades taken / 2 losing trades / -$500 or -$1,000 on the day
+  - Topstep's daily loss limit (counted on closed trades)
 The account: Maximum Loss Limit = best end-of-day balance minus the limit. The owner: it always
 trails by the same amount ([topstep_risk] mll_stops_at_start_balance = false); some Topstep pages
 say it stops rising at the starting balance. A closed trade at or below it loses the account; it is counted, and a new account starts
@@ -16,7 +18,7 @@ the next day. Open-trade drawdown is not counted, so real losses come a little s
 Combine odds: one 11-month history gives only a handful of lost accounts, so the trading days of
 each rule are also drawn at random (with replacement, whole days kept intact) to play 10,000
 Combines: pass = the balance closes a day at the profit target ($3,000 on 50K, $6,000 on 100K)
-before it touches the Maximum Loss Limit. Drawing days at random ignores streaks of bad days that
+before it touches the Maximum Loss Limit; still open after 500 trading days counts as neither. Drawing days at random ignores streaks of bad days that
 cluster in real markets, so real odds are somewhat worse. Topstep's consistency target (best day at
 most half the profit) is not modelled.
 
@@ -33,10 +35,12 @@ from research.settings import load_settings
 
 
 def day_filter(g: pd.DataFrame, rule: str, dll: float) -> list[bool]:
+    """Per day: "none" (only the account's daily loss limit), "2 trades", "2 losses" or "-X on the day"."""
+    cut = float(rule.split()[0]) if rule.endswith("on the day") else None
     keep, busy, n, losses, pnl = [], -np.inf, 0, 0, 0.0
     for r in g.itertuples():
         stop = (rule == "2 trades" and n >= 2) or (rule == "2 losses" and losses >= 2) \
-            or (rule == "-500 on the day" and pnl <= -500) or pnl <= -dll
+            or (cut is not None and pnl <= cut) or pnl <= -dll
         if stop or r.entry_time < busy:
             keep.append(False)
             continue
@@ -97,35 +101,34 @@ def main() -> None:
     seed = s["level_study"]["random_seed"]
     lock = T["mll_stops_at_start_balance"]
     x = pd.read_csv(OUT / "journal_stops.csv")
-    x = x[x["from_q2_2024"] & x["exit"].isin(["your exits", "4/10", "5/10"])].sort_values("entry_time")
+    x = x[x["from_q2_2024"] & x["exit"].isin(T["exits"])].sort_values("entry_time")
     rows = []
-    combos = [(size, entries, em) for size in T["sizes_mes"]
-              for entries, em in {"all entries": x["day"].notna(), "entries from 10:00": x["from_10am"]}.items()]
-    for size, entries, em in combos:
-        y = x[em].copy()
-        y["usd"] = y["points"] * s["market"]["point_value_usd"] * size - s["backtest"]["commission_per_contract_round_trip"] * size
-        for ex, g in y.groupby("exit", sort=False):
-            for rule in T["day_rules"]:
-                keep = []
-                for _, d in g.groupby("day", sort=True):
-                    keep += list(zip(d.index, day_filter(d, rule, T["daily_loss_limit_usd"])))
-                k = g.loc[[i for i, ok in keep if ok]]
-                days = k.groupby("day")["usd"].sum()
-                row = dict(mes=size, entries=entries, exit=ex, day_rule=rule, trades=len(k), net_usd=k["usd"].sum(),
-                           usd_per_trade=k["usd"].mean(), worst_day=days.min(),
-                           days_down_500_or_more=int((days <= -500).sum()), days=len(days))
-                for mll, tgt in zip(T["max_loss_limits_usd"], T["profit_targets_usd"]):
-                    lost, worst = account(k, T["start_balance_usd"], mll, lock)
-                    row[f"accounts lost, limit {mll}"] = lost
-                    p_pass, p_fail, med = combine_odds(k, T["start_balance_usd"], mll, tgt, T["combine_sims"],
-                                                       T["combine_max_days"], np.random.default_rng(seed), lock)
-                    row[f"combine pass, {mll}/{tgt}"] = p_pass
-                    row[f"combine fail, {mll}/{tgt}"] = p_fail
-                    row[f"median days to pass, {mll}/{tgt}"] = med
-                rows.append(row)
+    for acc in T["accounts"]:
+        for size in T["sizes_mes"]:
+            for entries, em in {"entries from 10:00": x["from_10am"], "all entries": x["day"].notna()}.items():
+                y = x[em].copy()
+                y["usd"] = (y["points"] * s["market"]["point_value_usd"] * size
+                            - s["backtest"]["commission_per_contract_round_trip"] * size)
+                for ex, g in y.groupby("exit", sort=False):
+                    for rule in T["day_rules"]:
+                        keep = []
+                        for _, d in g.groupby("day", sort=True):
+                            keep += [i for i, ok in zip(d.index, day_filter(d, rule, acc["daily_loss"])) if ok]
+                        k = g.loc[keep]
+                        days = k.groupby("day")["usd"].sum()
+                        lost, worst = account(k, acc["start"], acc["max_loss"], lock)
+                        p_pass, p_fail, med = combine_odds(k, acc["start"], acc["max_loss"], acc["target"],
+                                                           T["combine_sims"], T["combine_max_days"],
+                                                           np.random.default_rng(seed), lock)
+                        rows.append(dict(account=acc["name"], mes=size, entries=entries, exit=ex, day_rule=rule,
+                                         trades=len(k), net_usd=k["usd"].sum(), usd_per_day=days.mean(),
+                                         worst_day=days.min(), accounts_lost_real_order=lost,
+                                         worst_drop_from_high=worst, combine_pass=p_pass, combine_fail=p_fail,
+                                         still_open=1 - p_pass - p_fail, median_days_to_pass=med))
     t = pd.DataFrame(rows)
     t.to_csv(OUT / "topstep_risk.csv", index=False)
     pd.set_option("display.width", 300)
+    pd.set_option("display.max_rows", 200)
     print(t.round(2).to_string())
 
 
