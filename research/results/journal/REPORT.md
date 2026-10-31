@@ -710,6 +710,7 @@ The bot works on 1-minute candles: a zone test, entry on the first close 1 point
   - For a limit that doesn't trail, the standard formula is P(pass) = (1 − e^(−aL)) / (1 − e^(−a(L+T))), with a = 2 × average day ÷ swing². On 50K that gives 89% at 10 MES and 99% at 5 MES; on 100K, 96% and over 99%. Halving the size doubles a, the same as doubling the room. The trailing limit brings these down to the simulated 71% and 93% (50K), 81% and 98% (100K).
 - **Size is the strongest lever.** At 5 MES a loss costs half, so the same limit holds twice as many losses: on 100K, 98% pass instead of 81%. It takes longer: about 182 trading days instead of 78 (50K: 84 instead of 32).
 - **Entries before 10:00 hurt a lot:** with them, the 100K pass rate at 10 MES is 45% with no rule and 2% with the 2-trade cap.
+- **The owner's decision (Oct 2026):** start with 5 MES and a −$500 daily stop on the 100K account (98% pass in the simulation, median about 182 trading days).
 - **Caveats:**
   - Random day order ignores streaks of bad days, so real odds are somewhat worse.
   - Open-trade drawdown and Topstep's consistency target are not modelled.

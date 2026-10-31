@@ -4,8 +4,8 @@ Status: draft. Items marked **TBD** still need a decision.
 
 ## Market and platform
 
-- **Instrument traded:** MES (Micro E-mini S&P 500), **10 contracts per trade**.
-  - Tick size 0.25. Each contract is worth $1.25 per tick or $5 per point, so 10 contracts are $50 per point, the same as 1 ES.
+- **Instrument traded:** MES (Micro E-mini S&P 500), **5 contracts per trade** (owner, Oct 2026: start with 5 on the 100K Topstep account; was 10).
+  - Tick size 0.25. Each contract is worth $1.25 per tick or $5 per point, so 5 contracts are $25 per point (10 would be $50, the same as 1 ES).
   - MNQ may come later.
 - **TBD:** compute levels and volume profiles from ES instead of MES. ES is the main market and MES follows it, so the ES profile may show the big players better. Absorption alerts stay on MES to match the Bookmap settings.
 - **Platforms:** Bookmap for reading order flow, NinjaTrader for execution.
@@ -260,7 +260,7 @@ Mirror the steps for a long after price falls into a level.
 - **Retest around 09:40:** price pushes back to about 5538 and fails. Less volume trades at the level than on the first test, and CVD makes a lower high. This is the short signal.
 - Price falls to about 5515 by 09:47.
 - **User's trade:** short at 5536–5538 (early entry), stop at 5543, close 90% at 5515, runner targets at 5505 then 5500, and the runner's stop moved to 5530 after the first target. Risk is about 6 points against about 22 points to the first target (about 3.7 to 1).
-- With 10 MES, the trade risks about $300. The 9 contracts closed at the first target make about $990, before commissions.
+- With 5 MES, the trade risks about $150. The 4 contracts closed at the first target make about $440, before commissions. (With the earlier 10 MES: about $300 risk, and the 9 contracts closed at the first target make about $990.)
 - April 3, 2025 was a very high-volume day (the tariff selloff), so normal settings apply.
 - **Test:** rebuilding the indicator over this window must reproduce these three markers.
   - **Result from Databento trades** (aggressive buys at one price within 0.01 s):
@@ -282,8 +282,8 @@ These rules follow how the user manages trades by hand. Example 1 prices are in 
    - **Defined (owner, Oct 2026):** the lowest price from the start of that chop up to the entry (highest, for a long). [Example 1: 5506.75.]
 4. **After the first target:** move the runner's stop to lock in 5 points of profit plus 1 point of buffer, which is 6 points from entry [5536 − 6 = 5530].
 
-- **Contract split with 10 MES:** 9 contracts close at the first target, and 1 contract runs to the next target.
-  - The backtest will compare this with an 8 / 1 / 1 split, where a second runner targets the level after that [5500]. The data decides.
+- **Contract split with 5 MES:** 4 contracts close at the first target, and 1 contract runs to the next target (with 10 MES it was 9 and 1).
+  - The backtest will compare this with a 3 / 1 / 1 split (8 / 1 / 1 with 10 MES), where a second runner targets the level after that [5500]. The data decides.
 - **Alternative target (section 1e):** an older POC outside the last couple of days' trading. Any heavier-volume price on the way is a checkpoint to manage the trade. The backtest compares this with the targets above.
 - **Backtest costs:** assume a tick or two of slippage on entries and stops, plus commissions.
 
@@ -300,17 +300,17 @@ Low-volume days produce smaller moves, so the bot takes less risk on them.
 
 ## 4. Risk limits
 
-- **Contracts per trade:** 10 MES on every trade. On quiet days the stop and targets move closer instead of the size changing.
-- **Loss per trade (normal day):** the stop sits 3 points past the level, and entries so far have been 2–4 points inside the level. A full loss is therefore 5–7 points, which is **$250–$350** on 10 MES. Slippage and commissions add roughly $10–$40.
-- **Trades per day:** **1**, win or loss. This is an adjustable setting, to be raised once results show whether the strategy works. With one trade a day, the most the bot should lose in a day is one full loss: about $260–$390 including costs.
+- **Contracts per trade:** 5 MES on every trade (owner, Oct 2026; was 10). On quiet days the stop and targets move closer instead of the size changing.
+- **Loss per trade (normal day):** the stop sits 3 points past the level, and entries so far have been 2–4 points inside the level. A full loss is therefore 5–7 points, which is **$125–$175** on 5 MES. Slippage and commissions add roughly $5–$20.
+- **Trades per day:** no fixed number (proposed, Oct 2026). The −$500 daily stop limits the day instead. On the owner's journal a cap on the number of trades cut the winning days and made losing the Topstep account more likely (REPORT.md section 20). **TBD:** the owner confirms, or sets a number.
 - **Fast markets:** during news or sharp moves, a stop can fill well past its price. A single loss can then be bigger than these numbers.
 - **Maximum entry distance (TBD):** skip the trade if price is already too far from the level, for example more than 4 points away, so the risk never goes past about 7 points.
-- **Daily loss limit:** a backup dollar limit for when more than one trade a day is allowed. Proposed: $800, about two full losses.
+- **Daily loss limit:** **−$500** (owner, Oct 2026). Once the day's closed trades reach −$500, no new trades that day. That is a sixth of the 100K account's $3,000 limit, about 3–4 full losses at 5 MES. On the owner's journal from 10:00 at 5 MES it never triggered (worst day −$387), and a 100K Combine passed 98% of the time in the simulation, in a median of about 182 trading days.
 - **Topstep account (owner, Oct 2026):** the owner trades a Topstep account. Hitting its loss limit loses the account, and starting over costs money, so staying off the limit comes first.
   - **Maximum Loss Limit:** $2,000 (50K account), $3,000 (100K), $4,500 (150K). The owner: it trails the best end-of-day balance by the same amount at all times, "so we cannot let up just because we are winning."
   - **Daily Loss Limit:** $1,000 (50K); hitting it ends the trading day.
   - **Account size:** the owner's last Combine was a **100K** account: limit $3,000, Daily Loss Limit $2,000, target $6,000.
-  - The owner wants at most **2 trades a day** to stay off the limit.
+  - The owner first wanted at most 2 trades a day to stay off the limit. **Decision (Oct 2026): 5 MES with a −$500 daily stop** (see Contracts per trade and Daily loss limit above).
   - **Tested on the owner's journal (REPORT.md section 20):** with the owner's entries from 10:00, a 100K Combine passes:
     - at 10 MES: 81% with a −$1,000 daily stop (the same as no extra rule), 37% with the 2-trade cap; median 78 trading days to pass
     - at 5 MES: 98%, but a median of 182 trading days to pass
@@ -346,9 +346,9 @@ Every number below is an adjustable setting. The defaults come from this spec.
 | Setting | Default | Notes |
 |---|---|---|
 | Instrument | MES | MNQ may come later |
-| Contracts per trade | 10 | |
-| Max trades per day | 1 | Win or loss. Raise once results are in. |
-| Daily loss limit | $800 | Only matters when more than 1 trade a day is allowed |
+| Contracts per trade | 5 | Owner (Oct 2026): start with 5 MES on the 100K Topstep account. Was 10 |
+| Max trades per day | No cap | Proposed: the −$500 daily stop limits the day instead. TBD: owner to confirm |
+| Daily loss limit | −$500 | Owner (Oct 2026). On closed trades; no new trades that day |
 | Session | 18:00–17:00 ET | Full Globex session |
 | No new entries after | 16:30 ET | |
 | Close open trade at | 16:50 ET | 10 minutes before the session close |
@@ -383,7 +383,7 @@ Every number below is an adjustable setting. The defaults come from this spec.
 | Entry mode | Early | Alternative: retest entry. Backtest compares. |
 | Max entry distance from level | 4 points | |
 | Stop buffer past the level | 3 points | |
-| First target | Top of the last chop before the move into the level | Closes 9 of 10 contracts |
+| First target | Top of the last chop before the move into the level | Closes 4 of 5 contracts |
 | Minimum reward | First target at least 2× the stop distance | |
 | Runner | 1 contract to the low of that chop and breakout | Alternative: 8 / 1 / 1 split |
 | Runner stop after first target | 6 points from entry | 5 points locked in plus 1 point of buffer |

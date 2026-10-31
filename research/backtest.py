@@ -290,7 +290,7 @@ def run_session(sess: Session, s: dict, v: dict, news: list) -> list[dict]:
     slip = v["slippage_ticks"]
     b = sess.bursts
     fixed = v.get("exits", "spec") == "fixed"
-    max_trades = v.get("max_trades", bot["max_trades_per_day"])
+    max_trades = v.get("max_trades", bot["max_trades_per_day"]) or np.inf       # 0 = no cap
     trades, busy_until, day_usd = [], -np.inf, 0.0
     tried = {}                                           # retest mode: level -> time it was last tried
     for r in b.itertuples():

@@ -52,7 +52,7 @@ Never write or run anything that places real orders without the owner's explicit
 
 ## Market details
 
-- **Contract:** MES. Tick size 0.25 = $1.25. $5 per point per contract. The plan trades 10 contracts.
+- **Contract:** MES. Tick size 0.25 = $1.25. $5 per point per contract. The plan trades 5 contracts (owner, Oct 2026; was 10).
 - **Session:** the full Globex session, 18:00–17:00 ET. The Sunday 18:00 open belongs to Monday's session.
 - **Timestamps:** Databento timestamps are UTC nanoseconds. Convert them with `America/New_York` so daylight saving time is handled.
 - **Contract rolls:** contracts roll quarterly (H, M, U, Z).

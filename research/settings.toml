@@ -13,9 +13,9 @@ rth_start_et = "09:30"         # regular trading hours, used only to split resul
 rth_end_et = "16:00"
 
 [bot]
-contracts_per_trade = 10
-max_trades_per_day = 1
-daily_loss_limit_usd = 800
+contracts_per_trade = 5             # owner (Oct 2026): start with 5 MES on the 100K Topstep account (was 10)
+max_trades_per_day = 0              # 0 = no cap (proposed, TBD): the daily loss stop limits the day instead
+daily_loss_limit_usd = 500          # owner (Oct 2026): no new trades once the day's closed trades reach -$500
 no_new_entries_after_et = "16:30"
 close_open_trade_at_et = "16:50"
 # Owner (30 Oct 2026): CPI, employment and jobs reports, PMI, job openings, Fed decisions.
@@ -59,8 +59,8 @@ first_target = "top of the last chop before the move into the level"   # owner, 
 first_target_chop_minutes = 1    # chop found on 1-minute candles (same chop rule as the zones)
 min_reward_to_risk = 2.0         # owner: first target at least 2x the stop distance
 runner_target = "low of that chop and breakout"                        # owner, Oct 2026
-first_target_contracts = 9
-runner_contracts = 1             # alternative split: 8 / 1 / 1
+first_target_contracts = 4      # of 5
+runner_contracts = 1             # alternative split: 3 / 1 / 1 (8 / 1 / 1 with 10 MES)
 runner_stop_after_first_target_points = 6
 # quiet_day_cutoff = TBD         (relative volume around 1)
 quiet_day_factor = 0.6
