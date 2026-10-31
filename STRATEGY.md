@@ -301,7 +301,12 @@ Low-volume days produce smaller moves, so the bot takes less risk on them.
 ## 4. Risk limits
 
 - **Contracts per trade:** 5 MES on every trade (owner, Oct 2026; was 10). On quiet days the stop and targets move closer instead of the size changing.
-- **Loss per trade (normal day):** the stop sits 3 points past the level, and entries so far have been 2–4 points inside the level. A full loss is therefore 5–7 points, which is **$125–$175** on 5 MES. Slippage and commissions add roughly $5–$20.
+- **Loss per trade:** at most **5 points** (owner, Oct 2026: "5 points hard limit for a loss"), which is **$125** on 5 MES plus about $6 of commissions. The owner's risk structure uses a 4-point stop from the entry ($100 on 5 MES); a 5-point stop was tested as about the same (REPORT.md section 19).
+  - (The original spec put the stop 3 points past the level, with entries 2–4 points inside it, so 5–7 points. That is replaced by the 5-point limit.)
+- **Stop order type (owner wants a stop-limit, to avoid slippage). Measured on MES, Apr–Oct 2026 (20,421 stops hit at random entries; REPORT.md section 21):**
+  - **Stop-market:** filled at the stop price 85% of the time, 1 tick worse 11%, 2 or more ticks worse 4%. On average about 0.3 ticks, roughly $1.80 per stopped trade on 5 MES. The worst was 43 ticks (10.75 points) at the 14:00 Fed release on 29 Jul 2026 (Fed days are now off).
+  - **Stop-limit:** almost always fills, but when it doesn't, price is running hard. With the limit at the stop price, 1.7% of stops were still unfilled 10 seconds later. With the limit 4 ticks past (stop at 4 points, limit at 5), about 1 stop in 700. Those unfilled stops then ran a median of 19.5 points further within the minute; the worst ran 46 points. On 5 MES that is about $1,150 more on one trade, a third of the 100K account's $3,000 limit.
+  - **Proposed (TBD):** a stop-limit with the stop at 4 points and the limit at 5 points, plus a safety net: if it is not filled within 2 seconds, the bot exits at market. The safety net runs on the computer, so if NinjaTrader or the connection is down it can't act. The simplest safe choice is a plain stop-market at 5 points, which the exchange always fills.
 - **Trades per day:** no fixed number (proposed, Oct 2026). The −$500 daily stop limits the day instead. On the owner's journal a cap on the number of trades cut the winning days and made losing the Topstep account more likely (REPORT.md section 20). **TBD:** the owner confirms, or sets a number.
 - **Fast markets:** during news or sharp moves, a stop can fill well past its price. A single loss can then be bigger than these numbers.
 - **Maximum entry distance (TBD):** skip the trade if price is already too far from the level, for example more than 4 points away, so the risk never goes past about 7 points.
@@ -382,7 +387,9 @@ Every number below is an adjustable setting. The defaults come from this spec.
 | Absorption hold check | TBD | Price stays within X ticks for Y seconds |
 | Entry mode | Early | Alternative: retest entry. Backtest compares. |
 | Max entry distance from level | 4 points | |
-| Stop buffer past the level | 3 points | |
+| Stop buffer past the level | 3 points | Original spec, replaced by the 5-point loss limit |
+| Max loss per trade | 5 points | Owner (Oct 2026): hard limit. $125 on 5 MES |
+| Stop order type | TBD | Owner wants a stop-limit. Proposed: stop at 4 points, limit at 5, exit at market if not filled within 2 s |
 | First target | Top of the last chop before the move into the level | Closes 4 of 5 contracts |
 | Minimum reward | First target at least 2× the stop distance | |
 | Runner | 1 contract to the low of that chop and breakout | Alternative: 8 / 1 / 1 split |

@@ -717,6 +717,29 @@ The bot works on 1-minute candles: a zone test, entry on the first close 1 point
   - With a cap, the owner might pick trades differently; this test can't show that.
   - Topstep's rules should be checked on the owner's own dashboard.
 
+## 21. How the stop fills on MES: stop-market vs stop-limit (`stop_fills.csv`, Oct 2026)
+
+**Owner:** "stop loss should probably be set as a stop limit order that way we reduce the chance for slippage", with "5 points hard limit for a loss".
+
+**The test** (`research/stop_fills.py`, [stop_fills]): MES trades with the aggressor side, regular hours, Apr–Oct 2026 (126 sessions). 200 random entries a day (10:00–15:30, random side) get a stop 4 or 5 points away; 20,421 stops at 4 points were hit.
+- **Stop-market:** fill = the worst trade price within 5 ms of the trigger (the sweep it joins).
+- **Stop-limit:** fills at once if that sweep stayed at or inside the limit. Otherwise it waits and fills only if price trades back through the limit within 10 s.
+- Trade prints only, no order book: queue position is ignored.
+
+| 4-point stop | Result |
+|---|---|
+| Stop-market: filled at the stop | 85% |
+| 1 tick worse / 2+ ticks worse / 4+ ticks worse | 11% / 4.4% / 1.5% |
+| Average slippage | 0.29 ticks (about $1.80 per stopped trade on 5 MES) |
+| Worst | 43 ticks, at the 14:00 Fed release on 29 Jul 2026 |
+| Stop-limit, limit at the stop: unfilled after 10 s | 1.7% |
+| Limit 1 / 2 / 4 ticks past the stop: unfilled | 0.32% / 0.20% / 0.14% |
+| Unfilled, limit 4 ticks past: how far price ran in the next minute | median 78 ticks (19.5 points), worst 183 ticks (46 points) |
+
+- **Same picture at 5 points.**
+- **A stop-limit saves little and adds a rare, large risk.** The average slippage it avoids is under $2 a stop on 5 MES. The rare unfilled stop happens in the fastest moves, sudden headlines like 11 Jun 2026 13:28 or the Fed release, and can cost more than a third of the 100K account's $3,000 limit on one trade.
+- **Middle ground (proposed):** stop at 4 points, limit at 5 points, and the bot exits at market if it isn't filled within 2 seconds. That safety net runs on the computer, not at the exchange.
+
 ## Caveats
 
 - The read is my translation of the owner's description. Every threshold above is a proposal, and the owner's eye may weigh things differently.

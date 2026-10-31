@@ -54,7 +54,9 @@ absorption_burst_seconds = 0.01
 # absorption_hold_check = TBD    (price stays within X ticks for Y seconds)
 entry_mode = "early"             # alternative: "retest"
 max_entry_distance_points = 4
-stop_buffer_points = 3
+stop_buffer_points = 3           # the original spec (stop 3 points past the level); see max_loss_per_trade_points
+max_loss_per_trade_points = 5.0  # owner (Oct 2026): "5 points hard limit for a loss"
+stop_order_type = "TBD"          # owner wants a stop-limit to avoid slippage; options in STRATEGY.md section 4 (research/stop_fills.py)
 first_target = "top of the last chop before the move into the level"   # owner, Oct 2026
 first_target_chop_minutes = 1    # chop found on 1-minute candles (same chop rule as the zones)
 min_reward_to_risk = 2.0         # owner: first target at least 2x the stop distance
@@ -406,6 +408,16 @@ sizes_mes = [10, 5]                      # contracts per trade compared (the pla
 exits = ["your exits"]                   # the owner's own exits (journal_stops also has 4/10, 5/10 ...)
 combine_sims = 10000                     # Combines simulated per rule, days drawn at random from the journal
 combine_max_days = 500                   # a simulated Combine that has neither passed nor failed by then is "still open"
+
+[stop_fills]
+# Owner (Oct 2026): use a stop-limit order for the stop to avoid slippage, "5 points hard limit for a loss".
+# research/stop_fills.py measures on MES trades (Apr-Oct 2026) how stop-market and stop-limit stops would fill.
+stops_points = [4.0, 5.0]                # stop trigger distance from the entry
+limit_offsets_ticks = [0, 1, 2, 4]       # stop-limit: limit price this many ticks past the trigger (4 at a 4-point stop = 5 points)
+entries_per_day = 200                    # random entry moments per session (both sides), 10:00-15:30 ET
+instant_seconds = 0.005                  # stop-market fill: the worst trade price within 5 ms of the trigger (the sweep)
+sweep_seconds = 0.5                      # pessimistic: the worst price within half a second
+come_back_seconds = 10                   # an unfilled stop-limit: does price come back to the limit within this time?
 
 [replay]
 # Zone replay page (research/replay_export.py, research/replay_page.py). Display settings, not bot settings.
