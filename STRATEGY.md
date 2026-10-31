@@ -454,6 +454,8 @@ Every number below is an adjustable setting. The defaults come from this spec.
      - Coded: absorption at the zone then the other side comes in; a retest with a CVD higher low or a weaker push. Filters: no entries before 10:00, after news spikes, or on Fed days.
      - On the 110 careful replay decisions, the coded read took 72 clips (35 of the owner's 38), and lost $14 a trade. The owner made +$17.
      - Where the owner took the trade too, the result was nearly always the same. The difference is in which zone tests get traded: on the clips the read took and the owner skipped ("sellers in control", "no confirmation"), the read mostly lost.
+     - **With the order book (owner's request):** taking a tape signal only when a resting line in the zone holds (refilled, not pulled) cut the trades to 54 and made it worse: −$35 a trade. The owner's picks don't follow these book readings.
+       - Hint: tests where the zone's orders were mostly hit rather than cancelled did better (+$59 a trade on 24 clips). Unproven.
      - Not yet captured by rules. Not tested on new days for that reason.
    - **5-point vs 4-point stop and at most 2 trades a day (owner's test, Oct 2026):**
      - On the replay trades, the 5-point stop saved 3 trades that were stopped at −4 and then reached +10 (careful trades +$66 vs +$30 a trade).

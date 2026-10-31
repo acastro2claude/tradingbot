@@ -765,6 +765,24 @@ The bot works on 1-minute candles: a zone test, entry on the first close 1 point
 - **Why the read can't pick:** with no filters it fires on 99 of 110 clips. Within 5 minutes of a zone test the tape almost always shows a moment where buyers step in and price turns a point. What the owner sees on the clips they skip ("sellers in control", "no confirmation", resting orders) isn't captured by these tape rules.
 - **Version 2 was tuned on the same clips,** so its agreement is flattering. No version made money even so. The plan was to test on unseen days (MES 2026) only if the read matched the owner; it doesn't, so that test was not run.
 
+**With the order book** (`python -m research.entry_read --book`, the full book of the 43 replay days):
+- A tape signal counts only if, at that second, the holding side (bids for a long) has a line in the zone area (at least 2x the day's typical size per price). The resting size there must also be at least what it was when the push began: refilled, not pulled or eaten away ("resting orders holding the line").
+- Otherwise the read keeps watching.
+- A first run used "added minus pulled", which is always positive because of the constant adding and cancelling near price, so it checked nothing. It has been replaced.
+
+| Careful decisions (110 clips) | Takes | Owner's takes matched | Agreement | Winners | Per trade |
+|---|---|---|---|---|---|
+| The owner | 38 | | | 39% | +$17 |
+| Tape read version 2 + filters | 72 | 35 | 64% | 31% | −$14 |
+| Tape read + book check + filters | 54 | 26 | 64% | 24% | −$35 |
+
+- **The book check confirmed 33% of the tape signals, and waiting for it made the result worse.**
+- **The owner's picks don't follow these book readings.** At the tape signal, the change in resting size and the share of the reduction that was cancelled (not filled) are the same on the clips the owner took and skipped (medians −150 contracts; 85% vs 87% cancelled).
+  - The owner did take clips with big lines more often: 71% when the line was 4–8x normal, against about 40% otherwise.
+- **A hint, not a result:** where the orders in the zone were mostly filled rather than cancelled (the lowest third, 68–83% cancelled), the tape entries made +$59 a trade (24 clips), against about −$50 in the other two thirds.
+  - The owner took 50% of clips in each third.
+  - It was found by looking at these 72 clips, and testing it needs more order-book days, which cost data credit.
+
 ## Caveats
 
 - The read is my translation of the owner's description. Every threshold above is a proposal, and the owner's eye may weigh things differently.
