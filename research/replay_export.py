@@ -16,7 +16,8 @@ Writes data/derived/replay/tests/<id>.json (the clips, too big for git), the tra
 MES day to data/derived/replay_trades/ (for scoring the owner's entries later), and
 research/results/journal/replay_tests.csv (the list of tests, committed).
 Run from the repo root:   python -m research.replay_export      (--backfill-vwap: add the volume bubbles' prices to old
-clips; --fix-context: trim the context chart of old clips and add when the zone formed)
+clips; --fix-context: trim the context chart of old clips and add when the zone formed; --2026: clips for the MES
+2026 days bought for the owner to mark, research/results/journal/replay_tests_2026.csv)
 """
 
 from __future__ import annotations
@@ -42,6 +43,7 @@ from research.zone_course_chart import es_zones
 REPLAY_DIR = DERIVED / "replay" / "tests"
 TRADES_OUT = DERIVED / "replay_trades"
 MES_DIR = RAW / "journal_mbo"
+MES2026_DIR = RAW / "mes2026_mbo"
 CTX = {}
 
 
@@ -174,6 +176,8 @@ def one_day(d: dict) -> list[dict]:
     if end <= start:
         return []
     tests = find_tests(book, zone_levels(zones, off, start, end), start, end)
+    if not tests.empty and CTX.get("keep_test"):                  # 2026: only tests that pass the owner's filters
+        tests = tests[[CTX["keep_test"](d["day"], t) for t in tests["time"]]].reset_index(drop=True)
     if tests.empty:
         print(f"{d['day']} {d['market']}: no zone tests", flush=True)
         return []
@@ -203,6 +207,42 @@ def one_day(d: dict) -> list[dict]:
     return out
 
 
+def _keep_2026(day: str, t: float) -> bool:
+    """The owner's filters (research.entry_read): no entries before 10:00, after news spikes or on Fed days."""
+    from research.entry_read import filters
+    v = CTX["news_vol"]
+    mv = v.loc[day] if day in v.index.get_level_values(0) else pd.Series(dtype=float)
+    return filters(day, t, mv, 0.0, 0.0) is None
+
+
+def days_2026() -> list[dict]:
+    plan = pd.read_csv(OUT / "replay2026_plan.csv")
+    out = []
+    for r in plan[plan["pick"]].itertuples():
+        f = MES2026_DIR / f"{r.contract}_{r.day}_mbo.dbn.zst"
+        if f.exists():
+            out.append(dict(market="MES", contract=r.contract, es=r.contract, day=r.day, file=str(f), end=et(r.day, "16:00")))
+    return out
+
+
+def main_2026() -> None:
+    """Clips for the 2026 MES days bought for the owner to mark (zones from the MES charts, owner's filters)."""
+    from research.level_study import prepare
+    from research.zones import all_zones
+    s = load_settings()
+    fb, sessions, _ = prepare(s)
+    zones, candles = all_zones(fb, s)
+    loc = fb["ts"].dt.tz_convert("America/New_York")
+    vol = fb.groupby([loc.dt.date.astype(str), loc.dt.strftime("%H:%M")])["volume"].sum()
+    CTX.update(s=s, R=s["replay"], zones=zones, offsets=sessions.groupby("contract")["offset_ticks"].first(),
+               candles=candles[s["replay"]["context_minutes"]], news_vol=vol, keep_test=_keep_2026)
+    with Pool(2) as pool:
+        parts = pool.map(one_day, days_2026())
+    tests = pd.DataFrame([t for p in parts for t in p])
+    tests.to_csv(OUT / "replay_tests_2026.csv", index=False)
+    print(len(tests), "clips")
+
+
 def main() -> None:
     s = load_settings()
     _, sessions, zones, candles = es_zones(s)
@@ -221,5 +261,7 @@ if __name__ == "__main__":
         backfill_vwap()
     elif "--fix-context" in sys.argv:
         fix_context()
+    elif "--2026" in sys.argv:
+        main_2026()
     else:
         main()

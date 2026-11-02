@@ -7,6 +7,8 @@ to the test, so no date shows on the page or in file names), with the decision (
 many seconds after the zone test the entry came, and a note. Scored later by
 research.replay_score with the owner's risk structure.
 
+2026 clips: research/results/journal/replay_tests_2026.csv (research.replay_export --2026) come first, as
+new clips n001 ... (round 3).
 Second look: the clips in research/results/journal/replay_recheck.csv (research.replay_invalid
 --recheck) come first, as new undecided clips r001 ... (round 2 in replay_clip_ids.csv).
 
@@ -51,6 +53,17 @@ def main() -> None:
             clip["id"] = r.public_id
             (PUBLIC_DIR / f"{r.public_id}.json").write_text(json.dumps(clip, separators=(",", ":")))
         ids = pd.concat([again[["public_id", "id", "market"]].assign(round=2), ids], ignore_index=True)
+    t26 = OUT / "replay_tests_2026.csv"           # 2026 MES days bought for marking (round 3): shown first
+    if t26.exists():
+        new = pd.read_csv(t26)
+        new = new[[(REPLAY_DIR / f"{i}.json").exists() for i in new["id"]]]
+        new = new.iloc[np.random.default_rng(s["level_study"]["random_seed"] + 2).permutation(len(new))].reset_index(drop=True)
+        new["public_id"] = [f"n{k + 1:03d}" for k in range(len(new))]
+        for r in new.itertuples():
+            clip = json.loads((REPLAY_DIR / f"{r.id}.json").read_text())
+            clip["id"] = r.public_id
+            (PUBLIC_DIR / f"{r.public_id}.json").write_text(json.dumps(clip, separators=(",", ":")))
+        ids = pd.concat([new[["public_id", "id", "market"]].assign(round=3), ids], ignore_index=True)
     ids[["public_id", "id", "round"]].to_csv(OUT / "replay_clip_ids.csv", index=False)
     index = [dict(id=r.public_id, market=r.market) for r in ids.itertuples()]
     out = OUT / "review" / "replay" / "index.html"

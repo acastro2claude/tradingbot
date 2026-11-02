@@ -26,3 +26,5 @@ Costs are Databento's quote taken right before each download.
 | 2026-10-28 | ES order book, 5 weeks, 2024-09-27: connection dropped mid-download, file discarded. May have been billed. | mbo | 2024-09-27T00:00 to 2024-09-27T20:00 | $0.89 | $33.89 |
 | 2026-10-28 | ES order book, 5 weeks: 9 days (whole regular sessions, bot vs owner comparison) | mbo | 00:00 UTC to 16:00 ET, each day | $8.82 | $25.07 |
 | 2026-10-28 | ES order book, 5 weeks: 4 days (whole regular sessions, bot vs owner comparison) | mbo | 00:00 UTC to 16:00 ET, each day | $2.89 | $22.18 |
+| 2026-11-02 | MES full order book, 2026 replay order book: 2026-10-09 (zone tests for the owner to mark) | mbo | 00:00 UTC to 16:00 ET, each day | $0.73 | $21.45 |
+| 2026-11-02 | MES full order book, 2026 replay order book: 15 days (zone tests for the owner to mark) | mbo | 00:00 UTC to 16:00 ET, each day | $18.74 | $2.71 |
