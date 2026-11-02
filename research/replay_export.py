@@ -236,11 +236,24 @@ def main_2026() -> None:
     vol = fb.groupby([loc.dt.date.astype(str), loc.dt.strftime("%H:%M")])["volume"].sum()
     CTX.update(s=s, R=s["replay"], zones=zones, offsets=sessions.groupby("contract")["offset_ticks"].first(),
                candles=candles[s["replay"]["context_minutes"]], news_vol=vol, keep_test=_keep_2026)
-    with Pool(2) as pool:
-        parts = pool.map(one_day, days_2026())
-    tests = pd.DataFrame([t for p in parts for t in p])
+    # one day at a time (a busy day's book needs ~11 GB; two at once ran out of memory), resumable:
+    # a day whose clips already exist is read back from its clip files instead of rebuilt
+    rows = []
+    for d in days_2026():
+        done = sorted(REPLAY_DIR.glob(f"MES-{d['day']}-*.json"))
+        rows += [_row_from_clip(f, d, s["replay"]) for f in done] if done else one_day(d)
+    tests = pd.DataFrame(rows)
     tests.to_csv(OUT / "replay_tests_2026.csv", index=False)
     print(len(tests), "clips")
+
+
+def _row_from_clip(f, d: dict, R: dict) -> dict:
+    c = json.loads(f.read_text())
+    z = c["zone"]
+    return dict(id=f.stem, market=d["market"], contract=d["contract"], day=d["day"],
+                time=c["start_epoch"] + R["before_seconds"], direction=1 if z["kind"] == "demand" else -1,
+                edge=z["near"], lo=z["lo"], hi=z["hi"], tf=z["tf"], pattern=z["pattern"], zone_test=z["test"],
+                typical_size=np.nan)
 
 
 def main() -> None:
