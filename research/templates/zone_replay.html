@@ -87,7 +87,7 @@ kbd { font: 0.78rem var(--mono); border: 1px solid var(--line); border-radius: 4
       <ul>
         <li>Heatmap: resting orders per price, brighter = bigger compared with the day's typical size. Bid below price, ask above.</li>
         <li>White line: last price. Bubbles: all the volume traded every 2 seconds, at its average price, like Bookmap's volume dots. Bigger = more contracts. Green = buyers outweighed sellers (buyer delta), red = sellers outweighed buyers; the stronger the imbalance, the stronger the colour, and grey = about even.</li>
-        <li>Diamonds: absorption bursts like your add-on (50+ ES or 100+ MES contracts at one price within 0.01 s). Purple = aggressive buyers absorbed by sellers (bearish). Yellow = aggressive sellers absorbed by buyers (bullish; green on your add-on). The size is written next to the bigger ones.</li>
+        <li>Diamonds: absorption bursts like your add-on (50+ ES contracts at one price within 0.01 s; on MES clips sized to show about as often as your ES markers: 35+ MES, or 100+ on the older MES clips). Purple = aggressive buyers absorbed by sellers (bearish). Yellow = aggressive sellers absorbed by buyers (bullish; green on your add-on). The size is written next to the bigger ones.</li>
         <li>Shaded band: the zone being tested (its timeframe and test number are on the right). Bottom panel: delta every 10 seconds and cumulative delta.</li>
         <li>The small chart on the right: 15-minute candles of the last sessions up to the start of the clip. The zone is shaded from the candle where it formed.</li>
         <li>Your entry is recorded at the time and price shown when you press. Results are scored later with your risk structure; you won't see them here.</li>
@@ -249,7 +249,7 @@ function drawHeat() {
   for (const [f, j, c, dir] of clip.bursts) { if (f > p) continue; const x = sx(f + 0.5), y = sy(j), r = 6;
     g.beginPath(); g.moveTo(x, y - r); g.lineTo(x + r, y); g.lineTo(x, y + r); g.lineTo(x - r, y); g.closePath();
     g.fillStyle = dir < 0 ? "#b65cff" : "#ffd23f"; g.fill();
-    if (c >= 2 * (clip.market === "ES" ? 50 : 100)) { g.fillStyle = "#ffffff"; g.fillText(String(c), x + r + 2, y); } }
+    if (c >= 2 * (clip.burst_min || (clip.market === "ES" ? 50 : 100))) { g.fillStyle = "#ffffff"; g.fillText(String(c), x + r + 2, y); } }
   // decision marker and playhead
   const d = decisions[INDEX[cur].id];
   if (d && (d.decision === "long" || d.decision === "short") && d.frame != null) {

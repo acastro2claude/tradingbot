@@ -520,5 +520,8 @@ max_bubbles = 600
 burst_seconds = 0.01             # absorption markers like the owner's add-on: contracts in 0.01 s...
 burst_min_es = 50                # ...at least this many on ES ([book_study] burst_contracts_es)
 burst_min_mes = 100              # ...and on MES (the owner's setting)
+burst_min_mes_matched = 35       # the 2026 MES clips: the owner watches ES in Bookmap (ES setting on the clips: 50).
+                                 # 35 MES contracts gives the same number of markers per clip as ES at 50 (123 vs 122);
+                                 # 100 MES (the owner's MES add-on setting) gave only 6 a clip, 24 clips with none
 context_minutes = 15             # context chart: 15-minute candles...
 context_sessions = 2             # ...for the 2 sessions before the test's session, up to the replay start

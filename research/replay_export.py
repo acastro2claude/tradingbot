@@ -181,7 +181,7 @@ def one_day(d: dict) -> list[dict]:
     if tests.empty:
         print(f"{d['day']} {d['market']}: no zone tests", flush=True)
         return []
-    bmin = R["burst_min_es"] if d["market"] == "ES" else R["burst_min_mes"]
+    bmin = CTX.get("burst_min") or (R["burst_min_es"] if d["market"] == "ES" else R["burst_min_mes"])
     bursts = day_bursts(book, R["burst_seconds"], bmin)
     rth = book.trades[(book.trades["t"] >= start) & (book.trades["t"] < end)]
     per = rth.assign(f=(rth["t"] // R["frame_seconds"]).astype(int)).groupby(["f", "price", "side"])["size"].sum()
@@ -198,6 +198,7 @@ def one_day(d: dict) -> list[dict]:
         meta = dict(id=f"{d['market']}-{d['day']}-{n:02d}", market=d["market"], contract=d["contract"],
                     weekday=loc.strftime("%A"), time_et=loc.strftime("%H:%M:%S"), **z)
         c = clip(book, typ, bursts, x, meta, ctx_c, off, R, bubble_min)
+        c["burst_min"] = int(bmin)
         REPLAY_DIR.mkdir(parents=True, exist_ok=True)
         (REPLAY_DIR / f"{meta['id']}.json").write_text(json.dumps(c, separators=(",", ":")))
         out.append(dict(id=meta["id"], market=d["market"], contract=d["contract"], day=d["day"], time=x.time,
@@ -205,6 +206,29 @@ def one_day(d: dict) -> list[dict]:
                         pattern=z["pattern"], zone_test=z["zone_test"], typical_size=typ))
     print(f"{d['day']} {d['market']}: {len(out)} clips", flush=True)
     return out
+
+
+def rebursts_2026() -> None:
+    """Redo the absorption markers of the 2026 MES clips at the size matched to the owner's ES markers."""
+    from research.absorption import find_bursts
+    R = load_settings()["replay"]
+    mn = R["burst_min_mes_matched"]
+    t26 = pd.read_csv(OUT / "replay_tests_2026.csv")
+    for (contract, day), g in t26.groupby(["contract", "day"]):
+        tr = pd.read_parquet(TRADES_OUT / f"{contract}_{day}.parquet")
+        b = find_bursts(tr["t"].to_numpy(), tr["price"].to_numpy().astype(np.int64), tr["size"].to_numpy(),
+                        tr["side"].to_numpy(), R["burst_seconds"], mn)
+        b["direction"] = np.where(b["colour"] == "purple", -1, 1)
+        for r in g.itertuples():
+            path = REPLAY_DIR / f"{r.id}.json"
+            c = json.loads(path.read_text())
+            t_a, fs = c["start_epoch"], c["frame_seconds"]
+            bu = b[(b["time"] >= t_a) & (b["time"] < t_a + c["frames"] * fs)]
+            c["bursts"] = [[int((x.time - t_a) // fs), int(x.price - c["price_lo"]), int(x.contracts), int(x.direction)]
+                           for x in bu.itertuples()]
+            c["burst_min"] = int(mn)
+            path.write_text(json.dumps(c, separators=(",", ":")))
+    print("markers redone at", mn, "MES contracts for", len(t26), "clips")
 
 
 def _keep_2026(day: str, t: float) -> bool:
@@ -235,7 +259,8 @@ def main_2026() -> None:
     loc = fb["ts"].dt.tz_convert("America/New_York")
     vol = fb.groupby([loc.dt.date.astype(str), loc.dt.strftime("%H:%M")])["volume"].sum()
     CTX.update(s=s, R=s["replay"], zones=zones, offsets=sessions.groupby("contract")["offset_ticks"].first(),
-               candles=candles[s["replay"]["context_minutes"]], news_vol=vol, keep_test=_keep_2026)
+               candles=candles[s["replay"]["context_minutes"]], news_vol=vol, keep_test=_keep_2026,
+               burst_min=s["replay"]["burst_min_mes_matched"])
     # one day at a time (a busy day's book needs ~11 GB; two at once ran out of memory), resumable:
     # a day whose clips already exist is read back from its clip files instead of rebuilt
     rows = []
@@ -276,5 +301,7 @@ if __name__ == "__main__":
         fix_context()
     elif "--2026" in sys.argv:
         main_2026()
+    elif "--rebursts-2026" in sys.argv:
+        rebursts_2026()
     else:
         main()

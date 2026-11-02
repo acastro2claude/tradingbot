@@ -387,6 +387,7 @@ Every number below is an adjustable setting. The defaults come from this spec.
 | Stop at a zone | Normal stop rules (section 3) | Owner: even when the zone is big |
 | Long-term profile window | 3 months | Backtest compares 1, 3 and 6 months |
 | Absorption burst | 100 contracts in 0.01 s | Matches the Bookmap add-on |
+| Absorption markers on MES data | 35 MES contracts in 0.01 s | The owner watches ES in Bookmap (Nov 2026). On MES data, 35 gives as many markers as 50 on ES (the ES setting on the replay clips). TBD for the live bot: read ES or MES |
 | Absorption hold check | TBD | Price stays within X ticks for Y seconds |
 | Entry mode | Early | Alternative: retest entry. Backtest compares. |
 | Max entry distance from level | 4 points | |
