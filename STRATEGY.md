@@ -456,7 +456,9 @@ Every number below is an adjustable setting. The defaults come from this spec.
      - Where the owner took the trade too, the result was nearly always the same. The difference is in which zone tests get traded: on the clips the read took and the owner skipped ("sellers in control", "no confirmation"), the read mostly lost.
      - **With the order book (owner's request):** taking a tape signal only when a resting line in the zone holds (refilled, not pulled) cut the trades to 54 and made it worse: −$35 a trade. The owner's picks don't follow these book readings.
        - Hint: tests where the zone's orders were mostly hit rather than cancelled did better (+$59 a trade on 24 clips). Unproven.
-     - Not yet captured by rules. Not tested on new days for that reason.
+     - **Owner (Nov 2026):** what matters is how price behaves in the zone. The other side must come in and sustain; if it is quickly overtaken and price keeps moving the original way, no trade. "I've rarely taken trades where all indicators hit immediately."
+     - **Coded as "volume comes in and sustains"** (three 10-second windows in a row with at least 1.5x more aggressive volume our way, price not slipping back): +$46 a trade on 18 replay clips. On unseen MES days of 2026 it did no better than random entries: 92 trades, 30% winners, −$15 a trade (random −$18). REPORT.md section 23.
+     - Not yet captured by rules.
    - **5-point vs 4-point stop and at most 2 trades a day (owner's test, Oct 2026):**
      - On the replay trades, the 5-point stop saved 3 trades that were stopped at −4 and then reached +10 (careful trades +$66 vs +$30 a trade).
      - On the owner's 371 real journal trades from Q2 2024, re-run with fixed brackets, 5/10 and 4/10 come out the same (−$8 a trade; +$4 vs −$1 from 10:00). The owner's own exits did better than any fixed bracket (+$22 a trade from 10:00).

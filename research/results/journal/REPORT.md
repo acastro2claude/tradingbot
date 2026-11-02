@@ -783,6 +783,38 @@ The bot works on 1-minute candles: a zone test, entry on the first close 1 point
   - The owner took 50% of clips in each third.
   - It was found by looking at these 72 clips, and testing it needs more order-book days, which cost data credit.
 
+## 23. "The other side has to win" and "volume comes in and sustains", and a check on 2026 (`entry_read_2026*.csv`, Nov 2026)
+
+**The owner's answer to "what is the bot missing?":** "It's not about how fast price moved into a zone, it's more about how price behaves while it is trying to exist in the zone or move past it."
+- The owner watches the volume bubbles. If the other side comes in but is "quickly getting overtaken by participants going in the original direction", and price keeps moving the original way even though CVD is reversing, it's no trade.
+- "I've rarely taken trades where all indicators hit immediately, I want to see volume come in and sustain in the direction I'm taking the trade in."
+- That explains the coded read's mistakes: it bought the first 20 seconds of buyers, and its CVD-divergence signal fired while price was still stepping lower.
+
+**Version 3, "the other side has to win"** (`read_structure`): a low; a bounce; a pullback that holds a higher low; entry above the bounce high. A pullback to the low starts over.
+- With 1-point swings it took 76 of the 78 clips that pass the filters (−$6 a trade): in 5 minutes such a pattern almost always appears.
+- At bigger swings it got pickier and better on the replay clips: 3 points gave 33 trades at +$9, and 4 points gave 18 at +$39.
+
+**Version 4, "volume comes in and sustains"** (`read_sustained`, [entry_read] sustain_*): after the low in the zone, three 10-second windows in a row with at least 1.5x more aggressive volume our way than against, price not closing lower; a new low starts over; entry once price is 1 point off the low.
+- On the 110 careful replay decisions: 18 trades (11 of them the owner's), 50% winners, +$46 a trade.
+- It was the best of six settings tried, so it was likely flattered by the choice.
+- The other settings ranged from −$33 to +$2 a trade.
+
+**The check on days it never saw** (`research/entry_read_2026.py`):
+- MES regular sessions, Apr–Oct 2026, at every zone test with the owner's filters (10:00, news spikes, Fed days).
+- Stop-market 4.5 points, target 10, 5 MES.
+- One trade at a time, −$500 day stop.
+
+| Entries (2026, unseen) | Trades | Winners | Per trade | Net | Months up |
+|---|---|---|---|---|---|
+| Version 4, sustained volume | 92 | 30% | −$15 | −$1,370 | 3 of 7 |
+| Version 2, absorption / CVD | 376 | 28% | −$23 | −$8,762 | 2 of 7 |
+| Old bot, first 1-point turn | 376 | 27% | −$28 | −$10,456 | 1 of 7 |
+| Random entries, same exits | 6,300 | 30% | −$18 | | |
+
+- **Version 4 does about as well as random entries** (30% winners each; it needs about 34% to break even with 4.5/10). The +$46 on the replay clips did not carry over.
+- **It is the least bad,** and it trades far less (92 trades on 53 of 126 days), but that is not an edge.
+- **Entering at the zone test itself is worse than random,** as in every earlier test: price tends to push further through the zone first.
+
 ## Caveats
 
 - The read is my translation of the owner's description. Every threshold above is a proposal, and the owner's eye may weigh things differently.

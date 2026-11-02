@@ -12,6 +12,14 @@ From the owner's notes on the replay page (Oct 2026). Long at a demand zone (sup
      come in as in A ("sellers in control" was the owner's most common reason to skip).
   The read ends without a trade if price gets 2 points past the zone's far edge ("sellers in
   control") or 5 minutes pass. Entry = the last price at that second + 1 tick.
+  C  (version 3, owner Nov 2026: "the other side tried a little but overall could not move price in
+     reversal" is no trade) the other side has to win: a low, buyers lift price 1 point, sellers pull
+     back but hold a higher low (0.5 point above the low), then price trades above the bounce high.
+     A pullback to the low or below means the original side overtook the other side: start over.
+  D  (version 4, owner Nov 2026: "I want to see volume come in and sustain in the direction I'm taking
+     the trade in") after the low in the zone, three 10-second windows in a row where the aggressive
+     volume our way is at least 1.5x the other side's and price doesn't close lower than the window
+     before (a new low starts over); entry once price is 1 point off the low.
 Filters from the owner's skip reasons: no entries before 10:00 ET; none within 30 minutes after a
 news volume spike (08:30, 10:00 or 14:00 ET minute at 3x the 10 minutes before); no trading on Fed
 days. (Version 1 also skipped zones price had traded 1 point through or hung in for 30 minutes since
@@ -134,6 +142,70 @@ def read_test(dt: DayTrades, bursts: pd.DataFrame, T: float, d: int, near: int, 
                         return dict(signal=why, entry_time=float(now), entry_y=int(last), **info)
                     continue                                  # the book doesn't confirm yet: keep watching
                 L1, C1, S1, phase, top_k = L2, C2, S2, "bounced", b   # no divergence: this low is the new reference
+    return None
+
+
+def read_structure(dt: DayTrades, T: float, d: int, near: int, far: int) -> dict | None:
+    """Version 3: the other side has to win. Low, bounce, pullback that holds a higher low, then a higher high."""
+    t1 = T + E["window_seconds"]
+    secs = np.arange(int(T), int(t1) + 1)
+    i = np.searchsorted(dt.t, secs, "left")
+    y = dt.px * d
+    farY = far * d
+    brk, bounce = ticks(E["break_points"]), ticks(E["structure_bounce_points"])
+    pull, hl = ticks(E["structure_pullback_points"]), ticks(E["structure_higher_low_points"])
+    state, L, H, P = "low", np.inf, None, None
+    for s_ in range(len(secs) - 1):
+        a, b = i[s_], i[s_ + 1]
+        if b <= a:
+            continue
+        seg = y[a:b]
+        lo_, hi_, last = int(seg.min()), int(seg.max()), int(seg[-1])
+        if min(lo_, L) <= farY - brk:
+            return None                                       # through the zone: the original side is in control
+        if state == "low":
+            L = min(L, lo_)
+            if hi_ - L >= bounce:
+                state, H = "bounce", hi_
+        elif state == "bounce":
+            if lo_ <= L:                                      # straight back to the low: overtaken, start over
+                state, L = "low", min(L, lo_)
+                continue
+            H = max(H, hi_)
+            if H - lo_ >= pull:
+                state, P = "pullback", lo_
+        elif state == "pullback":
+            P = min(P, lo_)
+            if P < L + hl:                                    # the original side took price back to the low: no higher low
+                state, L = "low", min(L, P)
+                continue
+            if hi_ > H:                                       # higher high after a higher low: the other side won
+                return dict(signal="C higher low, higher high", entry_time=float(secs[s_ + 1]), entry_y=int(H + 1))
+    return None
+
+
+def read_sustained(dt: DayTrades, T: float, d: int, near: int, far: int) -> dict | None:
+    """Version 4: volume comes in our way and sustains (several windows in a row) before the entry."""
+    y = dt.px * d
+    ours = np.concatenate([[0], np.cumsum(dt.buy if d == 1 else dt.sell)])
+    theirs = np.concatenate([[0], np.cumsum(dt.sell if d == 1 else dt.buy)])
+    farY, brk = far * d, ticks(E["break_points"])
+    win, need = E["sustain_window_seconds"], E["sustain_windows"]
+    L, run, prev = np.inf, 0, None
+    for w0 in np.arange(T, T + E["window_seconds"], win):
+        a, b = np.searchsorted(dt.t, [w0, w0 + win])
+        if b <= a:
+            continue
+        seg = y[a:b]
+        if seg.min() < L:
+            L, run, prev = int(seg.min()), 0, int(seg[-1])       # a new low: the original side is still pushing
+            if L <= farY - brk:
+                return None                                       # through the zone
+            continue
+        good = (ours[b] - ours[a]) >= E["sustain_ratio"] * (theirs[b] - theirs[a]) > 0 and seg[-1] >= prev
+        run, prev = (run + 1 if good else 0), int(seg[-1])
+        if run >= need and seg[-1] - L >= ticks(E["sustain_bounce_points"]):
+            return dict(signal="D sustained volume our way", entry_time=float(dt.t[b - 1]), entry_y=int(seg[-1]))
     return None
 
 
@@ -324,6 +396,17 @@ def main() -> None:
             row["read_signal"] = got["signal"] if got else None
             row["read_takes"] = bool(got) and why is None
             ex = {}
+            su = read_sustained(dt, r.time, zd, int(r.edge), far)
+            row["v4_takes"] = bool(su) and why is None
+            if su:
+                ex["v4"] = fixed_exit_t(dt, su["entry_time"], su["entry_y"] * zd + zd * SLIP_TICKS, zd, flat, stop, target)[0] * TICK
+                row["v4_vs_test_s"] = su["entry_time"] - r.time
+            st = read_structure(dt, r.time, zd, int(r.edge), far)
+            row["v3_takes"] = bool(st) and why is None
+            row["v3_with_signal"] = row["v3_takes"] and bool(got) and got["entry_time"] <= st["entry_time"]
+            if st:
+                ex["v3"] = fixed_exit_t(dt, st["entry_time"], st["entry_y"] * zd + zd * SLIP_TICKS, zd, flat, stop, target)[0] * TICK
+                row["v3_vs_test_s"] = st["entry_time"] - r.time
             if got:
                 fill = got["entry_y"] * zd + zd * SLIP_TICKS
                 pts, _ = fixed_exit_t(dt, got["entry_time"], fill, zd, flat, stop, target)
@@ -349,10 +432,17 @@ def main() -> None:
     out = []
     for name, m in {"careful decisions": x["careful"], "all decisions": x["careful"].notna()}.items():
         y = x[m]
+        cols = {"read (with filters)": "read_points", "read (no filters)": "read_points",
+                "filters only, first turn": "first_turn_points", "v3: higher low then higher high (with filters)": "v3_points",
+                "v3 after an absorption/CVD signal (with filters)": "v3_points",
+                "v4: sustained volume our way (with filters)": "v4_points"}
         for label, take in {"read (with filters)": y["read_takes"], "read (no filters)": y["read_signal"].notna(),
-                            "filters only, first turn": y["filter"].isna() & y["first_turn_points"].notna()}.items():
+                            "filters only, first turn": y["filter"].isna() & y["first_turn_points"].notna(),
+                            "v3: higher low then higher high (with filters)": y["v3_takes"],
+                            "v3 after an absorption/CVD signal (with filters)": y["v3_with_signal"],
+                            "v4: sustained volume our way (with filters)": y["v4_takes"]}.items():
             both = (take & y["owner_takes"]).sum()
-            pts = y.loc[take, "read_points" if label.startswith("read") else "first_turn_points"]
+            pts = y.loc[take, cols[label]]
             out.append(dict(sample=name, rule=label, clips=len(y), rule_takes=int(take.sum()),
                             owner_takes=int(y["owner_takes"].sum()), both_take=int(both),
                             share_of_owner_takes_matched=both / max(y["owner_takes"].sum(), 1),

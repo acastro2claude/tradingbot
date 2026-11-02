@@ -443,6 +443,24 @@ retest_points = 1.5
 weaker_push_ratio = 0.7
 other_side_for_retest = true     # version 2: signal B also needs the other side to come in (the owner skipped retests
                                  # while "sellers in control"); version 1 did not check it
+# Version 3, "the other side has to win, not just show up" (owner, Nov 2026: the other side coming in and then
+# "quickly getting overtaken by participants going in the original direction" is no trade; CVD reversing while
+# price keeps moving the original way is no trade). Long: a low in the zone; buyers lift price structure_bounce_points;
+# sellers pull back but hold at least structure_higher_low_points above the low; entry when price trades above the
+# bounce high. A pullback to the low or below = the original side overtook the other side: start over from that low.
+structure_bounce_points = 1.0
+structure_pullback_points = 0.5  # a pullback this deep counts as the original side trying again
+structure_higher_low_points = 0.5
+# Version 4, "volume comes in and sustains" (owner, Nov 2026: "I want to see volume come in and sustain in the
+# direction I'm taking the trade in so I know that those buying/going short with me will push on through"; "I've
+# rarely taken trades where all indicators hit immediately"). After the low in the zone: sustain_windows windows of
+# sustain_window_seconds in a row where the aggressive volume our way is at least sustain_ratio x the other side's
+# and price doesn't close lower than the window before; a new low starts over. Entry at the end of the last window
+# once price is sustain_bounce_points off the low. Chosen on the replay clips (proposal); checked on 2026.
+sustain_window_seconds = 10
+sustain_windows = 3
+sustain_ratio = 1.5
+sustain_bounce_points = 1.0
 # Order book confirmation (python -m research.entry_read --book; the owner's notes: "resting orders holding the line",
 # "resting orders were being pulled off the order book as price moved downward", "no order book confirmation").
 # A signal counts only if, at that second, the holding side (bids for a long) has a line in the zone area and the
