@@ -839,6 +839,23 @@ The bot works on 1-minute candles: a zone test, entry on the first close 1 point
   - On 2026, stricter settings did slightly worse: a burst of aggression at the zone did not mean the move would carry.
 - **The tape rules tried so far don't reproduce what the owner sees in the bubbles:** absorption, CVD divergence, structure, sustained volume over 30 s, and bursts of 2–5 s.
 
+## 25. Moving the stop after +7 points (`entry_read_2026_summary.csv`, Nov 2026)
+
+**Owner:** keep the stop (4.5, stop-market) and the take profit (10). Don't copy the journal's hand exits ("a few of those I traded with emotion"). "If price goes to 7 points in the direction past the entry, we should move the exit to at least breakeven, maybe 1 point above."
+- `research/exits.py` (`bracket_exit`, `bot_exit`): at a touch of +7 the stop moves to entry + 1 (or breakeven).
+- For reference, the journal's hand exits from Q2 2024: average loss −2.3 points (86% under 3 points, median 1.6 minutes), average win +5.8 (13% of winners reached 10).
+
+| | 4.5/10 | Stop to +1 at +7 | Stop to breakeven at +7 |
+|---|---|---|---|
+| The owner's 38 careful replay trades | +$17 (39% winners) | +$31 (55%) | +$26 (37%) |
+| 2026 unseen, version 4 sustained volume | −$15 | −$21 | −$24 |
+| 2026 unseen, version 2 absorption / CVD | −$23 | −$23 | −$24 |
+| 2026 unseen, old bot first turn | −$28 | −$26 | −$28 |
+| 2026, random entries | −$18 | −$20 | −$19 |
+
+- **On the owner's entries the move helps.** 5 trades went 7 points their way and then back to the full stop; they become +1 exits. One trade that would have reached the target is stopped at +1 instead.
+- **On the bot's entries and on random entries it changes little.** It saves trades that turn back after +7, but cuts others that dip to +1 and then go on to +10. An exit rule shifts results only when the entries already have an edge.
+
 ## Caveats
 
 - The read is my translation of the owner's description. Every threshold above is a proposal, and the owner's eye may weigh things differently.

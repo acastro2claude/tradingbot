@@ -8,8 +8,9 @@ Here they run at every zone test on days they never saw:
     minutes after a news volume spike, no Fed days
   - entries: version 4 "sustained volume our way" (the rule picked on the replay clips), version 2
     (absorption / CVD signals), and the old bot entry (first 1-point turn) for comparison
-  - exits: the owner's settings: stop-market 4.5 points, target 10 points ([bot] stop_points,
-    [run_winners] target_points); 1 tick slippage on stops and entries; flat at 15:59
+  - exits (research.exits): the owner's stop-market 4.5 points and target 10 points, plain and with
+    the owner's stop move at +7 points (to entry + 1, or to breakeven); 1 tick slippage on stops and
+    entries; flat at 15:59
   - the day: one trade at a time, no new trades once the day's closed trades reach -$500 ([bot])
   - money: 5 MES ([bot] contracts_per_trade), $1.24 a contract
   - random entries (50 a day, 10:00-15:30, random side, same exits) as the no-edge baseline
@@ -33,7 +34,8 @@ from research.level_study import prepare
 from research.level_test_book import TestReader, find_tests
 from research.market_data import epoch_seconds, load_trades
 from research.owner_rules import DayTrades
-from research.replay_score import TICK, fixed_exit_t
+from research.exits import bot_exit
+from research.replay_score import TICK
 from research.settings import load_settings
 from research.zone_book_study import zone_levels
 from research.zones import all_zones
@@ -57,7 +59,8 @@ def main() -> None:
     rng = np.random.default_rng(s["level_study"]["random_seed"])
     contracts = s["bot"]["contracts_per_trade"]
     usd = lambda pts: pts * s["market"]["point_value_usd"] * contracts - s["backtest"]["commission_per_contract_round_trip"] * contracts  # noqa: E731
-    stop, target = s["bot"]["stop_points"], s["run_winners"]["target_points"]
+    exits = {"4.5/10": dict(move=False), "4.5/10, stop to +1 at +7": dict(move=True),
+             "4.5/10, stop to breakeven at +7": dict(move=True, move_to_pts=0.0)}
     fb, sessions, _ = prepare(s)
     zones, _ = all_zones(fb, s)
     loc = fb["ts"].dt.tz_convert("America/New_York")
@@ -94,30 +97,33 @@ def main() -> None:
             if k is not None:
                 entries["old bot: first turn"] = (float(dt.t[k]), int(dt.px[k]))
             for rule, (t_in, px_in) in entries.items():
-                pts, t_out = fixed_exit_t(dt, t_in, px_in + d * SLIP_TICKS, d, flat, stop, target)
-                rows.append(dict(rule=rule, day=d_str, entry_time=t_in, exit_time=t_out, direction=d,
-                                 points=pts * TICK, usd=usd(pts * TICK)))
+                for ex, kw in exits.items():
+                    pts, t_out, how = bot_exit(dt, t_in, px_in + d * SLIP_TICKS, d, flat, **kw)
+                    rows.append(dict(rule=rule, exit=ex, day=d_str, entry_time=t_in, exit_time=t_out, direction=d,
+                                     points=pts * TICK, usd=usd(pts * TICK), how=how))
         for t0 in rng.uniform(et(d_str, "10:00"), end, 50):
             i = int(np.searchsorted(dt.t, t0, "right"))
             if i >= len(dt.t):
                 continue
             d = int(rng.choice([-1, 1]))
-            pts, _ = fixed_exit_t(dt, float(dt.t[i]), int(dt.px[i]) + d * SLIP_TICKS, d, flat, stop, target)
-            rand.append(dict(day=d_str, points=pts * TICK, usd=usd(pts * TICK)))
+            for ex, kw in exits.items():
+                pts, _, how = bot_exit(dt, float(dt.t[i]), int(dt.px[i]) + d * SLIP_TICKS, d, flat, **kw)
+                rand.append(dict(exit=ex, day=d_str, points=pts * TICK, usd=usd(pts * TICK), how=how))
         print(d_str, len(tests), "tests", flush=True)
     x = pd.DataFrame(rows)
     x.to_csv(OUT / "entry_read_2026.csv", index=False)
     rd = pd.DataFrame(rand)
     out = []
-    for rule, g in x.groupby("rule"):
+    for (rule, ex), g in x.groupby(["rule", "exit"]):
         for rules_name, v in (("every signal", g), ("one at a time, -$500 day stop", day_rules(g, s))):
             m = v.groupby(pd.to_datetime(v["day"]).dt.to_period("M"))["usd"].sum()
-            out.append(dict(rule=rule, day_rules=rules_name, trades=len(v), days=v["day"].nunique(),
+            out.append(dict(rule=rule, exit=ex, day_rules=rules_name, trades=len(v), days=v["day"].nunique(),
                             win_rate=(v["points"] > 0).mean(), usd_per_trade=v["usd"].mean(), net_usd=v["usd"].sum(),
                             without_best_2=v["usd"].sum() - v["usd"].nlargest(2).sum(),
                             months_up=f"{int((m > 0).sum())} of {len(m)}"))
-    out.append(dict(rule="random entries", day_rules="every entry", trades=len(rd), days=rd["day"].nunique(),
-                    win_rate=(rd["points"] > 0).mean(), usd_per_trade=rd["usd"].mean()))
+    for ex, g in rd.groupby("exit"):
+        out.append(dict(rule="random entries", exit=ex, day_rules="every entry", trades=len(g), days=g["day"].nunique(),
+                        win_rate=(g["points"] > 0).mean(), usd_per_trade=g["usd"].mean()))
     t = pd.DataFrame(out)
     t.to_csv(OUT / "entry_read_2026_summary.csv", index=False)
     pd.set_option("display.width", 250)

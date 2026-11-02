@@ -168,7 +168,8 @@ def mes_2026() -> tuple[pd.DataFrame, float]:
                         y2026_usd_per_trade=v["usd"].mean(), y2026_net=v["usd"].sum(),
                         y2026_first_half=v.loc[half, "usd"].mean(), y2026_second_half=v.loc[~half, "usd"].mean()))
     rand = pd.read_csv(OUT / "entry_read_2026_summary.csv")
-    base = float(rand.loc[rand["rule"] == "random entries", "usd_per_trade"].iloc[0])
+    r0 = rand[(rand["rule"] == "random entries") & (rand.get("exit", "4.5/10") == "4.5/10")]
+    base = float(r0["usd_per_trade"].iloc[0])
     return pd.DataFrame(out), base
 
 

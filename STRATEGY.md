@@ -302,6 +302,8 @@ Low-volume days produce smaller moves, so the bot takes less risk on them.
 
 - **Contracts per trade:** 5 MES on every trade (owner, Oct 2026; was 10). On quiet days the stop and targets move closer instead of the size changing.
 - **Stop: a stop-market order 4.5 points from the entry** (owner, Oct 2026). A full loss is $112.50 on 5 MES, plus about $6 of commissions and on average about $2 of slippage.
+- **Take profit: 10 points** (owner). The stop and target stay as they are; the bot does not copy the journal's hand exits ("a few of those I traded with emotion").
+- **Move the stop at +7 (owner, Nov 2026):** once price is 7 points past the entry in the trade's direction, the stop moves to at least breakeven, "maybe 1 point above", so the trade can't turn into a loss if the other side starts taking over. **TBD:** breakeven or +1 point (+1 proposed).
 - **Loss per trade:** at most **5 points** (owner: "5 points hard limit for a loss"), $125 on 5 MES. The 4.5-point stop leaves 2 ticks of room for slippage, which covered 96% of stops in the fill study below. A 4-point and a 5-point stop tested about the same on the owner's trades (REPORT.md section 19).
   - (The original spec put the stop 3 points past the level, with entries 2–4 points inside it, so 5–7 points. That is replaced by the 5-point limit.)
 - **Stop order type: stop-market (owner's decision; the owner first asked about a stop-limit to avoid slippage). Measured on MES, Apr–Oct 2026 (20,421 stops hit at random entries; REPORT.md section 21):**
@@ -390,6 +392,8 @@ Every number below is an adjustable setting. The defaults come from this spec.
 | Max entry distance from level | 4 points | |
 | Stop buffer past the level | 3 points | Original spec, replaced by the 5-point loss limit |
 | Stop | 4.5 points from the entry, stop-market order | Owner (Oct 2026). $112.50 on 5 MES |
+| Take profit | 10 points | Owner |
+| Stop after +7 points | Entry + 1 point | Owner (Nov 2026): at least breakeven, maybe +1. TBD: 0 or +1 |
 | Max loss per trade | 5 points | Owner (Oct 2026): hard limit. $125 on 5 MES |
 | First target | Top of the last chop before the move into the level | Closes 4 of 5 contracts |
 | Minimum reward | First target at least 2× the stop distance | |
@@ -459,6 +463,7 @@ Every number below is an adjustable setting. The defaults come from this spec.
      - **Owner (Nov 2026):** what matters is how price behaves in the zone. The other side must come in and sustain; if it is quickly overtaken and price keeps moving the original way, no trade. "I've rarely taken trades where all indicators hit immediately."
      - **Coded as "volume comes in and sustains"** (three 10-second windows in a row with at least 1.5x more aggressive volume our way, price not slipping back): +$46 a trade on 18 replay clips. On unseen MES days of 2026 it did no better than random entries: 92 trades, 30% winners, −$15 a trade (random −$18). REPORT.md section 23.
      - **Owner: sustain means 2–5 seconds; try several levels of aggressiveness.** 27 settings (2/3/5 s, 1.5x/2x/3x the other side, 1x/2x/3x normal volume): all lose on unseen 2026 days (−$18 to −$39 a trade, random −$18). REPORT.md section 24.
+     - **Stop to +1 after +7 (owner, Nov 2026):** on the owner's 38 careful replay trades +$31 a trade instead of +$17 (5 trades that went +7 and back to the full stop become +1). On the bot's 2026 entries and on random entries it changes little (REPORT.md section 25).
      - Not yet captured by rules.
    - **5-point vs 4-point stop and at most 2 trades a day (owner's test, Oct 2026):**
      - On the replay trades, the 5-point stop saved 3 trades that were stopped at −4 and then reached +10 (careful trades +$66 vs +$30 a trade).
