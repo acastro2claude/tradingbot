@@ -499,6 +499,15 @@ surges = [1.0, 2.0, 3.0]
 normal_from_et = "10:00"                 # the day's normal volume per second: aggressive volume, 10:00-15:30
 normal_to_et = "15:30"
 
+[replay_2026]
+# Owner (Nov 2026): mark a few hundred more replay clips so the bot can learn the read from examples; the heatmap
+# matters ("maybe [without it], but it would be much harder"). research/replay2026_plan.py prices the MES order
+# book (MBO, free quote) for the 2026 days on disk and picks days within the budget, spread over the months, with
+# the most zone tests (after the owner's filters) per dollar. Nothing is downloaded without the owner's OK.
+budget_usd = 20.0                        # of about $22 credit left; keep a small margin
+book_start_utc = "00:00"                 # Databento's daily snapshot, so the whole book can be rebuilt
+book_end_et = "16:00"
+
 [replay]
 # Zone replay page (research/replay_export.py, research/replay_page.py). Display settings, not bot settings.
 before_seconds = 600             # the replay starts 10 minutes before the zone test
