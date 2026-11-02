@@ -483,6 +483,19 @@ fed_days = ["2024-01-31", "2024-03-20", "2024-05-01", "2024-06-12", "2024-07-31"
             "2025-10-29", "2025-12-10", "2026-01-28", "2026-03-18", "2026-04-29", "2026-06-17", "2026-07-29",
             "2026-09-16", "2026-10-28"]   # owner: no trading on Fed decision days (FOMC calendar)
 
+[sustain_grid]
+# Owner (Nov 2026): "sustain maybe about a couple of seconds. maybe 5 seconds at the most because once price starts
+# moving, the entry window is long gone"; "try a few different settings for the aggressiveness". research/sustain_grid.py:
+# after a zone test, the first stretch of `seconds` where the aggressive volume our way is at least `ratio` x the other
+# side's and at least `surge` x the day's normal volume for that many seconds, with no new low in it and price not
+# lower at its end than at its start. Entry at the end of the stretch. Every combination is tried on the replay clips
+# and on unseen MES 2026 days.
+seconds = [2, 3, 5]
+ratios = [1.5, 2.0, 3.0]
+surges = [1.0, 2.0, 3.0]
+normal_from_et = "10:00"                 # the day's normal volume per second: aggressive volume, 10:00-15:30
+normal_to_et = "15:30"
+
 [replay]
 # Zone replay page (research/replay_export.py, research/replay_page.py). Display settings, not bot settings.
 before_seconds = 600             # the replay starts 10 minutes before the zone test

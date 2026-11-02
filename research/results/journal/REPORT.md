@@ -815,6 +815,30 @@ The bot works on 1-minute candles: a zone test, entry on the first close 1 point
 - **It is the least bad,** and it trades far less (92 trades on 53 of 126 days), but that is not an edge.
 - **Entering at the zone test itself is worse than random,** as in every earlier test: price tends to push further through the zone first.
 
+## 24. Short bursts of sustained volume (2-5 seconds), 27 settings, replay clips and 2026 (`sustain_grid.csv`, Nov 2026)
+
+**Owner:** the volume our way should sustain for "a couple of seconds. maybe 5 seconds at the most because once price starts moving, the entry window is long gone"; "try a few different settings for the aggressiveness".
+
+**The rule** (`research/sustain_grid.py`, [sustain_grid]), long at demand:
+- After the zone test, the first stretch of 2, 3 or 5 seconds where buyers' aggressive volume is at least 1.5x, 2x or 3x the sellers'.
+- It must also be at least 1x, 2x or 3x the day's normal aggressive volume for that many seconds.
+- No new low inside the stretch, and price not lower at its end than at its start.
+- Entry at the end of the stretch.
+- Exits as before: stop-market 4.5, target 10, 5 MES; the owner's filters; in 2026, one trade at a time and the −$500 day stop.
+
+| | Replay clips (110 careful decisions) | MES Apr–Oct 2026 (unseen) |
+|---|---|---|
+| Trades per setting | 33–77 | 218–385 |
+| Winners | 27–48% | 24–29% |
+| Per trade, worst to best setting | −$26 to +$54 | −$39 to −$18 |
+| Random entries | | −$18 |
+
+- **No setting holds up.** All 27 lose on 2026 and none beats random entries. The 2026 second half is worse than the first for every setting (−$36 to −$58 a trade).
+- **The best replay setting fails on new days.** 5 seconds, 3x the other side, 3x normal volume made +$54 a trade on 33 replay clips and −$29 on 2026.
+  - On the replay clips, stricter settings looked better.
+  - On 2026, stricter settings did slightly worse: a burst of aggression at the zone did not mean the move would carry.
+- **The tape rules tried so far don't reproduce what the owner sees in the bubbles:** absorption, CVD divergence, structure, sustained volume over 30 s, and bursts of 2–5 s.
+
 ## Caveats
 
 - The read is my translation of the owner's description. Every threshold above is a proposal, and the owner's eye may weigh things differently.

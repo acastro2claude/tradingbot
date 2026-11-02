@@ -458,6 +458,7 @@ Every number below is an adjustable setting. The defaults come from this spec.
        - Hint: tests where the zone's orders were mostly hit rather than cancelled did better (+$59 a trade on 24 clips). Unproven.
      - **Owner (Nov 2026):** what matters is how price behaves in the zone. The other side must come in and sustain; if it is quickly overtaken and price keeps moving the original way, no trade. "I've rarely taken trades where all indicators hit immediately."
      - **Coded as "volume comes in and sustains"** (three 10-second windows in a row with at least 1.5x more aggressive volume our way, price not slipping back): +$46 a trade on 18 replay clips. On unseen MES days of 2026 it did no better than random entries: 92 trades, 30% winners, −$15 a trade (random −$18). REPORT.md section 23.
+     - **Owner: sustain means 2–5 seconds; try several levels of aggressiveness.** 27 settings (2/3/5 s, 1.5x/2x/3x the other side, 1x/2x/3x normal volume): all lose on unseen 2026 days (−$18 to −$39 a trade, random −$18). REPORT.md section 24.
      - Not yet captured by rules.
    - **5-point vs 4-point stop and at most 2 trades a day (owner's test, Oct 2026):**
      - On the replay trades, the 5-point stop saved 3 trades that were stopped at −4 and then reached +10 (careful trades +$66 vs +$30 a trade).
