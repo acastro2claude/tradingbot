@@ -856,6 +856,19 @@ The bot works on 1-minute candles: a zone test, entry on the first close 1 point
 - **On the owner's entries the move helps.** 5 trades went 7 points their way and then back to the full stop; they become +1 exits. One trade that would have reached the target is stopped at +1 instead.
 - **On the bot's entries and on random entries it changes little.** It saves trades that turn back after +7, but cuts others that dip to +1 and then go on to +10. An exit rule shifts results only when the entries already have an edge.
 
+## 26. More marked clips so the bot can learn the read (Nov 2026, in progress)
+
+**Why:** the owner wants a fully automatic bot. Over 40 hand-set versions of the read did no better than random entries on unseen days (sections 22–25), so the next try is to learn the read from the owner's own decisions instead of guessing thresholds. The owner said the heatmap matters ("maybe [without it], but it would be much harder").
+
+**Data:** the full MES order book for 16 days of 2026, spread over Apr–Oct ($19.47, approved by the owner; about $2.71 of Databento credit left).
+- The days were picked by `research/replay2026_plan.csv` for the most zone tests per dollar.
+- 143 zone tests that pass the owner's filters (10:00, news spikes, Fed days) became replay clips n001–n143 on the replay page, shown first. List: `replay_tests_2026.csv`.
+
+**Plan once marked:**
+- Learn take/skip and the entry moment from the about 300 marked clips (2024 and 2026).
+- Test on the other 110 MES days of 2026 that were never marked, against random entries, with the owner's exits (4.5 stop-market, 10 target, stop to +1 at +7, −$500 day stop).
+- Those days have no order book, so the learned rule can use only the tape there.
+
 ## Caveats
 
 - The read is my translation of the owner's description. Every threshold above is a proposal, and the owner's eye may weigh things differently.
