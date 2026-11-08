@@ -887,6 +887,34 @@ The bot works on 1-minute candles: a zone test, entry on the first close 1 point
 - Test on the other 110 MES days of 2026 that were never marked, against random entries, with the owner's exits (4.5 stop-market, 10 target, stop to +1 at +7, −$500 day stop).
 - Those days have no order book, so the learned rule can use only the tape there.
 
+## 27. Other order-flow strategies with the owner's setup (`strategy_compare_*.csv`, Nov 2026)
+
+**Owner:** "scout around for any other orderbook strategies that also seem feasible. I'd like to compare." The owner picked four.
+
+**Setup** (`research/strategy_compare.py`, [strategy_compare]; numbers set from each strategy's usual definition, not tuned):
+- The owner's risk and filters: 5 MES, stop-market 4.5, target 10, stop to +1 at +7, one trade at a time, −$500 day stop.
+- Entries 10:00–15:30 outside news-spike windows, no Fed days.
+
+| Strategy | Data | Trades | Winners | Per trade | Same-data baseline |
+|---|---|---|---|---|---|
+| Random entries | 1-min bars 2024–2026 | 13,880 | 37% | −$19 | |
+| 5. Intraday momentum (Gao et al. 2018): first half hour from the prior close → trade the last half hour | 1-min bars, 643 days | 643 | 38% | −$25 (hold to close: −$30) | random direction at 15:30: −$15 (hold: −$8) |
+| 4. Sweep and reclaim, prior-day and overnight high/low (1+ tick past, at most 3 points, back 2 ticks inside within 5 minutes) | 1-min bars 2024–2026 | 576 | 37% | −$22 to −$23 | −$19 |
+| 4. Same, with the flow flip (aggressive volume our way over the last 30 s) | MES ticks 2026 | 115 | 40% | prior-day levels +$3 (48 trades, ±$45); overnight −$31 (67) | −$18 |
+| 2. Order-flow momentum: 5-minute imbalance past the 90th percentile (0.18, set on the first 20 sessions) | MES ticks 2026, the other 107 sessions | 878 / 847 | 33% / 35% | follow −$26, fade −$24 | −$18 |
+| The owner's picks (careful, 2026 replay clips) | | 51 | 59% | +$23 | |
+
+**1. Book imbalance at the touch** (16 MES days of 2026 with the full book; `strategy_compare_book.csv`):
+- The size at the best bid against the best ask does predict the next move.
+- With imbalance of 0.8 or more, the mid price moves +0.4 tick over the next second (+0.32 over 30 s), and the mirror on the other side.
+- Trading it with market orders (buy at the ask, sell at the bid 1–30 s later) loses 0.64 tick a trade before commission and 1.6 ticks after (about −$10 a trade on 5 MES), on about 870 signals a day.
+- The edge is real but smaller than one tick of spread: high-frequency territory, as the literature says.
+
+**Conclusions:**
+- No strategy here beats random entries with the owner's setup.
+- Intraday momentum did worse than a coin flip in 2024–2026; the published pattern (1993–2013) did not show up.
+- The only positive result in all the tests so far is the owner's own selection of zone tests.
+
 ## Caveats
 
 - The read is my translation of the owner's description. Every threshold above is a proposal, and the owner's eye may weigh things differently.
