@@ -1,0 +1,19 @@
+exit,group,trades,win_rate,usd_per_trade,net_usd
+"4.5/10, stop to +1 at +7","owner, all takes",54,0.5925925925925926,19.494444444444444,1052.7
+"4.5/10, stop to +1 at +7","owner, takes without hindsight",51,0.5882352941176471,22.599019607843136,1152.55
+"4.5/10, stop to +1 at +7","owner, hindsight takes",3,0.6666666666666666,-33.28333333333333,-99.85
+"4.5/10, stop to +1 at +7","bot first turn, clips the owner took",52,0.46153846153846156,-9.084615384615383,-472.39999999999986
+"4.5/10, stop to +1 at +7","bot first turn, clips the owner skipped",48,0.22916666666666666,-66.22604166666667,-3178.8500000000004
+"4.5/10, stop to +1 at +7","bot v4 sustained, clips the owner took",15,0.5333333333333333,25.46666666666666,381.99999999999994
+"4.5/10, stop to +1 at +7","bot v4 sustained, clips the owner skipped",8,0.25,-61.66875,-493.35
+"4.5/10, stop to +1 at +7","random, clips the owner took (avg per clip)",54,0.25925925925925924,-40.28564814814814,-2175.4249999999997
+"4.5/10, stop to +1 at +7","random, all clips (avg per clip)",105,0.3238095238095238,-29.616666666666667,-3109.75
+4.5/10,"owner, all takes",54,0.42592592592592593,28.05925925925926,1515.2
+4.5/10,"owner, takes without hindsight",51,0.43137254901960786,29.82941176470588,1521.3
+4.5/10,"owner, hindsight takes",3,0.3333333333333333,-2.0333333333333314,-6.099999999999994
+4.5/10,"bot first turn, clips the owner took",52,0.28846153846153844,-19.541346153846156,-1016.1500000000001
+4.5/10,"bot first turn, clips the owner skipped",48,0.16666666666666666,-68.309375,-3278.8500000000004
+4.5/10,"bot v4 sustained, clips the owner took",15,0.4,22.549999999999994,338.2499999999999
+4.5/10,"bot v4 sustained, clips the owner skipped",8,0.25,-32.7625,-262.1
+4.5/10,"random, clips the owner took (avg per clip)",54,0.35185185185185186,-33.422222222222224,-1804.8000000000002
+4.5/10,"random, all clips (avg per clip)",105,0.3904761904761905,-24.911309523809525,-2615.6875

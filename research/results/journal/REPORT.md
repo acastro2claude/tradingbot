@@ -856,13 +856,31 @@ The bot works on 1-minute candles: a zone test, entry on the first close 1 point
 - **On the owner's entries the move helps.** 5 trades went 7 points their way and then back to the full stop; they become +1 exits. One trade that would have reached the target is stopped at +1 instead.
 - **On the bot's entries and on random entries it changes little.** It saves trades that turn back after +7, but cuts others that dip to +1 and then go on to +10. An exit rule shifts results only when the entries already have an edge.
 
-## 26. More marked clips so the bot can learn the read (Nov 2026, in progress)
+## 26. More marked clips so the bot can learn the read (Nov 2026, in progress: 105 of 143 marked)
 
 **Why:** the owner wants a fully automatic bot. Over 40 hand-set versions of the read did no better than random entries on unseen days (sections 22–25), so the next try is to learn the read from the owner's own decisions instead of guessing thresholds. The owner said the heatmap matters ("maybe [without it], but it would be much harder").
 
 **Data:** the full MES order book for 16 days of 2026, spread over Apr–Oct ($19.47, approved by the owner; about $2.71 of Databento credit left).
 - The days were picked by `research/replay2026_plan.csv` for the most zone tests per dollar.
 - 143 zone tests that pass the owner's filters (10:00, news spikes, Fed days) became replay clips n001–n143 on the replay page, shown first. List: `replay_tests_2026.csv`.
+
+**First 105 decisions on the 2026 clips** (`research/replay_score_2026.py`, `replay_score_2026_summary.csv`; 5 MES):
+- Notes on 105 of 106 clips, about 2 minutes a clip: careful decisions. 54 takes (30 long, 24 short, all in the zone's direction), 50 skips.
+- 3 takes have notes saying the owner went back after seeing what happened ("had to go back", "missed", "stopped out here"); they are scored apart.
+
+| | Trades | Winners | Per trade, stop to +1 at +7 | Per trade, plain 4.5/10 |
+|---|---|---|---|---|
+| Owner (without the 3 hindsight takes) | 51 | 59% | +$23 | +$30 |
+| Bot's first-turn entry, clips the owner took | 52 | 46% | −$9 | −$20 |
+| Bot's first-turn entry, clips the owner skipped | 48 | 23% | −$66 | −$68 |
+| Random entries, clips the owner took | 54 | | −$40 | −$33 |
+
+- **The owner's edge shows again on days nobody tuned anything on.** It comes mostly from which zone tests the owner takes (the bot's own entry: −$9 vs −$66). Not proven alone (95% range about ±$47 a trade), but the same direction as the 38 careful 2024 trades (+$17 to +$31).
+- **Stop to +1 at +7:** it helped on the 2024 replay trades (+$17 → +$31) and cost a little here (+$30 → +$23). Mixed so far.
+- **"Price moving too fast / news?"** was the reason for 15 skips. The bot's entry loses $91 a trade on those clips (random −$36).
+  - They cluster in a sudden move on 11 Jun 2026 13:28–13:43 and 10 Jul 2026 10:32–10:40.
+  - One (29 Sep 10:02) was a 10:00 release the volume-spike filter missed.
+  - A "fast market" filter is a rule the bot can learn.
 
 **Plan once marked:**
 - Learn take/skip and the entry moment from the about 300 marked clips (2024 and 2026).
