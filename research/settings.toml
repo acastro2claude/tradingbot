@@ -508,6 +508,30 @@ budget_usd = 20.0                        # of about $22 credit left; keep a smal
 book_start_utc = "00:00"                 # Databento's daily snapshot, so the whole book can be rebuilt
 book_end_et = "16:00"
 
+[strategy_compare]
+# Owner (Nov 2026): compare other order-book / order-flow strategies with the owner's setup. research/strategy_compare.py.
+# Every strategy uses the owner's risk: 5 MES, stop-market 4.5, target 10, stop to +1 at +7, -$500 day stop, one trade
+# at a time, entries 10:00-15:30 (except intraday momentum), no news-spike windows, no Fed days. Numbers below are set
+# from each strategy's usual definition before testing (proposals), not tuned.
+es_until = "2025-03-01"                  # 1-minute bars: ES sessions before this date, MES from it (same prices)
+# 5. Intraday momentum (Gao, Han, Li, Zhou 2018): return from the prior 16:00 close to 10:00 -> trade 15:30 to the close
+momentum_signal_et = "10:00"
+momentum_entry_et = "15:30"
+momentum_exit_et = "15:59"
+# 4. Liquidity sweep and reclaim at the prior regular-session high/low and the overnight high/low
+sweep_min_ticks = 1                      # price trades at least 1 tick past the level...
+sweep_max_points = 3.0                   # ...but not more than 3 points (more = a breakout, not a sweep)
+reclaim_ticks = 2                        # then back inside by 2 ticks...
+reclaim_minutes = 5                      # ...within 5 minutes of first trading past it
+flip_seconds = 30                        # tick version: over the last 30 s the aggressive volume our way is at least the other side's
+# 2. Order-flow momentum: 5-minute aggressive volume imbalance (buy - sell) / (buy + sell)
+flow_window_minutes = 5
+flow_build_sessions = 20                 # the threshold = this percentile of |imbalance| over the first 20 sessions of 2026...
+flow_percentile = 90                     # ...then tested on the rest
+# 1. Book imbalance at the touch, (best bid size - best ask size) / (sum), each second, 16 MES 2026 days with the book
+book_horizons_seconds = [1, 5, 30]
+book_rule_threshold = 0.8                # rule: imbalance >= 0.8 -> buy at the ask, sell at the bid h seconds later
+
 [replay]
 # Zone replay page (research/replay_export.py, research/replay_page.py). Display settings, not bot settings.
 before_seconds = 600             # the replay starts 10 minutes before the zone test
