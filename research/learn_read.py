@@ -187,6 +187,12 @@ def clip_rows() -> pd.DataFrame:
 
 
 FEATS = None
+NOT_FEATURES = ("label", "time", "price", "clip", "day", "market", "contract", "direction", "owner_takes",
+                "owner_entry_time", "owner_entry_price", "test_time", "edge")
+
+
+def feature_names(x: pd.DataFrame) -> list:
+    return [c for c in x.columns if c not in NOT_FEATURES]
 
 
 def model():
