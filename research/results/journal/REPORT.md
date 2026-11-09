@@ -910,6 +910,26 @@ The bot works on 1-minute candles: a zone test, entry on the first close 1 point
 - Trading it with market orders (buy at the ask, sell at the bid 1–30 s later) loses 0.64 tick a trade before commission and 1.6 ticks after (about −$10 a trade on 5 MES), on about 870 signals a day.
 - The edge is real but smaller than one tick of spread: high-frequency territory, as the literature says.
 
+**Rerun as each strategy is usually traded, before and after costs** (owner: "something sounds wrong there. one of these should be a decent strategy"; `research/strategy_natural.py`, `strategy_natural*.csv`):
+- Each strategy gets its own exits and no owner filters.
+- "Before costs": entry at the signal price, no slippage, no commission.
+- Baseline: the same moments with a random side and the same exits.
+
+| Strategy, as usually traded | Trades | Points a trade before costs | Same moments, random side | Per trade after costs (5 MES) |
+|---|---|---|---|---|
+| 5. Intraday momentum as published (15:30 → 16:00, no stop, every day 2024–2026) | 665 | +0.11 | −0.16 | −$16 |
+| 4. Sweep and reclaim, bars, stop 1 tick past the sweep, 2x target | 757 | −0.15 | −0.33 to +0.30 | −$21 to −$24 |
+| 4. Same, ticks + flow flip, prior-day levels | 67 | +0.68 | −0.10 | −$3 (±$26) |
+| 4. Same, ticks + flow flip, overnight levels | 87 | −0.39 | −0.47 | −$26 |
+| 2. Order-flow momentum, hold 1 / 5 minutes | 2,855 / 1,840 | −0.03 / −0.10 | +0.04 / −0.09 | −$20 / −$21 |
+| 3. Iceberg / refill fade, stop 2 ticks through, 2x target (16 book days) | 510 | −0.06 | −0.16 | −$20 |
+| 3. Same, with the owner's bracket | 510 | 0.00 | −0.33 | −$16 |
+| 1. Book imbalance ≥ 0.8, market in and out after 1–30 s | ~870 a day | +0.4 tick (mid move) | | −1.6 ticks (about −$10) |
+
+- **Checked for mistakes.** Intraday momentum, measured directly: in 2024–2026 the first half hour's direction matched the last half hour's on 46–51% of days, correlation about 0 (the paper's 1993–2013 pattern is not there). Book imbalance moves price the right way, so the buy/sell sides are read correctly. The random baselines lose about what slippage and commission cost.
+- **Before costs, none of them has an edge except two:** book imbalance (real but under one tick, sub-second) and maybe the prior-day sweep with the flow flip (+0.68 point on 67 trades; too few to tell).
+- **The cost bar:** with 5 MES, slippage and commission cost about $13–19 a round trip, so a strategy needs roughly 0.6–0.8 point a trade before costs. Only the owner's selection clears it so far: +$23 a trade after costs on the 2026 clips, about +1.2 points before costs.
+
 **Conclusions:**
 - No strategy here beats random entries with the owner's setup.
 - Intraday momentum did worse than a coin flip in 2024–2026; the published pattern (1993–2013) did not show up.
