@@ -935,6 +935,38 @@ The bot works on 1-minute candles: a zone test, entry on the first close 1 point
 - Intraday momentum did worse than a coin flip in 2024–2026; the published pattern (1993–2013) did not show up.
 - The only positive result in all the tests so far is the owner's own selection of zone tests.
 
+## 28. Learning the read from the owner's decisions (`learn_read_*.csv`, Nov 2026)
+
+**All 143 clips of 2026 marked** (`replay_score_2026_summary.csv`):
+
+| | Trades | Winners | Per trade, plain 4.5/10 | Per trade, stop to +1 at +7 |
+|---|---|---|---|---|
+| Owner (3 hindsight takes left out) | 70 | 44% | +$35 | +$15 |
+| Bot's first turn, clips the owner took / skipped | 70 / 66 | | −$10 / −$50 | −$3 / −$48 |
+| Random entries on the same clips | | | −$28 | −$28 |
+
+**The model** (`research/learn_read.py`, [learn_read]; small gradient-boosted trees, scikit-learn):
+- Examples: 214 careful decisions on clips that pass the owner's filters (2024 and 2026; 104 taken), 22,915 decision points.
+- Inputs: tape only (aggression over 2 s to 2 min, CVD, depth and bounce at the zone, pushes, speed, move into the zone, absorption markers, zone facts, time of day).
+- Entry: the first point where "enter now" passes a threshold set so the bot takes about as many clips as the owner.
+
+| | Trades | Winners | Per trade, plain 4.5/10 | Per trade, stop to +1 at +7 |
+|---|---|---|---|---|
+| **Held-out days (5-fold by day):** the owner | 104 | 43% | +$31 | +$23 |
+| Learned read | 82 | 33% | −$5 | −$7 |
+| Learned read, on clips the owner also took | 56 | 39% | +$21 | +$9 |
+| Learned read, on clips the owner skipped | 26 | 19% | −$61 | −$42 |
+| Old first-turn entry | 207 | 27% | −$27 | −$24 |
+| **2026 days never marked** (110 days, 551 zone tests, one at a time, −$500 day stop): learned read | 145 | 24% | −$38 | −$35 |
+| Old first-turn entry | 288 | 26% | −$29 | −$27 |
+| Random entries | 2,200 | 30% | −$20 | −$21 |
+
+- **The model learned part of the read.** On held-out days it agreed with the owner on 65% of clips (taking nothing would agree on 51%), and its trades on clips the owner also took made money.
+- **It still fails on new days.** It takes clips the owner would skip, and those lose heavily. On the 110 days nobody marked it was worse than random.
+- **104 taken examples are far too few** to learn a discretionary read with this many inputs.
+- **The owner's edge is the most consistent result of the whole study.** +$31 a trade on 104 careful replay trades (2024 and 2026, held-out scoring), against −$27 for the bot's entry on the same clips. The 95% range is roughly −$3 to +$65.
+- **The stop move to +1 at +7:** over the owner's 104 careful replay trades, +$23 a trade with it, +$31 without it (it helped in 2024 and cost more in 2026).
+
 ## Caveats
 
 - The read is my translation of the owner's description. Every threshold above is a proposal, and the owner's eye may weigh things differently.

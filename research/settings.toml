@@ -532,6 +532,21 @@ flow_percentile = 90                     # ...then tested on the rest
 book_horizons_seconds = [1, 5, 30]
 book_rule_threshold = 0.8                # rule: imbalance >= 0.8 -> buy at the ask, sell at the bid h seconds later
 
+[learn_read]
+# Learn the owner's read from the marked replay clips (Nov 2026). research/learn_read.py. Proposals, not owner rules.
+step_seconds = 2                         # a decision point every 2 s from the zone test to 5 minutes after (the page's frames)
+positive_before_seconds = 4              # the owner's entry counts as "enter now" from 4 s before to 2 s after the press
+positive_after_seconds = 2
+wait_gap_seconds = 10                    # seconds of a taken clip more than 10 s before the entry count as "not yet"
+windows_seconds = [2, 5, 15, 30, 60, 120]
+burst_min_es = 50                        # absorption markers as the owner saw them (ES 50; MES 35 matched to ES)
+burst_min_mes = 35
+folds = 5                                # cross-validation by day
+model_max_depth = 3                      # small trees, strong limits: few hundred examples
+model_learning_rate = 0.05
+model_max_iter = 200
+model_min_samples_leaf = 40
+
 [replay]
 # Zone replay page (research/replay_export.py, research/replay_page.py). Display settings, not bot settings.
 before_seconds = 600             # the replay starts 10 minutes before the zone test

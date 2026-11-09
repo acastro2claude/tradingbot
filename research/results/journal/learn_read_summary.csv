@@ -1,0 +1,17 @@
+test,exit,who,trades,win_rate,usd_per_trade,net_usd,months_up
+cross-validation (held-out days),plain,"owner, held-out clips",104,0.4326923076923077,31.299999999999997,3255.2,
+cross-validation (held-out days),plain,"learned read, held-out clips",82,0.32926829268292684,-4.980487804878052,-408.40000000000026,
+cross-validation (held-out days),plain,"learned read, clips the owner took",56,0.39285714285714285,21.032142857142862,1177.8000000000002,
+cross-validation (held-out days),plain,"learned read, clips the owner skipped",26,0.19230769230769232,-61.00769230769232,-1586.2000000000003,
+cross-validation (held-out days),plain,"first turn, all held-out clips",207,0.27053140096618356,-26.88236714975845,-5564.65,
+cross-validation (held-out days),move,"owner, held-out clips",104,0.5769230769230769,22.88653846153846,2380.2,
+cross-validation (held-out days),move,"learned read, held-out clips",82,0.4634146341463415,-6.885975609756102,-564.6500000000003,
+cross-validation (held-out days),move,"learned read, clips the owner took",56,0.5178571428571429,9.313392857142857,521.55,
+cross-validation (held-out days),move,"learned read, clips the owner skipped",26,0.34615384615384615,-41.776923076923076,-1086.2,
+cross-validation (held-out days),move,"first turn, all held-out clips",207,0.3864734299516908,-24.104589371980666,-4989.649999999998,
+2026 days never marked,plain 4.5/10,learned read,145,0.2413793103448276,-37.92413793103448,-5499.0,1 of 6
+2026 days never marked,stop to +1 at +7,learned read,149,0.3087248322147651,-35.1010067114094,-5230.05,0 of 6
+2026 days never marked,plain 4.5/10,old bot: first turn,288,0.2638888888888889,-28.574131944444446,-8229.35,1 of 6
+2026 days never marked,stop to +1 at +7,old bot: first turn,308,0.32142857142857145,-26.81688311688312,-8259.6,1 of 6
+2026 days never marked,plain 4.5/10,random entries,2200,0.2968181818181818,-20.347727272727273,,
+2026 days never marked,stop to +1 at +7,random entries,2200,0.36727272727272725,-20.94715909090909,,
