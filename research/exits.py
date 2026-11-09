@@ -20,8 +20,10 @@ TICK = S["market"]["tick_size"]
 
 
 def bracket_exit(dt: DayTrades, t_in: float, fill: int, d: int, flat: float, stop_pts: float, target_pts: float,
-                 move_at_pts: float | None = None, move_to_pts: float | None = None) -> tuple[float, float, str]:
-    """Ticks per contract, exit time and how it ended ("stop", "moved stop", "target", "close")."""
+                 move_at_pts: float | None = None, move_to_pts: float | None = None,
+                 slip: int = SLIP_TICKS) -> tuple[float, float, str]:
+    """Ticks per contract, exit time and how it ended ("stop", "moved stop", "target", "close").
+    slip: ticks paid on stops and the close (0 = before costs)."""
     i, j = int(np.searchsorted(dt.t, t_in, "right")), int(np.searchsorted(dt.t, flat, "right"))
     px, tt = dt.px[i:j], dt.t[i:j]
     if not len(px):
@@ -39,12 +41,12 @@ def bracket_exit(dt: DayTrades, t_in: float, fill: int, d: int, flat: float, sto
         s1 = round(move_to_pts / TICK)
         ks2 = first(m <= s1, km + 1)
         if ks2 < kt:
-            return float(s1 - SLIP_TICKS), float(tt[ks2]), "moved stop"
+            return float(s1 - slip), float(tt[ks2]), "moved stop"
         ks = len(m)
     if ks == kt == len(m):
-        return float(m[-1] - SLIP_TICKS), float(tt[-1]), "close"
+        return float(m[-1] - slip), float(tt[-1]), "close"
     if ks <= kt:
-        return float(s0 - SLIP_TICKS), float(tt[ks]), "stop"
+        return float(s0 - slip), float(tt[ks]), "stop"
     return float(tg), float(tt[kt]), "target"
 
 

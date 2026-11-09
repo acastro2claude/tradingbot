@@ -73,7 +73,7 @@ def all_bars() -> pd.DataFrame:
 
 
 def bar_bracket(lo, hi, cl, k0: int, end: int, fill: int, d: int, stop_pts: float, tgt_pts: float | None,
-                move: bool = True) -> tuple[float, int]:
+                move: bool = True, slip: int = SLIP_TICKS) -> tuple[float, int]:
     """Ticks per contract on 1-minute bars from the bar after k0 to `end` (its close). A bar that reaches
     the stop counts as stopped first. The stop moves to +1 once a bar reaches +7 (from the next bar)."""
     stop = fill - d * tk(stop_pts)
@@ -81,13 +81,13 @@ def bar_bracket(lo, hi, cl, k0: int, end: int, fill: int, d: int, stop_pts: floa
     moved = False
     for k in range(k0 + 1, end + 1):
         if (lo[k] <= stop) if d == 1 else (hi[k] >= stop):
-            return float((stop - fill) * d - SLIP_TICKS), k
+            return float((stop - fill) * d - slip), k
         if tgt is not None and ((hi[k] >= tgt + 1) if d == 1 else (lo[k] <= tgt - 1)):
             return float(tk(tgt_pts)), k
         if move and not moved and ((hi[k] - fill) * d >= tk(B["breakeven_trigger_points"]) if d == 1
                                    else (fill - lo[k]) >= tk(B["breakeven_trigger_points"])):
             stop, moved = fill + d * tk(B["breakeven_stop_points"]), True
-    return float((cl[end] - fill) * d - SLIP_TICKS), end
+    return float((cl[end] - fill) * d - slip), end
 
 
 def intraday_momentum(b: pd.DataFrame) -> pd.DataFrame:
