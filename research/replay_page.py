@@ -64,6 +64,17 @@ def main() -> None:
             clip["id"] = r.public_id
             (PUBLIC_DIR / f"{r.public_id}.json").write_text(json.dumps(clip, separators=(",", ":")))
         ids = pd.concat([new[["public_id", "id", "market"]].assign(round=3), ids], ignore_index=True)
+    k = 1                                         # bot review rounds (research.bot_review): newest first, b<round><nn>
+    while (OUT / f"bot_review_round{k}.csv").exists():
+        k += 1
+    for rnd in range(k - 1, 0, -1):
+        rv = pd.read_csv(OUT / f"bot_review_round{rnd}.csv")
+        rv["public_id"] = [f"b{rnd}{n + 1:02d}" for n in range(len(rv))]
+        for r in rv.itertuples():
+            c = json.loads((REPLAY_DIR / f"{r.id}.json").read_text())
+            c["id"] = r.public_id
+            (PUBLIC_DIR / f"{r.public_id}.json").write_text(json.dumps(c, separators=(",", ":")))
+        ids = pd.concat([rv[["public_id", "id"]].assign(market="MES", round=10 + rnd), ids], ignore_index=True)
     ids[["public_id", "id", "round"]].to_csv(OUT / "replay_clip_ids.csv", index=False)
     index = [dict(id=r.public_id, market=r.market) for r in ids.itertuples()]
     out = OUT / "review" / "replay" / "index.html"

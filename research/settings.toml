@@ -547,6 +547,13 @@ model_learning_rate = 0.05
 model_max_iter = 200
 model_min_samples_leaf = 40
 
+[bot_review]
+# Owner (Nov 2026): review the learned bot's trades ("I'd take it" / "I'd pass" + why) and keep retraining.
+# research/bot_review.py. Each round takes a random set of the unmarked 2026 days (spread over the months) whose bot
+# trades add up to about round_trades; the other days stay unseen for testing.
+round_trades = 50
+seed_offset = 10                        # the round's own random draw (round 1 uses level_study.random_seed + 10)
+
 [replay]
 # Zone replay page (research/replay_export.py, research/replay_page.py). Display settings, not bot settings.
 before_seconds = 600             # the replay starts 10 minutes before the zone test

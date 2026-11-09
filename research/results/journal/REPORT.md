@@ -1038,6 +1038,22 @@ The bot works on 1-minute candles: a zone test, entry on the first close 1 point
   - the zone's context
 - With 104 taken examples, adding more inputs mostly adds noise.
 
+## 31. Review rounds: the owner says yes or no to the bot's trades (Nov 2026, in progress)
+
+**Owner:** "What if I review them and then decide on whether I would have also taken that trade or not. And then based on all the data we have, you can keep retraining the bot."
+- Clips without the heatmap are fine (no order book for these days).
+- Rounds of about 50 trades.
+
+**How a round works** (`research/bot_review.py`, [bot_review]):
+1. The learned read (section 28, tape only) is trained on every decision so far.
+2. It runs on the 2026 days the owner never marked, with the owner's filters, one trade at a time and the −$500 day stop. Each trade is logged with its reasons.
+3. A random set of those days, spread over the months, with about 50 trades becomes the round. Each trade is a clip that ends at the bot's entry, with its reasons and no result.
+4. The owner answers "I'd take it" or "I'd pass", with a few words on why.
+5. The other days stay unseen for testing.
+6. Recurring reasons for passing become new inputs; then the bot is retrained.
+
+**Round 1:** the bot took 145 trades on 79 of the unmarked days. 53 trades on 30 days are on the replay page as b101–b153; 92 trades on 49 days stay unseen.
+
 ## Caveats
 
 - The read is my translation of the owner's description. Every threshold above is a proposal, and the owner's eye may weigh things differently.
