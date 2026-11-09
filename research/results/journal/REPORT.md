@@ -1008,6 +1008,36 @@ The bot works on 1-minute candles: a zone test, entry on the first close 1 point
   - the zone's validity in context
   - who is in control over the whole move rather than the last seconds
 
+## 30. The heatmap test: order-book measurements for the learned read (`learn_book_summary.csv`, Nov 2026)
+
+**Owner:** "yea run that" (section 29: is the heatmap the missing piece?).
+
+**The test** (`research/learn_book.py`):
+- All 214 marked clips have the full order book. At every decision point, 14 order-book measurements were added:
+  - the biggest line and the total resting size in the zone
+  - resting size within 1 point behind price (support) and ahead of it (resistance), and their balance
+  - the zone's resting size growing or shrinking over 30 s and 2 minutes
+  - the share cancelled rather than filled, and size added per size filled
+  - size pulled ahead of price
+  - the line at the low
+  - the best bid/offer imbalance
+- Same 5-fold cross-validation by day, same entry rule, 5 MES with a plain 4.5/10.
+
+| Inputs | Agreement with the owner | Bot trades (on owner's takes / skips) | Winners | Per trade | On owner's skips | Similar clips, same decision |
+|---|---|---|---|---|---|---|
+| Tape only | 65% | 82 (56 / 26) | 33% | −$5 | −$61 | 51% |
+| Tape + book | 60% | 60 (39 / 21) | 28% | −$22 | −$63 | 50% |
+| Book only | 55% | 84 (46 / 38) | 18% | −$62 | −$81 | 49% |
+| (chance) | 51% | | | | | 50% |
+
+- **The book measurements did not help.** With them the bot matched the owner less often and lost more. On their own they were barely better than chance.
+- **Clips that look alike on these measurements get the owner's same decision only about half the time,** with or without the book.
+- **So the owner's decision is not in these per-moment numbers, tape or book.** It is in something these summaries miss:
+  - the shape of how the move unfolds
+  - how the bubbles and the heatmap change together
+  - the zone's context
+- With 104 taken examples, adding more inputs mostly adds noise.
+
 ## Caveats
 
 - The read is my translation of the owner's description. Every threshold above is a proposal, and the owner's eye may weigh things differently.
