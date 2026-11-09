@@ -967,6 +967,47 @@ The bot works on 1-minute candles: a zone test, entry on the first close 1 point
 - **The owner's edge is the most consistent result of the whole study.** +$31 a trade on 104 careful replay trades (2024 and 2026, held-out scoring), against −$27 for the bot's entry on the same clips. The 95% range is roughly −$3 to +$65.
 - **The stop move to +1 at +7:** over the owner's 104 careful replay trades, +$23 a trade with it, +$31 without it (it helped in 2024 and cost more in 2026).
 
+## 29. Why the learned bot takes the owner's skips, and how consistent the owner is (`learn_explain_*.csv`, `owner_consistency.csv`, `bot_trade_log.md`, Nov 2026)
+
+**Owner:** "I want to know why the bot is taking trades on skips, and what its thought process and reasoning is ... Am I not explaining? Do you also find that my trades are consistent?"
+
+**The bot's reasoning** (`research/learn_explain.py`):
+- Same cross-validation as section 28; for each held-out entry, SHAP values give the inputs that pushed the model to enter, written out in `bot_trade_log.md`.
+- On the 26 clips it took and the owner skipped (5 winners, −$61 a trade), its reasons are nearly always the same:
+  - a few seconds of one-sided aggression our way (67–94% of the aggressive volume in the last 5 s)
+  - price 1.5–2 points off the low and back out of the zone
+  - a couple of absorption markers in the last minute
+- The owner's notes on those clips: "no confirmation", the other side still in control, the zone not valid or price starting inside it, price too fast or news.
+- **On the bot's inputs, those entries look almost the same as its entries on clips the owner also took.** The median inputs differ only a little: slightly more volume our way over 2 minutes, slightly fewer absorption markers, a slightly smaller move into the zone, taller zones.
+
+**The owner's consistency** (`owner_consistency.csv`):
+
+| Check | Cases | Same decision | Chance |
+|---|---|---|---|
+| Same day, same side, zone tests within 2 minutes (the same moment of the market at two nearby zones) | 16 pairs | 88% | 50% |
+| The 5 most similar clips on other days, by the bot's measurements of the tape at 90 s | 1,070 | 51% | 50% |
+
+| The note mentions… | Clips | Owner took |
+|---|---|---|
+| CVD higher low / lower high | 20 | 100% |
+| other side came in | 40 | 93% |
+| retest / second push | 43 | 91% |
+| absorption | 58 | 86% |
+| too fast / news | 28 | 18% |
+| sellers/buyers in control | 17 | 12% |
+| no confirmation | 31 | 0% |
+| zone not valid | 15 | 0% |
+
+- **The owner is consistent.**
+  - The same market moment gets the same decision 88% of the time.
+  - The written reasons match the decisions every time.
+  - Every careful batch made money.
+- **The bot's measurements can't tell the owner's takes from skips:** clips that look alike to the bot got the same decision only 51% of the time, a coin flip.
+- So the owner explains well and decides consistently, but the deciding information is not in what the bot measures. The likely candidates:
+  - the heatmap (the model reads only the tape)
+  - the zone's validity in context
+  - who is in control over the whole move rather than the last seconds
+
 ## Caveats
 
 - The read is my translation of the owner's description. Every threshold above is a proposal, and the owner's eye may weigh things differently.

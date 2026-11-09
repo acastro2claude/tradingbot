@@ -1,0 +1,11 @@
+check,pairs,same_decision,chance
+"same day, same side, zone tests within 2 minutes",16,0.875,0.500393047427723
+5 most similar clips on other days (tape at 90 s),1070,0.5121495327102805,0.500393047427723
+note mentions: CVD higher low / lower high,20,1.0,0.48598130841121495
+note mentions: absorption,58,0.8620689655172413,0.48598130841121495
+note mentions: retest / second push,43,0.9069767441860465,0.48598130841121495
+note mentions: other side came in,40,0.925,0.48598130841121495
+note mentions: sellers/buyers in control,17,0.11764705882352941,0.48598130841121495
+note mentions: no confirmation,31,0.0,0.48598130841121495
+note mentions: too fast / news,28,0.17857142857142858,0.48598130841121495
+note mentions: zone not valid,15,0.0,0.48598130841121495
