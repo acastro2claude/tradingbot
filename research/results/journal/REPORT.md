@@ -1077,6 +1077,7 @@ The bot works on 1-minute candles: a zone test, entry on the first close 1 point
 
 - The bot almost never waits for a retest, the confirmation the owner relies on most (the owner took 91% of the replay clips whose notes mention a retest, and 100% of those that mention a CVD divergence).
 - These checklist items become inputs when the bot is retrained after the round.
+- **The owner chose to keep reviewing as is:** a retest is not required, it "reinforces a possible direction change is more likely". So it is an input the bot weighs, not a rule.
 
 ## Caveats
 
