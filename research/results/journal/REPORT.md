@@ -1054,6 +1054,30 @@ The bot works on 1-minute candles: a zone test, entry on the first close 1 point
 
 **Round 1:** the bot took 145 trades on 79 of the unmarked days. 53 trades on 30 days are on the replay page as b101–b153; 92 trades on 49 days stay unseen.
 
+**The owner's first review (b101):** "I don't understand the bot's reasonings. If it took the trade why did it hold back? Also theres no restest of the zone after an attempted move down. can you explain the bot's reasonings more like how I would?"
+- **The fix** (`owner_view` in `research/bot_review.py`): each review clip now shows a one-paragraph summary and the owner's checklist at the bot's entry, each item ✓, ✗ or – (can't apply). The confusing list of inputs that lowered the bot's score is gone.
+- **The checklist:**
+  - retest of the zone
+  - CVD divergence on the retest
+  - weaker second push
+  - absorption at the zone
+  - the other side came in and held (5 and 15 s)
+  - the original side no longer in control (2 minutes)
+  - normal speed
+- **Retest, in the owner's sense:** price moves at least 2 points back out of the zone and returns.
+
+| Owner's confirmation | Round-1 bot trades that had it |
+|---|---|
+| Absorption at the zone | 51 of 53 |
+| The other side came in and held | 39 of 53 |
+| Normal speed | 33 of 53 |
+| The original side no longer in control | 29 of 53 |
+| **Retest of the zone** | **8 of 53** |
+| **CVD divergence on the retest** | **3 of 53** |
+
+- The bot almost never waits for a retest, the confirmation the owner relies on most (the owner took 91% of the replay clips whose notes mention a retest, and 100% of those that mention a CVD divergence).
+- These checklist items become inputs when the bot is retrained after the round.
+
 ## Caveats
 
 - The read is my translation of the owner's description. Every threshold above is a proposal, and the owner's eye may weigh things differently.

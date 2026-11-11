@@ -73,6 +73,11 @@ canvas { display: block; width: 100%; touch-action: none; }
 .decide .bot-only, body.botmode .decide .replay-only { display: none; }
 body.botmode .decide .bot-only { display: block; }
 #botcard ul { margin: 0; padding-left: 1.1em; font-size: 0.92rem; display: grid; gap: 3px; }
+#botcard ul.checks { list-style: none; padding-left: 0; gap: 6px; }
+#botcard ul.checks li { display: grid; grid-template-columns: 1.3em 1fr; gap: 4px; }
+#botcard ul.checks .mark { font-weight: 700; }
+#botcard ul.checks .yes { color: var(--long); } #botcard ul.checks .no { color: var(--short); } #botcard ul.checks .na { color: var(--muted); }
+#botcard ul.checks small { display: block; color: var(--muted); font-size: 0.85rem; }
 #botcard .lead { margin: 0; font-size: 0.92rem; }
 button:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 textarea { width: 100%; box-sizing: border-box; min-height: 3em; resize: vertical; font: 0.92rem/1.4 var(--body); color: var(--ink);
@@ -99,7 +104,7 @@ kbd { font: 0.78rem var(--mono); border: 1px solid var(--line); border-radius: 4
         <li>Shaded band: the zone being tested (its timeframe and test number are on the right). Bottom panel: delta every 10 seconds and cumulative delta.</li>
         <li>The small chart on the right: 15-minute candles of the last sessions up to the start of the clip. The zone is shaded from the candle where it formed.</li>
         <li>Your entry is recorded at the time and price shown when you press. Results are scored later with your risk structure; you won't see them here.</li>
-        <li>Bot review clips (ids b…): the clip stops where the learned bot enters (the outlined triangle), and its reasons are on the right. These days have no order book, so there is no heatmap. Say whether you would take that trade there, and in a few words why not if you'd pass. The result is not shown.</li>
+        <li>Bot review clips (ids b…): the clip stops where the learned bot enters (the outlined triangle). On the right: what the bot saw, and your usual confirmations marked ✓ (there), ✗ (not there) or – (can't apply, for example no retest to compare). A retest counts only if price moved at least 2 points back out of the zone and returned. These days have no order book, so there is no heatmap. Say whether you would take that trade there, and in a few words why not if you'd pass. The result is not shown.</li>
       </ul>
     </details>
     <div class="banner" id="nostore" hidden>Your decisions can't reach the shared store from this view, so they stay in this browser only. Open the page signed in to claude.ai to save them for Claude.</div>
@@ -141,10 +146,10 @@ kbd { font: 0.78rem var(--mono); border: 1px solid var(--line); border-radius: 4
       <div class="card" id="botcard" hidden>
         <h2>The bot's trade</h2>
         <p class="lead" id="botside"></p>
-        <p class="lead"><b>Why it enters</b></p>
-        <ul id="botfor"></ul>
-        <p class="lead"><b>What held it back</b></p>
-        <ul id="botagainst"></ul>
+        <p class="lead" id="botsummary"></p>
+        <p class="lead"><b>Your usual confirmations, at the bot's entry</b></p>
+        <ul class="checks" id="botchecks"></ul>
+        <details class="how"><summary>The model's strongest inputs</summary><ul id="botfor"></ul></details>
       </div>
       <div class="card">
         <h2>Your decision</h2>
@@ -218,7 +223,12 @@ async function load(i) {
   if (clip.bot) {
     const b = clip.bot, li = a => a.map(t => { const e = document.createElement("li"); e.textContent = t; return e; });
     $("botside").innerHTML = `<b>${b.side === "long" ? "Long" : "Short"}</b> at <b>${p2(b.price_ticks * TICK)}</b>, ${b.secs_after_test} s after the zone test (where the clip ends)`;
-    $("botfor").replaceChildren(...li(b.reasons_for)); $("botagainst").replaceChildren(...li(b.reasons_against));
+    $("botsummary").textContent = b.summary || "";
+    $("botchecks").replaceChildren(...(b.checklist || []).map(c => {
+      const e = document.createElement("li"), m = document.createElement("span"), t = document.createElement("span"), d = document.createElement("small");
+      m.className = "mark " + (c.ok === true ? "yes" : c.ok === false ? "no" : "na"); m.textContent = c.ok === true ? "\u2713" : c.ok === false ? "\u2717" : "\u2013";
+      t.textContent = c.item; d.textContent = c.detail; t.appendChild(d); e.append(m, t); return e; }));
+    $("botfor").replaceChildren(...li(b.reasons_for));
   }
   paintDecision(); drawAll();
 }

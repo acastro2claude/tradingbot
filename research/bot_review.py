@@ -45,6 +45,7 @@ from research.settings import load_settings
 
 S = load_settings()
 G = S["bot_review"]
+TICK = S["market"]["tick_size"]
 
 
 def train(extra: pd.DataFrame | None = None):
@@ -228,5 +229,135 @@ def review_examples(rnd: int) -> pd.DataFrame:
     raise NotImplementedError("rounds after the first add the owner's reviews to the training examples")
 
 
+
+
+
+# ---------- the bot's trade in the owner's terms ----------
+
+def pushes_into_zone(dt: DayTrades, T: float, t_entry: float, d: int, near: int) -> list:
+    """Pushes into the zone, in the owner's sense: price trades at or into the zone; a retest counts only after
+    price has moved at least 2 points back out of the zone and then returned. For each push: its extreme (the low
+    for a long, the high for a short), our-way CVD there, and the aggressive volume of the leg into it."""
+    i0, i1 = int(np.searchsorted(dt.t, T - 60)), int(np.searchsorted(dt.t, t_entry, "right"))
+    y, nearY = dt.px * d, near * d
+    against = dt.sell if d == 1 else dt.buy
+    ours = dt.buy if d == 1 else dt.sell
+    cvd = np.cumsum(ours - against)
+    away = 8                                                  # 2 points back out of the zone
+    out, state, ext_k, leg0, top_k = [], "in", None, i0, None
+    for k in range(int(np.searchsorted(dt.t, T)), i1):
+        if state == "in":
+            if ext_k is None or y[k] < y[ext_k]:
+                ext_k = k
+            if y[k] >= nearY + away:                          # moved back out of the zone: the push is over
+                out.append(dict(t=dt.t[ext_k], y=y[ext_k], cvd=cvd[ext_k], push_vol=int(against[leg0:ext_k + 1].sum())))
+                state, top_k = "away", k
+        else:
+            if y[k] > y[top_k]:
+                top_k = k
+            if y[k] <= nearY + 1:                             # back at the zone: a retest
+                state, ext_k, leg0 = "in", k, top_k
+    if state == "in" and ext_k is not None:
+        out.append(dict(t=dt.t[ext_k], y=y[ext_k], cvd=cvd[ext_k], push_vol=int(against[leg0:ext_k + 1].sum())))
+    return out
+
+
+def owner_view(dt: DayTrades, bursts: pd.DataFrame, nps: float, r) -> dict:
+    """A summary and the owner's checklist for one bot trade (what was known at the entry)."""
+    d, T, te = int(r.direction), float(r.test_time), float(r.entry_time)
+    us, them = ("buyers", "sellers") if d == 1 else ("sellers", "buyers")
+    ext_word = "low" if d == 1 else "high"
+    i_e = int(np.searchsorted(dt.t, te, "right"))
+    ours = np.concatenate([[0], np.cumsum(dt.buy if d == 1 else dt.sell)])
+    agst = np.concatenate([[0], np.cumsum(dt.sell if d == 1 else dt.buy)])
+
+    def share(w):
+        j = int(np.searchsorted(dt.t, te - w, "right"))
+        o, a = ours[i_e] - ours[j], agst[i_e] - agst[j]
+        return (o / (o + a) if o + a else 0.5), o + a
+    s5, _ = share(5)
+    s15, _ = share(15)
+    s120, _ = share(120)
+    j60 = int(np.searchsorted(dt.t, te - 60, "right"))
+    seg = dt.px[j60:i_e]
+    rng60 = (seg.max() - seg.min()) * TICK if len(seg) else 0.0
+    vol60 = ((ours[i_e] - ours[j60]) + (agst[i_e] - agst[j60])) / (2 * nps * 60) if nps else 0.0
+    near, far = int(r.edge), (int(r.lo) if d == 1 else int(r.hi))
+    ps = pushes_into_zone(dt, T, te, d, near)
+    band = (min(near, far) - 4, max(near, far) + 4)
+    bz = bursts[(bursts["price"] >= band[0]) & (bursts["price"] <= band[1]) & (bursts["direction"] == d)
+                & (bursts["time"] >= te - 60) & (bursts["time"] <= te)]
+    entry_px = int(r.entry_price)
+    low_y = min(p["y"] for p in ps) if ps else entry_px * d
+    bounce = (entry_px * d - low_y) * TICK
+    inside = (entry_px - near) * d * TICK                       # + = back out of the zone our way
+    i_t = int(np.searchsorted(dt.t, T))
+    j10 = max(int(np.searchsorted(dt.t, T - 600, "right")) - 1, 0)
+    move10 = (dt.px[j10] - dt.px[max(i_t - 1, 0)]) * d * TICK   # how far price came toward the zone
+    kind = "demand" if d == 1 else "supply"
+    where = (f"{abs(inside):.2f} pts inside the" if inside < 0 else
+             f"{inside:.2f} pts back out of the" if inside > 0 else "at the edge of the")
+    retest = len(ps) >= 2
+    div = weaker = None
+    if retest:
+        a, b = ps[-2], ps[-1]
+        div = b["cvd"] > a["cvd"]
+        weaker = b["push_vol"] < 0.7 * max(a["push_vol"], 1)
+    summary = (f"{'Long' if d == 1 else 'Short'} {where} {r.tf} {kind} zone, {te - T:.0f} s after price reached it "
+               f"(test {int(r.zone_test) if r.zone_test == r.zone_test else 1} of this zone). Price came {move10:+.2f} pts "
+               f"toward the zone in the 10 minutes before. {len(ps)} push{'es' if len(ps) != 1 else ''} into the zone so far; "
+               f"price is {bounce:.2f} pts off the {ext_word}. In the last 5 s {us} took {100 * s5:.0f}% of the aggressive volume.")
+    div_word = "higher low" if d == 1 else "lower high"
+    check = [
+        dict(ok=retest, item="Retest of the zone (a second push)",
+             detail=(f"{len(ps)} pushes: price moved 2+ pts back out of the zone and returned" if retest else
+                     "1 push, no retest: price has not moved 2 pts back out of the zone and returned")),
+        dict(ok=div, item=f"CVD {div_word} on the retest",
+             detail=("no retest to compare" if div is None else
+                     f"CVD {'made a ' + div_word if div else 'did not make a ' + div_word} on the second push")),
+        dict(ok=weaker, item="Weaker second push",
+             detail=("no retest to compare" if weaker is None else
+                     f"{them}' push into the zone: {ps[-1]['push_vol']} vs {ps[-2]['push_vol']} contracts the time before")),
+        dict(ok=len(bz) > 0, item=f"Absorption at the zone ({them} absorbed)",
+             detail=(f"{len(bz)} marker{'s' if len(bz) != 1 else ''} in the last minute, biggest {int(bz['contracts'].max())}"
+                     if len(bz) else "no markers in the last minute")),
+        dict(ok=bool(s5 >= 0.6 and s15 >= 0.55), item=f"{us.capitalize()} came in and held",
+             detail=f"{us} {100 * s5:.0f}% of the last 5 s, {100 * s15:.0f}% of the last 15 s"),
+        dict(ok=bool(s120 >= 0.45), item=f"{them.capitalize()} no longer in control",
+             detail=f"{them} {100 * (1 - s120):.0f}% of the aggressive volume over the last 2 minutes"),
+        dict(ok=bool(vol60 < 2 and rng60 < 4), item="Normal speed (not a fast or news market)",
+             detail=f"last minute: {rng60:.2f}-pt range, volume {vol60:.1f}x normal"),
+    ]
+    return dict(summary=summary, checklist=check)
+
+
+def explain_round(rnd: int) -> None:
+    """Rewrite the bot's explanation on a round's clips in the owner's terms (python -m research.bot_review --explain N)."""
+    rv = pd.read_csv(OUT / f"bot_review_round{rnd}.csv")
+    files = {d.date().isoformat(): f for d, c, f in session_files()}
+    R = S["replay"]
+    for day, g in rv.groupby("day"):
+        tr = load_trades(files[day], S)
+        tr = pd.DataFrame(dict(t=epoch_seconds(tr["ts"]), price=tr["price"].to_numpy().astype(np.int64),
+                               size=tr["size"].to_numpy(), side=tr["side"].to_numpy()))
+        dt = DayTrades(trades=tr)
+        bu = find_bursts(tr["t"].to_numpy(), tr["price"].to_numpy(), tr["size"].to_numpy(), tr["side"].to_numpy(),
+                         R["burst_seconds"], R["burst_min_mes_matched"])
+        bu["direction"] = np.where(bu["colour"] == "purple", -1, 1)
+        nps = lr.normal_per_second(dt, day)
+        for r in g.itertuples():
+            path = REPLAY_DIR / f"{r.id}.json"
+            c = json.loads(path.read_text())
+            v = owner_view(dt, bu, nps, r)
+            c["bot"].update(summary=v["summary"], checklist=[dict(ok=(None if x["ok"] is None else bool(x["ok"])),
+                                                                  item=x["item"], detail=x["detail"]) for x in v["checklist"]])
+            path.write_text(json.dumps(c, separators=(",", ":")))
+    print("explained", len(rv), "clips")
+
+
 if __name__ == "__main__":
-    main()
+    import sys
+    if "--explain" in sys.argv:
+        explain_round(int(sys.argv[sys.argv.index("--explain") + 1]))
+    else:
+        main()
