@@ -225,6 +225,18 @@ Example: a long at a demand zone that has previous days' POCs inside it (a near-
   - Chop at the zone.
   - Absorption without the other side coming in.
 
+**From the owner's review of 53 bot trades (round 1, Nov 2026):**
+- Pushes count even if they don't reach the zone. Their volume and CVD set up the trade for when price does enter it.
+- A CVD divergence has two forms:
+  - price goes as far or further but CVD doesn't ("price went higher but cvd stayed relatively the same");
+  - CVD goes further but price doesn't ("price went up within a couple of ticks on the second push but cvd went higher"), which is absorption.
+- Less aggressive volume on the second push, even without a CVD divergence.
+- The biggest volume burst at the extreme, with price unable to go further ("some buyers were there waiting").
+- The pushing side dries up at the extreme, then the other side comes in.
+- The other side coming in is not enough on its own: "buyers/sellers only coming in without any of the other confirmations don't mean anything." The signs should show before the move starts.
+- A retest raises the odds; the first retest of a zone is a little more likely to work.
+- Skip moves that are too fast or vertical (news-like), and skip while one side is still clearly in control.
+
 - In 2024 the owner most likely watched the ES heatmap in Bookmap, even when trading MES.
 - The journal replay shows the entry usually comes once price has already started to turn (median 0.5 points in the trade's direction in the last 5 seconds).
 
@@ -472,6 +484,7 @@ Every number below is an adjustable setting. The defaults come from this spec.
      - **Heatmap test (Nov 2026):** 14 order-book measurements added to the learned read did not help (agreement 60% vs 65% tape only; −$22 vs −$5 a trade on held-out days; book only 55%, −$62). The owner's decision is not in per-moment tape or book numbers. REPORT.md section 30.
      - **Retest (owner, Nov 2026):** "Not all trades I took required a retest, it's just a retest reinforces a possible direction change is more likely." A retest (price 2+ points back out of the zone and back) adds weight; it is not a requirement.
      - **Review rounds (Nov 2026, owner's idea):** the owner reviews the bot's own trades ("I'd take it" / "I'd pass" + why) in rounds of about 50; the reasons become new inputs and the bot is retrained, then tested on days left out. Round 1: 53 trades on the replay page (b101–b153). REPORT.md section 31.
+     - **Round 1 result (Nov 2026):** at the bot's moment the owner's takes did no better than the passes (5 of 25 vs 5 of 26 winners). The owner's checklist became inputs (the CVD divergence definition matches 16 of 22 of the owner's notes), and the bot was retrained with and without the answers. On 80 unseen days every version lost $31–42 a trade (random −$18). Every test that stopped at the decision moment (52 static charts, these 51 clips) shows no edge for the entry moment with fixed exits. The replay clips did show one (+$31 a trade), but their −10 s button allowed seeing ahead. **Proposed:** a forward-only replay test of the owner's own timing (about 50 clips, no stepping back). REPORT.md section 32.
      - **Stop move at +7:** on the owner's 104 careful replay trades, +$31 a trade without it and +$23 with it. The owner decides.
      - **Earlier plan (Nov 2026):** learn the read from the owner's decisions. 143 more clips with the order book (16 MES days of 2026, $19.47) are on the replay page for the owner to mark; the bot is then tested on the 110 unmarked 2026 days. REPORT.md section 26.
    - **5-point vs 4-point stop and at most 2 trades a day (owner's test, Oct 2026):**

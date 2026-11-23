@@ -1038,7 +1038,7 @@ The bot works on 1-minute candles: a zone test, entry on the first close 1 point
   - the zone's context
 - With 104 taken examples, adding more inputs mostly adds noise.
 
-## 31. Review rounds: the owner says yes or no to the bot's trades (Nov 2026, in progress)
+## 31. Review rounds: the owner says yes or no to the bot's trades (Nov 2026)
 
 **Owner:** "What if I review them and then decide on whether I would have also taken that trade or not. And then based on all the data we have, you can keep retraining the bot."
 - Clips without the heatmap are fine (no order book for these days).
@@ -1078,6 +1078,83 @@ The bot works on 1-minute candles: a zone test, entry on the first close 1 point
 - The bot almost never waits for a retest, the confirmation the owner relies on most (the owner took 91% of the replay clips whose notes mention a retest, and 100% of those that mention a CVD divergence).
 - These checklist items become inputs when the bot is retrained after the round.
 - **The owner chose to keep reviewing as is:** a retest is not required, it "reinforces a possible direction change is more likely". So it is an input the bot weighs, not a rule.
+
+## 32. Round 1 results: the owner's answers, the checklist as inputs, and the retrained bot (`review1_checklist.csv`, `review_retrain_*.csv`, Nov 2026)
+
+**The owner's answers on b101–b153:** 25 take, 26 pass, 2 unsure. Results at the bot's entry (stop-market 4.5, target 10, 5 MES):
+
+| Owner's answer | Trades | Winners | $ per trade |
+|---|---|---|---|
+| Take | 25 | 5 (20%) | −$55 |
+| Pass | 26 | 5 (19%) | −$54 |
+
+- At the bot's moment, the trades the owner would take did no better than the ones they would pass.
+- Many notes say "I'd wait" (b104, b131, b142, b153), so the owner judged the setup more than this exact entry.
+
+**What the notes added to the read** (recorded in STRATEGY.md section 2):
+- Pushes count even if they don't reach the zone (b107, b118).
+- A CVD divergence comes in two forms:
+  - price goes as far or further but CVD doesn't (b113, b117, b129);
+  - CVD goes further but price doesn't, which is absorption (b103).
+- Less volume on the second push (b125, b138, b148).
+- The biggest burst at the extreme, with price unable to go further (b134, b143, b145, b151).
+- The pushing side dries up at the extreme, then the other side comes in (b144). The other side coming in alone means nothing without the other confirmations (b102, b108).
+- Skip moves that are too fast or vertical, like news (b122, b139, b153).
+- Skip when one side is still clearly in control (b120, b123, b152).
+
+**The checklist as inputs** (`learn_read.swing_features`, columns `sw_*`, settings in [learn_read], proposals):
+- Pushes against the trade since 5 minutes before the test. A push ends when price comes 2 points back.
+- Pushes that came within 1 point of the zone (retests).
+- The CVD divergence (both forms).
+- Volume on the last push vs the one before.
+- The biggest absorption marker at the extreme.
+- The pushing side's volume in the last 15 s into the extreme.
+- Since the extreme: time, points and the other side's share.
+- **Matching the owner's eye:** the first divergence definition (the last two pushes, CVD at each price extreme) found only 2 of the 10 divergences the owner named. The one used compares the last push with the most extreme earlier push in the window and measures CVD against its 5-minute range. It agrees with the owner's notes on 16 of 22 trades: 7 of 10 divergences found, 3 of 12 false.
+
+**Retrained and tested on 80 unseen 2026 days.** These are days the owner never marked and that weren't in the review. Rules as always: one trade at a time, −$500 day stop, plain 4.5/10 exits.
+
+| Bot | Trades | Win rate | $ per trade | Net | Months up |
+|---|---|---|---|---|---|
+| A. Old inputs (the round-1 bot) | 92 | 26% | −$31 | −$2,827 | 0 of 6 |
+| B. Checklist inputs | 94 | 26% | −$33 | −$3,083 | 0 of 6 |
+| C. Checklist inputs + the owner's answers | 100 | 23% | −$42 | −$4,201 | 1 of 6 |
+| D. Old inputs + the owner's answers | 108 | 25% | −$34 | −$3,720 | 1 of 6 |
+| Old first-turn entry | 207 | 28% | −$22 | −$4,477 | 2 of 6 |
+| Random entries (20 a day, random side) | 1,600 | 30% | −$18 | | |
+
+- Bot A reproduces the round-1 bot's 92 trades exactly.
+- Neither change helped. With the stop moved to +1 at +7, the bots lose $31–41 a trade (random −$19).
+- The differences between A and D are within chance: about ±$16 a trade on 100 trades.
+
+**The checklist on the owner's own entries** (96 of the 104 careful replay takes, measured at the press):
+
+| Confirmation | Win rate with | Win rate without |
+|---|---|---|
+| CVD divergence | 39% (23 trades) | 44% (73) |
+| Retest | 43% (68) | 43% (28) |
+| Other side came in | 50% (28) | 40% (68) |
+
+As measured, the checklist doesn't separate the owner's winners from their losers. On the 53 reviewed bot trades it pointed the wrong way: divergence 12% winners vs 24% without.
+
+**Where the owner's edge shows up, and where it doesn't:**
+- **Replay clips (sections 26–28):** the owner's takes won 43% (+1.5 points, +$31 a trade, about 2 standard errors from zero). The old first-turn entry won 34% on the clips the owner took (+$1 a trade) and 19% on the clips they skipped (−$53).
+- **But the replay page had a "−10 s" button.** A decision could be made after seeing the next seconds or minutes, and a skip was usually decided after watching all 5 minutes. Seeing what came next can shape a decision even without meaning to.
+- **Every test that stopped at the decision moment shows no difference:**
+  - the 52 static charts (sections 6 and 8: p ≈ 0.5);
+  - these 51 review clips (20% vs 19%).
+- **The owner's live journal** (Q2 2024 on, sections 12 and 19) was profitable with the owner's own exits. The same entries with fixed brackets lost $8 a trade, or made +$4 from 10:00.
+- So the data doesn't yet show that the entry moment itself has an edge with the fixed 4.5/10 exits. It may well have one, but every clean check so far has been too small or used the bot's moment instead of the owner's.
+
+**Proposed next step (owner's call):**
+- **A forward-only test of the owner's own timing:** about 50 new clips on unseen 2026 days, tape only.
+  - The clip only plays forward: no stepping back, no replay.
+  - The owner presses Long or Short at their own moment, or Skip.
+  - Their takes are scored with the fixed 4.5/10.
+- **What each result would mean:**
+  - About 40% winners: the edge is in the owner's timing, and it is real. More such clips are the right training data.
+  - About 25–30%: the edge is not in the entry, and the bot's design needs rethinking (exits and trade management, or a different setup).
+- **No more review rounds of this kind until then:** the owner's yes or no on the bot's moment did not separate winners from losers.
 
 ## Caveats
 
