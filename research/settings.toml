@@ -546,6 +546,15 @@ model_max_depth = 3                      # small trees, strong limits: few hundr
 model_learning_rate = 0.05
 model_max_iter = 200
 model_min_samples_leaf = 40
+# The owner's checklist as inputs (review round 1 notes, Nov 2026). Proposals, not owner rules.
+checklist_features = true                # add the swing inputs below (prefix sw_) to every decision point
+swing_lookback_seconds = 300             # pushes count from 5 minutes before the test ("pushes still count even if they don't reach the zone")
+swing_reversal_points = 2.0              # a push ends when price comes 2 points back (the same 2 points as a retest)
+near_zone_points = 1.0                   # a push "reached the zone" if it came within 1 point of the zone's edge
+dry_seconds = 15                         # "selling volume dried up" at the extreme: the last 15 s of the push vs its average
+div_cvd_tolerance = 0.10                 # divergence: CVD no further than 10% of its 5-minute range ("stayed relatively the same")
+div_cvd_min = 0.25                       # absorption: CVD at least 25% of its range further...
+div_price_max_points = 0.5               # ...while price is within a couple of ticks of the earlier push
 
 [bot_review]
 # Owner (Nov 2026): review the learned bot's trades ("I'd take it" / "I'd pass" + why) and keep retraining.

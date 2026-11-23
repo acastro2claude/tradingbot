@@ -71,6 +71,7 @@ def day_bursts(tr: pd.DataFrame, market: str) -> pd.DataFrame:
     b = find_bursts(tr["t"].to_numpy(), tr["price"].to_numpy().astype(np.int64), tr["size"].to_numpy(),
                     tr["side"].to_numpy(), 0.01, mn)
     b["direction"] = np.where(b["side"] == "B", -1, 1)
+    b["min_size"] = mn
     return b
 
 
@@ -136,9 +137,160 @@ def features(dt: DayTrades, bursts: pd.DataFrame, nps: float, T: float, d: int, 
     loc = pd.Timestamp(T, unit="s", tz="UTC").tz_convert("America/New_York")
     f["minutes_after_open"] = np.full(n, loc.hour * 60 + loc.minute - 570)
     out = pd.DataFrame(f)
+    if L.get("checklist_features"):
+        out = out.join(swing_features(dt, bursts, nps, T, d, near, pts, idx))
     out["time"] = pts
     out["price"] = (y[np.maximum(idx - 1, 0)] * d).astype(np.int64)
     return out
+
+
+def zigzag(y: np.ndarray, t: np.ndarray, i0: int, i1: int, rev: int, snap_idx: np.ndarray, snap):
+    """Walk trades i0..i1-1 of an our-way price path (ticks; pushes against us go down) and find the pushes:
+    a push ends at its low once price comes `rev` ticks back up; the next push starts at the high after it.
+    Calls snap(j, pushes) at each snapshot j once the trades before snap_idx[j] are in. `pushes` holds
+    (low index, start index) pairs, the push in progress last."""
+    pushes, mode = [], None
+    lo_k = hi_k = i0
+    j, n = 0, len(snap_idx)
+    ks = np.arange(i0, i1)
+    if len(ks):
+        ks = ks[np.concatenate([[True], y[ks[1:]] != y[ks[:-1]]])]  # only price changes matter
+    for k in ks:
+        while j < n and snap_idx[j] <= k:
+            snap(j, pushes + ([(lo_k, hi_k)] if mode == "down" else []))
+            j += 1
+        v = y[k]
+        if mode is None:
+            if v < y[lo_k]:
+                lo_k = k
+            if v > y[hi_k]:
+                hi_k = k
+            if v >= y[lo_k] + rev:                       # came up off a low first: a push if price fell to it
+                if y[lo_k] < y[i0]:
+                    pushes.append((lo_k, i0))
+                mode, hi_k = "up", k
+            elif v <= y[hi_k] - rev:                     # came down off a high first: a push from that high
+                mode, lo_k = "down", k
+        elif mode == "down":
+            if v < y[lo_k]:
+                lo_k = k
+            elif v >= y[lo_k] + rev:
+                pushes.append((lo_k, hi_k))
+                mode, hi_k = "up", k
+        else:
+            if v > y[hi_k]:
+                hi_k = k
+            elif v <= y[hi_k] - rev:
+                mode, lo_k = "down", k
+    while j < n:
+        snap(j, pushes + ([(lo_k, hi_k)] if mode == "down" else []))
+        j += 1
+
+
+SWING_COLS = ("sw_pushes", "sw_zone_pushes", "sw_last_in_zone", "sw_px_further", "sw_px_cvd", "sw_p2_vol_ratio",
+              "sw_div_classic", "sw_div_absorb", "sw_last_burst", "sw_last_dry", "sw_since_secs", "sw_since_bounce",
+              "sw_since_balance", "sw_since_ours")
+
+
+def swing_features(dt: DayTrades, bursts: pd.DataFrame, nps: float, T: float, d: int, near: int,
+                   pts: np.ndarray, idx: np.ndarray) -> pd.DataFrame:
+    """The owner's checklist at each decision point (review round 1 notes, Nov 2026), from the pushes against us
+    since 5 minutes before the test (they count even if they don't reach the zone):
+      sw_pushes, sw_zone_pushes   pushes so far, and how many came within 1 point of the zone (retests)
+      sw_px_further               points the last push went past the most extreme earlier push in the window
+                                  (+ = a new low for a long)
+      sw_px_cvd                   our-way CVD at the last push's extreme minus at that earlier extreme, as a share
+                                  of the CVD's range over the window (+ = the pushing side is weaker)
+      sw_div_classic              price within 2 ticks of the earlier extreme or past it, CVD not further by more
+                                  than 10% of its range: "price went higher but cvd stayed relatively the same"
+      sw_div_absorb               CVD 25%+ of its range further, price within 2 ticks of the earlier extreme:
+                                  "price went up within a couple of ticks on the second push but cvd went higher"
+    The divergence definition is the one that matched the owner's notes best on the round-1 trades (16 of 22
+    notes that say there was, or was not, a divergence; research/results/journal/REPORT.md section 32).
+      sw_p2_vol_ratio             the pushing side's volume on the last push vs the one before ("lower buyer volume
+                                  on the second push")
+      sw_last_burst               the biggest absorption marker at the last push's extreme, in marker sizes
+                                  ("the biggest volume burst came from the low")
+      sw_last_dry                 the pushing side's volume in the last 15 s into the extreme vs the push's average
+                                  ("at the lowest point there were almost no sellers")
+      sw_since_*                  since the extreme: seconds, points off it, our side's share and volume
+                                  ("as long as they come in afterwards")"""
+    rev = int(round(L["swing_reversal_points"] / TICK))
+    near_t = int(round(L["near_zone_points"] / TICK))
+    y = dt.px * d
+    nearY = near * d
+    ours = np.concatenate([[0], np.cumsum(dt.buy if d == 1 else dt.sell)])
+    agst = np.concatenate([[0], np.cumsum(dt.sell if d == 1 else dt.buy)])
+    i0 = int(np.searchsorted(dt.t, T - L["swing_lookback_seconds"], "left"))
+    i1 = int(idx[-1])
+    bz = bursts[bursts["direction"] == d]
+    b_t, b_p, b_c = bz["time"].to_numpy(), bz["price"].to_numpy(), bz["contracts"].to_numpy()
+    o = np.argsort(b_t, kind="stable")
+    b_t, b_p, b_c = b_t[o], b_p[o], b_c[o]
+    bmin = float(bursts["min_size"].iat[0]) if "min_size" in bursts and len(bursts) else float(L["burst_min_mes"])
+    norm = max(nps * 60, 1e-9)
+    n = len(pts)
+    out = {c: np.full(n, np.nan) for c in SWING_COLS}
+    seg = y[i0:max(i1, i0 + 1)]
+    run_lo = np.minimum.accumulate(seg)                       # the lowest price so far in the window, and where
+    new_lo = np.concatenate([[True], seg[1:] < run_lo[:-1]])
+    run_lo_k = i0 + np.maximum.accumulate(np.where(new_lo, np.arange(len(seg)), 0))
+    cvd_all = ours - agst                                      # cvd_all[k + 1] = CVD after trade k
+    cseg = cvd_all[i0 + 1:max(i1, i0 + 1) + 1]
+    c_hi, c_lo = np.maximum.accumulate(cseg), np.minimum.accumulate(cseg)
+
+    def push_info(lo_k, start_k):
+        t_lo = dt.t[lo_k]
+        vol = agst[lo_k + 1] - agst[start_k]
+        secs = max(t_lo - dt.t[start_k], 1.0)
+        a, b = np.searchsorted(b_t, [dt.t[start_k], t_lo + 1.0])
+        near_b = np.abs(b_p[a:b] - dt.px[lo_k]) <= near_t
+        burst = float(b_c[a:b][near_b].max()) / bmin if near_b.any() else 0.0
+        j_dry = int(np.searchsorted(dt.t, t_lo - L["dry_seconds"], "left"))
+        dry_secs = min(L["dry_seconds"], secs)
+        dry = ((agst[lo_k + 1] - agst[max(j_dry, start_k)]) / dry_secs) / max(vol / secs, 1e-9) if vol > 0 else np.nan
+        return dict(y=y[lo_k], t=t_lo, cvd=(ours[lo_k + 1] - agst[lo_k + 1]), vol=vol, burst=burst, dry=dry,
+                    zone=y[lo_k] <= nearY + near_t)
+
+    cache = {}
+
+    def snap(j, pushes):
+        if not pushes:
+            return
+        info = []
+        for p in pushes[-2:]:
+            if p not in cache:
+                cache[p] = push_info(*p)
+            info.append(cache[p])
+        last = info[-1]
+        out["sw_pushes"][j] = len(pushes)
+        out["sw_zone_pushes"][j] = sum(1 for p in pushes if y[p[0]] <= nearY + near_t)
+        out["sw_last_in_zone"][j] = float(last["zone"])
+        out["sw_last_burst"][j] = last["burst"]
+        out["sw_last_dry"][j] = min(last["dry"], 5.0) if last["dry"] == last["dry"] else np.nan
+        k = int(idx[j])
+        lo_k = pushes[-1][0]
+        out["sw_since_secs"][j] = pts[j] - last["t"]
+        out["sw_since_bounce"][j] = (y[max(k - 1, lo_k)] - last["y"]) * TICK
+        o_, a_ = ours[k] - ours[lo_k + 1], agst[k] - agst[lo_k + 1]
+        out["sw_since_balance"][j] = (o_ - a_) / max(o_ + a_, 1)
+        out["sw_since_ours"][j] = o_ / norm
+        if len(info) == 2:
+            out["sw_p2_vol_ratio"][j] = min(last["vol"] / max(info[0]["vol"], 1), 5.0)
+        s_k = pushes[-1][1]
+        if s_k > i0:
+            p_k = int(run_lo_k[s_k - 1 - i0])                  # the most extreme earlier push in the window
+            further = (y[p_k] - last["y"]) * TICK
+            rng = c_hi[k - 1 - i0] - c_lo[k - 1 - i0] if k - 1 >= i0 else 0
+            dcvd = (cvd_all[lo_k + 1] - cvd_all[p_k + 1]) / max(rng, 1)
+            out["sw_px_further"][j] = further
+            out["sw_px_cvd"][j] = dcvd
+            pmax = L["div_price_max_points"]
+            out["sw_div_classic"][j] = float(further >= -pmax and dcvd >= -L["div_cvd_tolerance"])
+            out["sw_div_absorb"][j] = float(-pmax <= further <= pmax and dcvd <= -L["div_cvd_min"])
+
+    zigzag(y, dt.t, i0, i1, rev, idx, snap)
+    return pd.DataFrame(out)
 
 
 def marked_clips() -> pd.DataFrame:
